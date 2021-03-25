@@ -12,11 +12,3 @@ export type UserAction = {
 	type: UserTypes,
 	data: Record<keyof UserState, string>,
 };
-
-export type GetUserVars = {
-  id: number;
-};
-export type GetUserData = {
-  id: number;
-  username: string;
-};

@@ -7,9 +7,11 @@ import { getOrInitializeStore } from 'redux/initializeStore';
 import { getInitialState } from 'redux/getInitialState';
 import { useApollo } from 'utils/apollo/apolloClient';
 
-import { AppLayout } from 'components/App/AppLayout';
+import { App as RootComponent } from 'components/App/App';
 
 import 'antd/dist/antd.css';
+import 'assets/variables.css';
+import 'assets/global.css';
 
 const MafitApp = ({ Component, pageProps, reduxProps }) => {
   const reduxStore = getOrInitializeStore(reduxProps);
@@ -24,9 +26,9 @@ const MafitApp = ({ Component, pageProps, reduxProps }) => {
           />
           <link rel="shortcut icon" href="/public/favicon.ico" type="image/png" />
         </Head>
-        <AppLayout>
+        <RootComponent>
           <Component />
-        </AppLayout>
+        </RootComponent>
       </Provider>
     </ApolloProvider>
   );
@@ -35,7 +37,7 @@ const MafitApp = ({ Component, pageProps, reduxProps }) => {
 MafitApp.getInitialProps = async (appContext) => {
   const [appProps, reduxProps] = await Promise.all([
     App.getInitialProps(appContext),
-    getInitialState(appContext.ctx.req),
+    appContext.ctx.req && getInitialState(appContext.ctx.req),
   ]);
 
   return { ...appProps, reduxProps };

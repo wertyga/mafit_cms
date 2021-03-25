@@ -3,7 +3,7 @@ import { RootState } from 'types/root';
 
 type Selector = keyof RootState;
 
-export const useSelector = (
+const useSelector = (
   stores: Selector | Selector[],
 ): Pick<RootState, Selector> => {
   const arrayedSelector = Array.isArray(stores) ? stores : [stores];
@@ -18,3 +18,5 @@ export const useSelector = (
     ))
   );
 };
+
+export default useSelector;

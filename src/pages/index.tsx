@@ -1,12 +1,10 @@
 import React from 'react';
-import { Row, Col, Typography } from 'antd';
-
-const { Title } = Typography;
+import { Row, Col } from 'antd';
 
 const HomePage = () => (
   <Row justify="center">
-    <Col span={4}>
-      <Title>HOME_PAGE</Title>
+    <Col span={12}>
+      <h1>INDEX_PAGE</h1>
     </Col>
   </Row>
 );

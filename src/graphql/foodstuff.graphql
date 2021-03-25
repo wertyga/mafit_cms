@@ -1,0 +1,21 @@
+type FoodStaff {
+	id: ID!
+	title: String!
+	unit: String!
+	calories: Int
+	fats: Int
+	carbs: Int
+	protein: Int
+}
+
+query getFoodStaff {
+	getFoodStaff {
+		id
+		title
+		unit
+		calories
+		fats
+		carbs
+		protein
+	}
+}

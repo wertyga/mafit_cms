@@ -1,0 +1,33 @@
+type Food {
+	foodstuff: FoodStaff
+	qt: Int
+}
+
+type Recipe {
+	id: ID!
+	image: String
+	title: String!
+	description: [String]
+	foods: [Food]
+}
+
+query getRecipes {
+	getRecipes {
+		id
+		title
+		image
+		description
+		foods {
+			foodstuff {
+				id
+				title
+				unit
+				calories
+				fats
+				carbs
+				protein
+			}
+			qt
+		}
+	}
+}

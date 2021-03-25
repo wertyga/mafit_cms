@@ -1,0 +1,14 @@
+:root {
+  /* Colors */
+  --color-grey: #e6e6e6;
+  --color-grey-dark: #8b8b8b;
+  --color-tint: #eeeeee;
+  --color-light: #ffffff;
+  --muar-light: rgba(255, 255, 255, 0.5);
+
+  /* Spaces */
+  --space-10: 4rem;
+
+  /* Font */
+  --font-size-xl: 1.6rem
+}

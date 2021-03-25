@@ -1,0 +1,21 @@
+.sideMenu.ant-layout-sider {
+  padding-top: var(--space-10);
+  overflow: auto;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+}
+
+.sideMenu__backBtn {
+  height: var(--space-10) !important;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+.sideMenu__backBtn.open {
+  justify-content: flex-end;
+}
+
+.sideMenu__backIcon {
+  font-size: var(--font-size-xl);
+}
