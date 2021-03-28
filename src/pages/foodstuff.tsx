@@ -80,7 +80,7 @@ const Foodstuff = () => {
           {search
 						&& (
 							<Button type="primary" icon={<CloseOutlined />} onClick={handleRestSearch}>
-							  {search}
+                {search}
 							</Button>
 						)}
         </Row>

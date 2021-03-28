@@ -9,7 +9,7 @@ type Props = {
   confirm: () => void;
 };
 
-export const SearchField: React.FC<Props> = ({ name, confirm, setSelectedKeys }) => {
+export const SearchField: React.FC<Props> = ({ name, confirm }) => {
   const router = useRouter();
   const [form] = Form.useForm();
 
@@ -17,7 +17,6 @@ export const SearchField: React.FC<Props> = ({ name, confirm, setSelectedKeys })
     const { query } = router;
     if (query.search === search && query.by === name) return;
     router.replace(`${router.pathname}?search=${search}&by=${name}`);
-    setSelectedKeys(query.search);
     confirm();
   };
 

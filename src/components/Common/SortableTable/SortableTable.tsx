@@ -15,7 +15,7 @@ type Props = {
   columns: Recipe[];
 };
 
-export const SortableTable: React.FC<Props> = (tableProps) => {
+export const SortableTable: React.FC<Partial<Props>> = (tableProps) => {
   const [dataSource, setDataSource] = useState(getDataWithIndexes(tableProps.data));
 
   const onSortEnd = ({ oldIndex, newIndex }) => {

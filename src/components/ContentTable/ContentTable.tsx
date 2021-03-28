@@ -1,12 +1,12 @@
 import React from 'react';
-import { Typography, Row } from 'antd';
+import {Typography, Row, TableProps} from 'antd';
 import { SortableTable } from 'components/Common/SortableTable/SortableTable';
 
 const { Title } = Typography;
 
 type Props = {
   title: string;
-  TitleComponent: React.ReactElement;
+  TitleComponent?: React.ReactElement;
 };
 
 export const ContentTable: React.FC<Props> = ({

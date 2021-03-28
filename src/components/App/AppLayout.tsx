@@ -15,7 +15,7 @@ export const AppLayout = ({ children }) => {
   return (
     <Layout>
       <SideMenu isOpen />
-      <Layout style={{ marginLeft: 200 }}>
+      <Layout style={{ marginLeft: 200, minHeight: '100vh' }}>
         <Header className="AppLayout__header">
           <Button
             type="link"
