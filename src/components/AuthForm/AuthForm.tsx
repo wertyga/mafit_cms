@@ -45,7 +45,7 @@ export const AuthForm = () => {
       <Row justify="center" className="auth-form">
         <Col span={6}>
           <Form
-            name="basic"
+            name="auth"
             onFinish={onSubmit}
           >
             <Form.Item

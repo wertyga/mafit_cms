@@ -14,39 +14,60 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
+
+
+export enum CacheControlScope {
+  Public = 'PUBLIC',
+  Private = 'PRIVATE'
+}
 
 export type Food = {
   __typename?: 'Food';
-  foodstuff?: Maybe<FoodStaff>;
+  foodstuff?: Maybe<FoodStuff>;
   qt?: Maybe<Scalars['Int']>;
 };
 
-export type FoodStaff = {
-  __typename?: 'FoodStaff';
+export type FoodStuff = {
+  __typename?: 'FoodStuff';
   id: Scalars['ID'];
   title: Scalars['String'];
   unit: Scalars['String'];
-  calories?: Maybe<Scalars['Int']>;
-  fats?: Maybe<Scalars['Int']>;
-  carbs?: Maybe<Scalars['Int']>;
-  protein?: Maybe<Scalars['Int']>;
+  calories: Scalars['Int'];
+  fats: Scalars['Int'];
+  carbs: Scalars['Int'];
+  protein: Scalars['Int'];
+};
+
+export type FoodStuffWithTotal = {
+  __typename?: 'FoodStuffWithTotal';
+  foodstuff?: Maybe<Array<Maybe<FoodStuff>>>;
+  totalCount?: Maybe<Scalars['Int']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createUser?: Maybe<User>;
+  uploadRecipe?: Maybe<RecipeWithTotal>;
+  addFoodstuff?: Maybe<FoodStuffWithTotal>;
 };
 
 
-export type MutationCreateUserArgs = {
-  input?: Maybe<UserInput>;
-};
-
-export type PostInput = {
-  id?: Maybe<Scalars['ID']>;
+export type MutationUploadRecipeArgs = {
   title: Scalars['String'];
-  content: Scalars['String'];
+  description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  image?: Maybe<Scalars['Upload']>;
+};
+
+
+export type MutationAddFoodstuffArgs = {
+  title: Scalars['String'];
+  unit: Scalars['String'];
+  calories: Scalars['Int'];
+  fats: Scalars['Int'];
+  carbs: Scalars['Int'];
+  protein: Scalars['Int'];
 };
 
 export type Query = {
@@ -54,8 +75,8 @@ export type Query = {
   getAllUsers?: Maybe<Array<Maybe<User>>>;
   getUser?: Maybe<User>;
   authUser?: Maybe<User>;
-  getFoodStaff?: Maybe<Array<Maybe<FoodStaff>>>;
-  getRecipes?: Maybe<Array<Maybe<Recipe>>>;
+  getFoodStuffs?: Maybe<FoodStuffWithTotal>;
+  getRecipes?: Maybe<RecipeWithTotal>;
 };
 
 
@@ -69,6 +90,22 @@ export type QueryAuthUserArgs = {
   password?: Maybe<Scalars['String']>;
 };
 
+
+export type QueryGetFoodStuffsArgs = {
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetRecipesArgs = {
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
 export type Recipe = {
   __typename?: 'Recipe';
   id: Scalars['ID'];
@@ -78,18 +115,25 @@ export type Recipe = {
   foods?: Maybe<Array<Maybe<Food>>>;
 };
 
+export type RecipeInput = {
+  __typename?: 'RecipeInput';
+  title: Scalars['String'];
+  description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  image?: Maybe<Scalars['Upload']>;
+};
+
+export type RecipeWithTotal = {
+  __typename?: 'RecipeWithTotal';
+  recipes?: Maybe<Array<Maybe<Recipe>>>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+
 export type User = {
   __typename?: 'User';
   id?: Maybe<Scalars['ID']>;
   username: Scalars['String'];
   token: Scalars['String'];
-};
-
-export type UserInput = {
-  id?: Maybe<Scalars['ID']>;
-  username?: Maybe<Scalars['String']>;
-  age: Scalars['Int'];
-  posts?: Maybe<Array<Maybe<PostInput>>>;
 };
 
 export type GetUserQueryVariables = Types.Exact<{

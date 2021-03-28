@@ -30,14 +30,17 @@
         "react/prop-types": "off",
         "no-tabs": "off",
         "jsx-a11y/anchor-is-valid": "off",
-        "react/jsx-props-no-spreading": ["error", { "custom": "ignore" }],
         "react/no-unescaped-entities": "off",
         "import/no-cycle": [0, { "ignoreExternal": true }],
         "prefer-const": "off",
         "import/prefer-default-export": "off",
+        "react-hooks/exhaustive-deps": "off",
+        "react/jsx-props-no-spreading": "off",
         "no-mixed-spaces-and-tabs": "off",
+        "react/display-name": "off",
         "no-underscore-dangle": "off",
         "no-use-before-define": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-use-before-define": [
             "error",
             { "functions": false, "classes": false, "variables": true }

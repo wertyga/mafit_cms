@@ -1,5 +1,5 @@
 type Food {
-	foodstuff: FoodStaff
+	foodstuff: FoodStuff
 	qt: Int
 }
 
@@ -11,23 +11,35 @@ type Recipe {
 	foods: [Food]
 }
 
-query getRecipes {
-	getRecipes {
-		id
-		title
-		image
-		description
-		foods {
-			foodstuff {
-				id
-				title
-				unit
-				calories
-				fats
-				carbs
-				protein
-			}
-			qt
+fragment recipeFields on Recipe {
+	id
+	title
+	image
+	description
+	foods {
+		foodstuff {
+			id
+			title
+			unit
 		}
+		qt
+	}
+}
+
+query getRecipes($offset: Int, $limit: Int, $search: String, $by: String) {
+	getRecipes(offset: $offset, limit: $limit, search: $search, by: $by) {
+		recipes {
+			...recipeFields
+		}
+		totalCount
+	}
+}
+
+mutation uploadRecipe($image: Upload, $title: String!, $description: [String]) {
+	uploadRecipe(image: $image, title: $title, description: $description) {
+		recipes {
+			...recipeFields
+		}
+		totalCount
 	}
 }

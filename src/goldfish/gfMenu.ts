@@ -8,7 +8,7 @@ export const gfMenu = [
   },
   {
     title: 'Food sets',
-    href: '/foodsets',
+    href: '/foodstuff',
     Icon: ShopOutlined,
   },
 ];

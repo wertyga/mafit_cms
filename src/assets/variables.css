@@ -4,11 +4,21 @@
   --color-grey-dark: #8b8b8b;
   --color-tint: #eeeeee;
   --color-light: #ffffff;
+  --color-error: red;
+  --color-success: #01b401;
   --muar-light: rgba(255, 255, 255, 0.5);
 
   /* Spaces */
+  --space-1: 0.2rem;
+  --space-2: 0.5rem;
+  --space-4: 1rem;
+  --space-8: 2rem;
   --space-10: 4rem;
 
   /* Font */
-  --font-size-xl: 1.6rem
+  --font-size-xl: 1.6rem;
+  --font-size-xxl: 1.8rem;
+
+  /* Sizes */
+  --image-preview-width: 4.5rem;
 }

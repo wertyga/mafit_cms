@@ -14,39 +14,60 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
+
+
+export enum CacheControlScope {
+  Public = 'PUBLIC',
+  Private = 'PRIVATE'
+}
 
 export type Food = {
   __typename?: 'Food';
-  foodstuff?: Maybe<FoodStaff>;
+  foodstuff?: Maybe<FoodStuff>;
   qt?: Maybe<Scalars['Int']>;
 };
 
-export type FoodStaff = {
-  __typename?: 'FoodStaff';
+export type FoodStuff = {
+  __typename?: 'FoodStuff';
   id: Scalars['ID'];
   title: Scalars['String'];
   unit: Scalars['String'];
-  calories?: Maybe<Scalars['Int']>;
-  fats?: Maybe<Scalars['Int']>;
-  carbs?: Maybe<Scalars['Int']>;
-  protein?: Maybe<Scalars['Int']>;
+  calories: Scalars['Int'];
+  fats: Scalars['Int'];
+  carbs: Scalars['Int'];
+  protein: Scalars['Int'];
+};
+
+export type FoodStuffWithTotal = {
+  __typename?: 'FoodStuffWithTotal';
+  foodstuff?: Maybe<Array<Maybe<FoodStuff>>>;
+  totalCount?: Maybe<Scalars['Int']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createUser?: Maybe<User>;
+  uploadRecipe?: Maybe<RecipeWithTotal>;
+  addFoodstuff?: Maybe<FoodStuffWithTotal>;
 };
 
 
-export type MutationCreateUserArgs = {
-  input?: Maybe<UserInput>;
-};
-
-export type PostInput = {
-  id?: Maybe<Scalars['ID']>;
+export type MutationUploadRecipeArgs = {
   title: Scalars['String'];
-  content: Scalars['String'];
+  description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  image?: Maybe<Scalars['Upload']>;
+};
+
+
+export type MutationAddFoodstuffArgs = {
+  title: Scalars['String'];
+  unit: Scalars['String'];
+  calories: Scalars['Int'];
+  fats: Scalars['Int'];
+  carbs: Scalars['Int'];
+  protein: Scalars['Int'];
 };
 
 export type Query = {
@@ -54,8 +75,8 @@ export type Query = {
   getAllUsers?: Maybe<Array<Maybe<User>>>;
   getUser?: Maybe<User>;
   authUser?: Maybe<User>;
-  getFoodStaff?: Maybe<Array<Maybe<FoodStaff>>>;
-  getRecipes?: Maybe<Array<Maybe<Recipe>>>;
+  getFoodStuffs?: Maybe<FoodStuffWithTotal>;
+  getRecipes?: Maybe<RecipeWithTotal>;
 };
 
 
@@ -69,6 +90,22 @@ export type QueryAuthUserArgs = {
   password?: Maybe<Scalars['String']>;
 };
 
+
+export type QueryGetFoodStuffsArgs = {
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetRecipesArgs = {
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
 export type Recipe = {
   __typename?: 'Recipe';
   id: Scalars['ID'];
@@ -78,6 +115,20 @@ export type Recipe = {
   foods?: Maybe<Array<Maybe<Food>>>;
 };
 
+export type RecipeInput = {
+  __typename?: 'RecipeInput';
+  title: Scalars['String'];
+  description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  image?: Maybe<Scalars['Upload']>;
+};
+
+export type RecipeWithTotal = {
+  __typename?: 'RecipeWithTotal';
+  recipes?: Maybe<Array<Maybe<Recipe>>>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+
 export type User = {
   __typename?: 'User';
   id?: Maybe<Scalars['ID']>;
@@ -85,55 +136,84 @@ export type User = {
   token: Scalars['String'];
 };
 
-export type UserInput = {
-  id?: Maybe<Scalars['ID']>;
-  username?: Maybe<Scalars['String']>;
-  age: Scalars['Int'];
-  posts?: Maybe<Array<Maybe<PostInput>>>;
-};
+export type RecipeFieldsFragment = (
+  { __typename?: 'Recipe' }
+  & Pick<Types.Recipe, 'id' | 'title' | 'image' | 'description'>
+  & { foods?: Types.Maybe<Array<Types.Maybe<(
+    { __typename?: 'Food' }
+    & Pick<Types.Food, 'qt'>
+    & { foodstuff?: Types.Maybe<(
+      { __typename?: 'FoodStuff' }
+      & Pick<Types.FoodStuff, 'id' | 'title' | 'unit'>
+    )> }
+  )>>> }
+);
 
-export type GetRecipesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type GetRecipesQueryVariables = Types.Exact<{
+  offset?: Types.Maybe<Types.Scalars['Int']>;
+  limit?: Types.Maybe<Types.Scalars['Int']>;
+  search?: Types.Maybe<Types.Scalars['String']>;
+  by?: Types.Maybe<Types.Scalars['String']>;
+}>;
 
 
 export type GetRecipesQuery = (
   { __typename?: 'Query' }
-  & { getRecipes?: Types.Maybe<Array<Types.Maybe<(
-    { __typename?: 'Recipe' }
-    & Pick<Types.Recipe, 'id' | 'title' | 'image' | 'description'>
-    & { foods?: Types.Maybe<Array<Types.Maybe<(
-      { __typename?: 'Food' }
-      & Pick<Types.Food, 'qt'>
-      & { foodstuff?: Types.Maybe<(
-        { __typename?: 'FoodStaff' }
-        & Pick<Types.FoodStaff, 'id' | 'title' | 'unit' | 'calories' | 'fats' | 'carbs' | 'protein'>
-      )> }
+  & { getRecipes?: Types.Maybe<(
+    { __typename?: 'RecipeWithTotal' }
+    & Pick<Types.RecipeWithTotal, 'totalCount'>
+    & { recipes?: Types.Maybe<Array<Types.Maybe<(
+      { __typename?: 'Recipe' }
+      & RecipeFieldsFragment
     )>>> }
-  )>>> }
+  )> }
 );
 
+export type UploadRecipeMutationVariables = Types.Exact<{
+  image?: Types.Maybe<Types.Scalars['Upload']>;
+  title: Types.Scalars['String'];
+  description?: Types.Maybe<Array<Types.Maybe<Types.Scalars['String']>> | Types.Maybe<Types.Scalars['String']>>;
+}>;
 
-export const GetRecipesDocument = gql`
-    query getRecipes {
-  getRecipes {
-    id
-    title
-    image
-    description
-    foods {
-      foodstuff {
-        id
-        title
-        unit
-        calories
-        fats
-        carbs
-        protein
-      }
-      qt
+
+export type UploadRecipeMutation = (
+  { __typename?: 'Mutation' }
+  & { uploadRecipe?: Types.Maybe<(
+    { __typename?: 'RecipeWithTotal' }
+    & Pick<Types.RecipeWithTotal, 'totalCount'>
+    & { recipes?: Types.Maybe<Array<Types.Maybe<(
+      { __typename?: 'Recipe' }
+      & RecipeFieldsFragment
+    )>>> }
+  )> }
+);
+
+export const RecipeFieldsFragmentDoc = gql`
+    fragment recipeFields on Recipe {
+  id
+  title
+  image
+  description
+  foods {
+    foodstuff {
+      id
+      title
+      unit
     }
+    qt
   }
 }
     `;
+export const GetRecipesDocument = gql`
+    query getRecipes($offset: Int, $limit: Int, $search: String, $by: String) {
+  getRecipes(offset: $offset, limit: $limit, search: $search, by: $by) {
+    recipes {
+      ...recipeFields
+    }
+    totalCount
+  }
+}
+    ${RecipeFieldsFragmentDoc}`;
 
 /**
  * __useGetRecipesQuery__
@@ -147,6 +227,10 @@ export const GetRecipesDocument = gql`
  * @example
  * const { data, loading, error } = useGetRecipesQuery({
  *   variables: {
+ *      offset: // value for 'offset'
+ *      limit: // value for 'limit'
+ *      search: // value for 'search'
+ *      by: // value for 'by'
  *   },
  * });
  */
@@ -161,3 +245,41 @@ export function useGetRecipesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetRecipesQueryHookResult = ReturnType<typeof useGetRecipesQuery>;
 export type GetRecipesLazyQueryHookResult = ReturnType<typeof useGetRecipesLazyQuery>;
 export type GetRecipesQueryResult = Apollo.QueryResult<GetRecipesQuery, GetRecipesQueryVariables>;
+export const UploadRecipeDocument = gql`
+    mutation uploadRecipe($image: Upload, $title: String!, $description: [String]) {
+  uploadRecipe(image: $image, title: $title, description: $description) {
+    recipes {
+      ...recipeFields
+    }
+    totalCount
+  }
+}
+    ${RecipeFieldsFragmentDoc}`;
+export type UploadRecipeMutationFn = Apollo.MutationFunction<UploadRecipeMutation, UploadRecipeMutationVariables>;
+
+/**
+ * __useUploadRecipeMutation__
+ *
+ * To run a mutation, you first call `useUploadRecipeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadRecipeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadRecipeMutation, { data, loading, error }] = useUploadRecipeMutation({
+ *   variables: {
+ *      image: // value for 'image'
+ *      title: // value for 'title'
+ *      description: // value for 'description'
+ *   },
+ * });
+ */
+export function useUploadRecipeMutation(baseOptions?: Apollo.MutationHookOptions<UploadRecipeMutation, UploadRecipeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UploadRecipeMutation, UploadRecipeMutationVariables>(UploadRecipeDocument, options);
+      }
+export type UploadRecipeMutationHookResult = ReturnType<typeof useUploadRecipeMutation>;
+export type UploadRecipeMutationResult = Apollo.MutationResult<UploadRecipeMutation>;
+export type UploadRecipeMutationOptions = Apollo.BaseMutationOptions<UploadRecipeMutation, UploadRecipeMutationVariables>;

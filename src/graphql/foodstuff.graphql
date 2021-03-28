@@ -1,4 +1,4 @@
-type FoodStaff {
+type FoodStuff {
 	id: ID!
 	title: String!
 	unit: String!
@@ -8,14 +8,46 @@ type FoodStaff {
 	protein: Int
 }
 
-query getFoodStaff {
-	getFoodStaff {
-		id
-		title
-		unit
-		calories
-		fats
-		carbs
-		protein
+query getFoodStuffs($offset: Int, $limit: Int, $search: String, $by: String) {
+	getFoodStuffs(offset: $offset, limit: $limit, search: $search, by: $by) {
+		foodstuff {
+			id
+			title
+			unit
+			calories
+			fats
+			carbs
+			protein
+		}
+		totalCount
 	}
+}
+
+mutation addFoodstuff(
+	$title: String!
+	$unit: String!
+	$calories: Int!
+	$fats: Int!
+	$carbs: Int!
+	$protein: Int!
+) {
+	addFoodstuff(
+		title: $title
+		unit: $unit
+		calories: $calories
+		fats: $fats
+		carbs: $carbs
+		protein: $protein
+		) {
+			foodstuff {
+				id
+				title
+				unit
+				calories
+				fats
+				carbs
+				protein
+			}
+			totalCount
+		}
 }

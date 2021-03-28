@@ -14,39 +14,60 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
+
+
+export enum CacheControlScope {
+  Public = 'PUBLIC',
+  Private = 'PRIVATE'
+}
 
 export type Food = {
   __typename?: 'Food';
-  foodstuff?: Maybe<FoodStaff>;
+  foodstuff?: Maybe<FoodStuff>;
   qt?: Maybe<Scalars['Int']>;
 };
 
-export type FoodStaff = {
-  __typename?: 'FoodStaff';
+export type FoodStuff = {
+  __typename?: 'FoodStuff';
   id: Scalars['ID'];
   title: Scalars['String'];
   unit: Scalars['String'];
-  calories?: Maybe<Scalars['Int']>;
-  fats?: Maybe<Scalars['Int']>;
-  carbs?: Maybe<Scalars['Int']>;
-  protein?: Maybe<Scalars['Int']>;
+  calories: Scalars['Int'];
+  fats: Scalars['Int'];
+  carbs: Scalars['Int'];
+  protein: Scalars['Int'];
+};
+
+export type FoodStuffWithTotal = {
+  __typename?: 'FoodStuffWithTotal';
+  foodstuff?: Maybe<Array<Maybe<FoodStuff>>>;
+  totalCount?: Maybe<Scalars['Int']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createUser?: Maybe<User>;
+  uploadRecipe?: Maybe<RecipeWithTotal>;
+  addFoodstuff?: Maybe<FoodStuffWithTotal>;
 };
 
 
-export type MutationCreateUserArgs = {
-  input?: Maybe<UserInput>;
-};
-
-export type PostInput = {
-  id?: Maybe<Scalars['ID']>;
+export type MutationUploadRecipeArgs = {
   title: Scalars['String'];
-  content: Scalars['String'];
+  description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  image?: Maybe<Scalars['Upload']>;
+};
+
+
+export type MutationAddFoodstuffArgs = {
+  title: Scalars['String'];
+  unit: Scalars['String'];
+  calories: Scalars['Int'];
+  fats: Scalars['Int'];
+  carbs: Scalars['Int'];
+  protein: Scalars['Int'];
 };
 
 export type Query = {
@@ -54,8 +75,8 @@ export type Query = {
   getAllUsers?: Maybe<Array<Maybe<User>>>;
   getUser?: Maybe<User>;
   authUser?: Maybe<User>;
-  getFoodStaff?: Maybe<Array<Maybe<FoodStaff>>>;
-  getRecipes?: Maybe<Array<Maybe<Recipe>>>;
+  getFoodStuffs?: Maybe<FoodStuffWithTotal>;
+  getRecipes?: Maybe<RecipeWithTotal>;
 };
 
 
@@ -69,6 +90,22 @@ export type QueryAuthUserArgs = {
   password?: Maybe<Scalars['String']>;
 };
 
+
+export type QueryGetFoodStuffsArgs = {
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetRecipesArgs = {
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
 export type Recipe = {
   __typename?: 'Recipe';
   id: Scalars['ID'];
@@ -78,6 +115,20 @@ export type Recipe = {
   foods?: Maybe<Array<Maybe<Food>>>;
 };
 
+export type RecipeInput = {
+  __typename?: 'RecipeInput';
+  title: Scalars['String'];
+  description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  image?: Maybe<Scalars['Upload']>;
+};
+
+export type RecipeWithTotal = {
+  __typename?: 'RecipeWithTotal';
+  recipes?: Maybe<Array<Maybe<Recipe>>>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+
 export type User = {
   __typename?: 'User';
   id?: Maybe<Scalars['ID']>;
@@ -85,62 +136,147 @@ export type User = {
   token: Scalars['String'];
 };
 
-export type UserInput = {
-  id?: Maybe<Scalars['ID']>;
-  username?: Maybe<Scalars['String']>;
-  age: Scalars['Int'];
-  posts?: Maybe<Array<Maybe<PostInput>>>;
-};
-
-export type GetFoodStaffQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type GetFoodStuffsQueryVariables = Types.Exact<{
+  offset?: Types.Maybe<Types.Scalars['Int']>;
+  limit?: Types.Maybe<Types.Scalars['Int']>;
+  search?: Types.Maybe<Types.Scalars['String']>;
+  by?: Types.Maybe<Types.Scalars['String']>;
+}>;
 
 
-export type GetFoodStaffQuery = (
+export type GetFoodStuffsQuery = (
   { __typename?: 'Query' }
-  & { getFoodStaff?: Types.Maybe<Array<Types.Maybe<(
-    { __typename?: 'FoodStaff' }
-    & Pick<Types.FoodStaff, 'id' | 'title' | 'unit' | 'calories' | 'fats' | 'carbs' | 'protein'>
-  )>>> }
+  & { getFoodStuffs?: Types.Maybe<(
+    { __typename?: 'FoodStuffWithTotal' }
+    & Pick<Types.FoodStuffWithTotal, 'totalCount'>
+    & { foodstuff?: Types.Maybe<Array<Types.Maybe<(
+      { __typename?: 'FoodStuff' }
+      & Pick<Types.FoodStuff, 'id' | 'title' | 'unit' | 'calories' | 'fats' | 'carbs' | 'protein'>
+    )>>> }
+  )> }
+);
+
+export type AddFoodstuffMutationVariables = Types.Exact<{
+  title: Types.Scalars['String'];
+  unit: Types.Scalars['String'];
+  calories: Types.Scalars['Int'];
+  fats: Types.Scalars['Int'];
+  carbs: Types.Scalars['Int'];
+  protein: Types.Scalars['Int'];
+}>;
+
+
+export type AddFoodstuffMutation = (
+  { __typename?: 'Mutation' }
+  & { addFoodstuff?: Types.Maybe<(
+    { __typename?: 'FoodStuffWithTotal' }
+    & Pick<Types.FoodStuffWithTotal, 'totalCount'>
+    & { foodstuff?: Types.Maybe<Array<Types.Maybe<(
+      { __typename?: 'FoodStuff' }
+      & Pick<Types.FoodStuff, 'id' | 'title' | 'unit' | 'calories' | 'fats' | 'carbs' | 'protein'>
+    )>>> }
+  )> }
 );
 
 
-export const GetFoodStaffDocument = gql`
-    query getFoodStaff {
-  getFoodStaff {
-    id
-    title
-    unit
-    calories
-    fats
-    carbs
-    protein
+export const GetFoodStuffsDocument = gql`
+    query getFoodStuffs($offset: Int, $limit: Int, $search: String, $by: String) {
+  getFoodStuffs(offset: $offset, limit: $limit, search: $search, by: $by) {
+    foodstuff {
+      id
+      title
+      unit
+      calories
+      fats
+      carbs
+      protein
+    }
+    totalCount
   }
 }
     `;
 
 /**
- * __useGetFoodStaffQuery__
+ * __useGetFoodStuffsQuery__
  *
- * To run a query within a React component, call `useGetFoodStaffQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetFoodStaffQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetFoodStuffsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFoodStuffsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetFoodStaffQuery({
+ * const { data, loading, error } = useGetFoodStuffsQuery({
  *   variables: {
+ *      offset: // value for 'offset'
+ *      limit: // value for 'limit'
+ *      search: // value for 'search'
+ *      by: // value for 'by'
  *   },
  * });
  */
-export function useGetFoodStaffQuery(baseOptions?: Apollo.QueryHookOptions<GetFoodStaffQuery, GetFoodStaffQueryVariables>) {
+export function useGetFoodStuffsQuery(baseOptions?: Apollo.QueryHookOptions<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetFoodStaffQuery, GetFoodStaffQueryVariables>(GetFoodStaffDocument, options);
+        return Apollo.useQuery<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>(GetFoodStuffsDocument, options);
       }
-export function useGetFoodStaffLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFoodStaffQuery, GetFoodStaffQueryVariables>) {
+export function useGetFoodStuffsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetFoodStaffQuery, GetFoodStaffQueryVariables>(GetFoodStaffDocument, options);
+          return Apollo.useLazyQuery<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>(GetFoodStuffsDocument, options);
         }
-export type GetFoodStaffQueryHookResult = ReturnType<typeof useGetFoodStaffQuery>;
-export type GetFoodStaffLazyQueryHookResult = ReturnType<typeof useGetFoodStaffLazyQuery>;
-export type GetFoodStaffQueryResult = Apollo.QueryResult<GetFoodStaffQuery, GetFoodStaffQueryVariables>;
+export type GetFoodStuffsQueryHookResult = ReturnType<typeof useGetFoodStuffsQuery>;
+export type GetFoodStuffsLazyQueryHookResult = ReturnType<typeof useGetFoodStuffsLazyQuery>;
+export type GetFoodStuffsQueryResult = Apollo.QueryResult<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>;
+export const AddFoodstuffDocument = gql`
+    mutation addFoodstuff($title: String!, $unit: String!, $calories: Int!, $fats: Int!, $carbs: Int!, $protein: Int!) {
+  addFoodstuff(
+    title: $title
+    unit: $unit
+    calories: $calories
+    fats: $fats
+    carbs: $carbs
+    protein: $protein
+  ) {
+    foodstuff {
+      id
+      title
+      unit
+      calories
+      fats
+      carbs
+      protein
+    }
+    totalCount
+  }
+}
+    `;
+export type AddFoodstuffMutationFn = Apollo.MutationFunction<AddFoodstuffMutation, AddFoodstuffMutationVariables>;
+
+/**
+ * __useAddFoodstuffMutation__
+ *
+ * To run a mutation, you first call `useAddFoodstuffMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddFoodstuffMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addFoodstuffMutation, { data, loading, error }] = useAddFoodstuffMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      unit: // value for 'unit'
+ *      calories: // value for 'calories'
+ *      fats: // value for 'fats'
+ *      carbs: // value for 'carbs'
+ *      protein: // value for 'protein'
+ *   },
+ * });
+ */
+export function useAddFoodstuffMutation(baseOptions?: Apollo.MutationHookOptions<AddFoodstuffMutation, AddFoodstuffMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddFoodstuffMutation, AddFoodstuffMutationVariables>(AddFoodstuffDocument, options);
+      }
+export type AddFoodstuffMutationHookResult = ReturnType<typeof useAddFoodstuffMutation>;
+export type AddFoodstuffMutationResult = Apollo.MutationResult<AddFoodstuffMutation>;
+export type AddFoodstuffMutationOptions = Apollo.BaseMutationOptions<AddFoodstuffMutation, AddFoodstuffMutationVariables>;

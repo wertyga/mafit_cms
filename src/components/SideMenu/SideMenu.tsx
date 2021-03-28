@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import _findIndex from 'lodash/findIndex';
 import { gfMenu } from 'goldfish/gfMenu';
 import { Layout, Menu } from 'antd';
 
@@ -9,16 +8,20 @@ import './styles.css';
 
 const { Sider } = Layout;
 
-export const SideMenu = () => {
+type Props = {
+  isOpen?: boolean;
+};
+
+export const SideMenu: React.FC<Props> = ({ isOpen }) => {
   const router = useRouter();
 
-  const defaultMenuChosen = _findIndex(gfMenu, ({ href }) => href === router.pathname);
+  const defaultMenuChosen = gfMenu.find(({ href }) => href === router.pathname);
   return (
-    <Sider className="tint-bg sideMenu">
+    <Sider className="tint-bg sideMenu" collapsed={!isOpen}>
       <Menu
         mode="inline"
         className="tint-bg"
-        defaultSelectedKeys={[defaultMenuChosen.toString()]}
+        defaultSelectedKeys={[defaultMenuChosen.title]}
       >
         {gfMenu.map(({ title, href, Icon }) => (
           <Menu.Item key={title} icon={<Icon />}>

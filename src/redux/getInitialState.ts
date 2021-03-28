@@ -6,6 +6,10 @@ const getCookies = (req) => {
   return cookies.getAll();
 };
 
-export const getInitialState = (req: NextApiRequest) => ({
-  cookiesStore: getCookies(req),
-});
+export const getInitialState = (req: NextApiRequest) => {
+  const cookiesStore = getCookies(req);
+
+  return {
+    cookiesStore,
+  };
+};
