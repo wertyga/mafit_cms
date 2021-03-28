@@ -43,7 +43,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess }) => {
         data: { uploadRecipe: { recipes, totalCount } },
       } = await addRecipe({ variables: payload });
       handleClose();
-      onSuccess(recipes, totalCount);
+      onSuccess(recipes[0], totalCount);
     } catch (e) {
       setState((prev) => ({ ...prev, error: e.message, isOpen: false }));
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Typography, Row, TableProps} from 'antd';
+import { Typography, Row } from 'antd';
 import { SortableTable } from 'components/Common/SortableTable/SortableTable';
 
 const { Title } = Typography;

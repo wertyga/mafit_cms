@@ -46,7 +46,7 @@ export const FoodStuffModal: React.FC<Props> = ({ onSuccess }) => {
         data: { addFoodstuff: { foodstuff, totalCount } },
       } = await addFoodStuff({ variables: dataWithNumeric });
       handleClose();
-      onSuccess(foodstuff, totalCount);
+      onSuccess(foodstuff[0], totalCount);
     } catch (e) {
       console.error(e);
     }
