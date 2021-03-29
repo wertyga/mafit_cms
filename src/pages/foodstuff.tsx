@@ -4,8 +4,6 @@ import { FoodStuffModal } from 'components/FoodStuff/FoodStuffModal/FoodStuffMod
 import { ContentTable } from 'components/ContentTable/ContentTable';
 import { Loader } from 'components/Common/Loader/Loader';
 import { gfFoodStuff } from 'goldfish/gfFoodStuff';
-import { Row, Button } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
 
 import { getFoodStuffTableData } from 'components/FoodStuff/helpers';
 import { DEFAULT_PAGE_SIZE } from 'components/Common/Table/helpers';
@@ -46,10 +44,6 @@ const Foodstuff = () => {
     }));
   };
 
-  const handleRestSearch = () => {
-    router.replace(router.pathname);
-  };
-
   useEffect(() => {
     handleChangePage();
   }, [router.query.search, router.query.by]);
@@ -65,7 +59,6 @@ const Foodstuff = () => {
     handleChangePage,
   });
 
-  const { search } = router.query;
   return (
     <div>
       <Loader isActive={loading} />
@@ -73,18 +66,9 @@ const Foodstuff = () => {
         title={gfFoodStuff.title}
         data={state.foodStuff}
         columns={gfFoodStuff.columns({ filter: { currentFilter: router.query } })}
-        TitleComponent={<FoodStuffModal onSuccess={onSuccessAdd} />}
+        ModalComponent={<FoodStuffModal onSuccess={onSuccessAdd} />}
         {...tableConfig}
-      >
-        <Row className="flex-column">
-          {search
-						&& (
-							<Button type="primary" icon={<CloseOutlined />} onClick={handleRestSearch}>
-                {search}
-							</Button>
-						)}
-        </Row>
-      </ContentTable>
+      />
     </div>
   );
 };

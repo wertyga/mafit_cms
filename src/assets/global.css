@@ -34,3 +34,18 @@
   padding: var(--space-1);
   color: var(--color-error);
 }
+
+.fluid {
+  width: 100%;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.success {
+  color: var(--color-success);
+}
+.danger {
+  color: var(--color-error);
+}

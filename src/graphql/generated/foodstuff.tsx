@@ -30,6 +30,11 @@ export type Food = {
   qt?: Maybe<Scalars['Int']>;
 };
 
+export type FoodMutationRequest = {
+  id: Scalars['ID'];
+  qt: Scalars['Int'];
+};
+
 export type FoodStuff = {
   __typename?: 'FoodStuff';
   id: Scalars['ID'];
@@ -49,8 +54,14 @@ export type FoodStuffWithTotal = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  testUpload?: Maybe<Scalars['String']>;
   uploadRecipe?: Maybe<RecipeWithTotal>;
   addFoodstuff?: Maybe<FoodStuffWithTotal>;
+};
+
+
+export type MutationTestUploadArgs = {
+  file?: Maybe<Scalars['Upload']>;
 };
 
 
@@ -58,6 +69,7 @@ export type MutationUploadRecipeArgs = {
   title: Scalars['String'];
   description?: Maybe<Array<Maybe<Scalars['String']>>>;
   image?: Maybe<Scalars['Upload']>;
+  food?: Maybe<Array<Maybe<FoodMutationRequest>>>;
 };
 
 

@@ -11,6 +11,11 @@ type Recipe {
 	foods: [Food]
 }
 
+type FoodMutationRequest {
+	id: ID!
+	qt: Int!
+}
+
 fragment recipeFields on Recipe {
 	id
 	title
@@ -35,11 +40,14 @@ query getRecipes($offset: Int, $limit: Int, $search: String, $by: String) {
 	}
 }
 
-mutation uploadRecipe($image: Upload, $title: String!, $description: [String]) {
-	uploadRecipe(image: $image, title: $title, description: $description) {
+mutation uploadRecipe($image: Upload, $title: String!, $description: [String], $food: [FoodMutationRequest]) {
+	uploadRecipe(image: $image, title: $title, description: $description, food: $food) {
 		recipes {
 			...recipeFields
 		}
 		totalCount
 	}
+}
+mutation testUpload($file: Upload) {
+	testUpload(file: $file)
 }

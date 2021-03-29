@@ -1,3 +1,5 @@
+import React from 'react';
+import { CloseCircleFilled } from '@ant-design/icons';
 import { capitalFirst } from 'utils/string';
 import { getColumnSearchProps } from 'components/Common/Filter/helpers';
 
@@ -27,8 +29,8 @@ export const FOODSTUFF_PROPS = [
 ];
 export const gfFoodStuff = {
   title: 'Food stuff',
-  columns: ({ filter: { currentFilter } }) => (
-    FOODSTUFF_PROPS.map(({ name, number }) => ({
+  columns: ({ filter: { currentFilter } }) => ([
+    ...FOODSTUFF_PROPS.map(({ name, number }) => ({
       title: capitalFirst(name),
       dataIndex: name,
       sorter: (a, b) => {
@@ -37,6 +39,14 @@ export const gfFoodStuff = {
         if (!asc) return -1;
         return 0;
       },
+      align: 'center',
       ...getColumnSearchProps({ name, currentFilter }),
-    }))),
+    })),
+    {
+      title: null,
+      dataIndex: 'delete',
+      align: 'center',
+      render: () => <CloseCircleFilled className="danger icon-md pointer" />,
+    },
+  ]),
 };

@@ -8,10 +8,7 @@ export const getTableData = (config: {
 	expandable?: Partial<ExpandableConfig<any>>,
 }) => (
   {
-    expandable: {
-      expandRowByClick: true,
-      ...config.expandable,
-    },
+    expandable: config.expandable,
     pagination: {
       defaultPageSize: DEFAULT_PAGE_SIZE,
       showSizeChanger: true,

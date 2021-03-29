@@ -40,8 +40,8 @@ export const SearchField: React.FC<Props> = ({ name, confirm }) => {
             placeholder={`Filter by ${name}`}
           />
         </Form.Item>
-        <Button type="primary" htmlType="submit">Search</Button>
-        <Button type="primary" onClick={handleDelete}>Delete</Button>
+        <Button type="primary" htmlType="submit" className="ml-2">Search</Button>
+        <Button type="primary" onClick={handleDelete} className="ml-2" danger>Delete</Button>
       </div>
     </Form>
   );

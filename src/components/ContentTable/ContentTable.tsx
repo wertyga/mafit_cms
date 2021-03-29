@@ -1,27 +1,42 @@
 import React from 'react';
-import { Typography, Row } from 'antd';
-import { SortableTable } from 'components/Common/SortableTable/SortableTable';
+import { useRouter } from 'next/router';
+import { Typography, Row, Button } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import { DraggableTable } from 'components/DraggableTabe/DraggableTable';
 
 const { Title } = Typography;
 
 type Props = {
   title: string;
-  TitleComponent?: React.ReactElement;
+  ModalComponent?: React.ReactElement;
 };
 
 export const ContentTable: React.FC<Props> = ({
-  title, TitleComponent, children, ...tableProps
-}) => (
-  <div className="contentTable">
-    <Row justify="start" className="mb-4 flex-column">
-      <Title className="contentTable__title align-center" level={2}>
-        <span>{title}</span>
-        {TitleComponent}
-      </Title>
-      {children}
-    </Row>
-    <SortableTable
-      {...tableProps}
-    />
-  </div>
-);
+  title, ModalComponent, ...tableProps
+}) => {
+  const router = useRouter();
+  const { search } = router.query;
+
+  const handleRestSearch = () => {
+    router.replace(router.pathname);
+  };
+  return (
+    <div className="contentTable">
+      <Row justify="start" className="mb-4 flex-column">
+        <Title className="contentTable__title align-center" level={2}>
+          <span>{title}</span>
+          {ModalComponent}
+        </Title>
+        <Row className="flex-column">
+          {search
+          && (
+            <Button type="primary" icon={<CloseOutlined />} onClick={handleRestSearch}>
+              {search}
+            </Button>
+          )}
+        </Row>
+      </Row>
+      <DraggableTable {...tableProps} />
+    </div>
+  );
+};

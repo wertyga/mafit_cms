@@ -16,6 +16,9 @@
 .mb-4 {
   margin-bottom: var(--space-4);
 }
+.mb-8 {
+  margin-bottom: var(--space-8);
+}
 .ma-0 {
   margin: 0;
 }
@@ -25,10 +28,6 @@
 
 .nowrap {
   white-space: nowrap;
-}
-
-.success {
-  color: var(--color-success);
 }
 
 .flex {
@@ -50,20 +49,16 @@
   display: flex;
   justify-content: center;
 }
+.justify-between {
+  justify-content: space-between;
+}
 .justify-end {
   display: flex;
   justify-content: flex-end;
 }
+
 .font-big {
   font-size: var(--font-size-xl);
-}
-
-.fluid {
-  width: 100%;
-}
-
-.pointer {
-  cursor: pointer;
 }
 
 .icon-md svg {

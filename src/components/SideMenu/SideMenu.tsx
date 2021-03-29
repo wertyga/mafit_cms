@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import { gfMenu } from 'goldfish/gfMenu';
 import { Layout, Menu } from 'antd';
 
+import { getDefaultMenuChosen } from './helpers';
+
 import './styles.css';
 
 const { Sider } = Layout;
@@ -15,13 +17,13 @@ type Props = {
 export const SideMenu: React.FC<Props> = ({ isOpen }) => {
   const router = useRouter();
 
-  const defaultMenuChosen = gfMenu.find(({ href }) => href === router.pathname);
+  const defaultMenuChosen = getDefaultMenuChosen(router.pathname);
   return (
     <Sider className="tint-bg sideMenu" collapsed={!isOpen}>
       <Menu
         mode="inline"
         className="tint-bg"
-        defaultSelectedKeys={[defaultMenuChosen.title]}
+        defaultSelectedKeys={[defaultMenuChosen]}
       >
         {gfMenu.map(({ title, href, Icon }) => (
           <Menu.Item key={title} icon={<Icon />}>

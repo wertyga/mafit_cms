@@ -8,8 +8,6 @@ import { useGetRecipesLazyQuery, Recipe } from 'graphql/generated/recipe';
 
 import { getRecipeTableData } from 'components/Recipe/helpers';
 import { DEFAULT_PAGE_SIZE } from 'components/Common/Table/helpers';
-import { Button } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
 import { gfRecipe } from '../goldfish/gfRecipe';
 
 const Recipes = () => {
@@ -42,10 +40,6 @@ const Recipes = () => {
     }));
   };
 
-  const handleRestSearch = () => {
-    router.replace(router.pathname);
-  };
-
   useEffect(() => {
     handleChangePage();
   }, [router.query.search, router.query.by]);
@@ -61,7 +55,6 @@ const Recipes = () => {
     handleChangePage,
   });
 
-  const { search } = router.query;
   return (
     <div>
       <Loader isActive={loading} />
@@ -69,18 +62,9 @@ const Recipes = () => {
         title={gfRecipe.title}
         data={state.recipes}
         columns={gfRecipe.columns({ filter: { currentFilter: router.query } })}
-        TitleComponent={<RecipeModal onSuccess={onSuccessAdd} />}
+        ModalComponent={<RecipeModal onSuccess={onSuccessAdd} />}
         {...tableConfig}
-      >
-        <div>
-          {search
-          && (
-          <Button type="primary" icon={<CloseOutlined />} onClick={handleRestSearch}>
-            {search}
-          </Button>
-          )}
-        </div>
-      </ContentTable>
+      />
     </div>
   );
 };

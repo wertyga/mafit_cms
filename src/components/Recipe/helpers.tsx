@@ -11,7 +11,6 @@ export const getRecipeTableData = ({
   expandable: {
     expandedRowRender: (props) => <RecipeExpandedContent {...props} />,
     rowExpandable: ({ description = [], foods = [] }) => description.length > 1 || foods.length > 1,
-    expandRowByClick: true,
   },
   pagination: {
     total: totalCount,

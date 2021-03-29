@@ -14,13 +14,17 @@
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
     "antd": "^4.14.1",
-    "array-move": "^3.0.1",
+    "apollo-upload-client": "^14.1.3",
     "classnames": "^2.2.6",
     "graphql": "^15.5.0",
     "graphql-upload": "^11.0.0",
+    "immutability-helper": "^3.1.1",
     "lodash": "^4.17.20",
     "next": "10.0.4",
+    "rc-select": "^12.1.7",
     "react": "17.0.1",
+    "react-dnd": "^14.0.2",
+    "react-dnd-html5-backend": "^14.0.0",
     "react-dom": "17.0.1",
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
@@ -51,7 +55,6 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "graphql-codegen-apollo-next-ssr": "^1.5.0",
-    "react-sortable-hoc": "^2.0.0",
     "typescript": "^4.1.3"
   }
 }

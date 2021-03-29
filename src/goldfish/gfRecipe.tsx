@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image } from 'antd';
+import { CloseCircleFilled } from '@ant-design/icons';
 import { Food } from 'graphql/generated/foodstuff';
 
 import { getColumnSearchProps } from 'components/Common/Filter/helpers';
@@ -10,6 +11,7 @@ export const gfRecipe = {
     {
       title: 'Title',
       dataIndex: 'title',
+      key: 'title',
 	    sorter: (a, b) => {
 		    const asc = a.title.toLowerCase() < b.title.toLowerCase();
 		    if (asc) return 1;
@@ -22,6 +24,7 @@ export const gfRecipe = {
     {
       title: 'Image',
       dataIndex: 'image',
+	    key: 'image',
 	    responsive: ['lg'],
 	    render: (url: string) => <Image src={url} />,
 	    width: '7%',
@@ -29,6 +32,7 @@ export const gfRecipe = {
     {
       title: 'Description',
       dataIndex: 'description',
+	    key: 'description',
 	    render: (text: string[] = []) => <span>{text[0]}</span>,
 	    responsive: ['lg'],
 	    ...getColumnSearchProps({ name: 'description', currentFilter }),
@@ -36,6 +40,7 @@ export const gfRecipe = {
 	  {
 		  title: 'Foods',
 		  dataIndex: 'foods',
+		  key: 'foods',
 		  responsive: ['lg'],
 		  width: '10%',
 		  render: (foods: Food[]) => (
@@ -55,6 +60,13 @@ export const gfRecipe = {
 			  if (!asc) return -1;
 			  return 0;
 		  },
+	  },
+	  {
+	  	title: null,
+		  dataIndex: 'delete',
+		  key: 'x',
+		  align: 'center',
+		  render: () => <CloseCircleFilled className="danger icon-md pointer" />,
 	  },
   ]),
   recipeFields: [
