@@ -54,14 +54,8 @@ export type FoodStuffWithTotal = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  testUpload?: Maybe<Scalars['String']>;
   uploadRecipe?: Maybe<RecipeWithTotal>;
   addFoodstuff?: Maybe<FoodStuffWithTotal>;
-};
-
-
-export type MutationTestUploadArgs = {
-  file?: Maybe<Scalars['Upload']>;
 };
 
 
@@ -69,7 +63,7 @@ export type MutationUploadRecipeArgs = {
   title: Scalars['String'];
   description?: Maybe<Array<Maybe<Scalars['String']>>>;
   image?: Maybe<Scalars['Upload']>;
-  food?: Maybe<Array<Maybe<FoodMutationRequest>>>;
+  foods?: Maybe<Array<Maybe<FoodMutationRequest>>>;
 };
 
 
@@ -88,7 +82,7 @@ export type Query = {
   getUser?: Maybe<User>;
   authUser?: Maybe<User>;
   getFoodStuffs?: Maybe<FoodStuffWithTotal>;
-  getRecipes?: Maybe<RecipeWithTotal>;
+  getRecipes?: Maybe<RecipesWithTotal>;
 };
 
 
@@ -136,6 +130,12 @@ export type RecipeInput = {
 
 export type RecipeWithTotal = {
   __typename?: 'RecipeWithTotal';
+  recipe?: Maybe<Recipe>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type RecipesWithTotal = {
+  __typename?: 'RecipesWithTotal';
   recipes?: Maybe<Array<Maybe<Recipe>>>;
   totalCount?: Maybe<Scalars['Int']>;
 };
@@ -172,8 +172,8 @@ export type GetRecipesQueryVariables = Types.Exact<{
 export type GetRecipesQuery = (
   { __typename?: 'Query' }
   & { getRecipes?: Types.Maybe<(
-    { __typename?: 'RecipeWithTotal' }
-    & Pick<Types.RecipeWithTotal, 'totalCount'>
+    { __typename?: 'RecipesWithTotal' }
+    & Pick<Types.RecipesWithTotal, 'totalCount'>
     & { recipes?: Types.Maybe<Array<Types.Maybe<(
       { __typename?: 'Recipe' }
       & RecipeFieldsFragment
@@ -185,7 +185,7 @@ export type UploadRecipeMutationVariables = Types.Exact<{
   image?: Types.Maybe<Types.Scalars['Upload']>;
   title: Types.Scalars['String'];
   description?: Types.Maybe<Array<Types.Maybe<Types.Scalars['String']>> | Types.Maybe<Types.Scalars['String']>>;
-  food?: Types.Maybe<Array<Types.Maybe<Types.FoodMutationRequest>> | Types.Maybe<Types.FoodMutationRequest>>;
+  foods?: Types.Maybe<Array<Types.Maybe<Types.FoodMutationRequest>> | Types.Maybe<Types.FoodMutationRequest>>;
 }>;
 
 
@@ -194,21 +194,11 @@ export type UploadRecipeMutation = (
   & { uploadRecipe?: Types.Maybe<(
     { __typename?: 'RecipeWithTotal' }
     & Pick<Types.RecipeWithTotal, 'totalCount'>
-    & { recipes?: Types.Maybe<Array<Types.Maybe<(
+    & { recipe?: Types.Maybe<(
       { __typename?: 'Recipe' }
       & RecipeFieldsFragment
-    )>>> }
+    )> }
   )> }
-);
-
-export type TestUploadMutationVariables = Types.Exact<{
-  file?: Types.Maybe<Types.Scalars['Upload']>;
-}>;
-
-
-export type TestUploadMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Types.Mutation, 'testUpload'>
 );
 
 export const RecipeFieldsFragmentDoc = gql`
@@ -269,14 +259,14 @@ export type GetRecipesQueryHookResult = ReturnType<typeof useGetRecipesQuery>;
 export type GetRecipesLazyQueryHookResult = ReturnType<typeof useGetRecipesLazyQuery>;
 export type GetRecipesQueryResult = Apollo.QueryResult<GetRecipesQuery, GetRecipesQueryVariables>;
 export const UploadRecipeDocument = gql`
-    mutation uploadRecipe($image: Upload, $title: String!, $description: [String], $food: [FoodMutationRequest]) {
+    mutation uploadRecipe($image: Upload, $title: String!, $description: [String], $foods: [FoodMutationRequest]) {
   uploadRecipe(
     image: $image
     title: $title
     description: $description
-    food: $food
+    foods: $foods
   ) {
-    recipes {
+    recipe {
       ...recipeFields
     }
     totalCount
@@ -301,7 +291,7 @@ export type UploadRecipeMutationFn = Apollo.MutationFunction<UploadRecipeMutatio
  *      image: // value for 'image'
  *      title: // value for 'title'
  *      description: // value for 'description'
- *      food: // value for 'food'
+ *      foods: // value for 'foods'
  *   },
  * });
  */
@@ -312,34 +302,3 @@ export function useUploadRecipeMutation(baseOptions?: Apollo.MutationHookOptions
 export type UploadRecipeMutationHookResult = ReturnType<typeof useUploadRecipeMutation>;
 export type UploadRecipeMutationResult = Apollo.MutationResult<UploadRecipeMutation>;
 export type UploadRecipeMutationOptions = Apollo.BaseMutationOptions<UploadRecipeMutation, UploadRecipeMutationVariables>;
-export const TestUploadDocument = gql`
-    mutation testUpload($file: Upload) {
-  testUpload(file: $file)
-}
-    `;
-export type TestUploadMutationFn = Apollo.MutationFunction<TestUploadMutation, TestUploadMutationVariables>;
-
-/**
- * __useTestUploadMutation__
- *
- * To run a mutation, you first call `useTestUploadMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useTestUploadMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [testUploadMutation, { data, loading, error }] = useTestUploadMutation({
- *   variables: {
- *      file: // value for 'file'
- *   },
- * });
- */
-export function useTestUploadMutation(baseOptions?: Apollo.MutationHookOptions<TestUploadMutation, TestUploadMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<TestUploadMutation, TestUploadMutationVariables>(TestUploadDocument, options);
-      }
-export type TestUploadMutationHookResult = ReturnType<typeof useTestUploadMutation>;
-export type TestUploadMutationResult = Apollo.MutationResult<TestUploadMutation>;
-export type TestUploadMutationOptions = Apollo.BaseMutationOptions<TestUploadMutation, TestUploadMutationVariables>;

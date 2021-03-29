@@ -3,6 +3,7 @@ import {
   Modal, Button, Input, Form, Col,
 } from 'antd';
 import { PlusSquareFilled } from '@ant-design/icons';
+import useNotify from 'hooks/useNotify';
 import { useUploadRecipeMutation, Recipe } from 'graphql/generated/recipe';
 import { UploadImage } from 'components/Common/UploadImage/UploadImage';
 import { Loader } from 'components/Common/Loader/Loader';
@@ -24,7 +25,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess }) => {
     error: '',
     image: null,
   });
-  const [addRecipe, { loading }] = useUploadRecipeMutation();
+  const [addRecipe, { loading, error: saveError }] = useUploadRecipeMutation();
   const { data: foodstuffData } = useGetFoodStuffsQuery({ fetchPolicy: 'no-cache' });
   const [form] = Form.useForm();
 
@@ -38,7 +39,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess }) => {
     setState((prev) => ({ ...prev, error: '' }));
 
     const description = recipeData.description.map((item) => item.description);
-    const food = (recipeData.food || []).map(({ food: title, count }) => {
+    const foods = (recipeData.food || []).map(({ food: title, count }) => {
       const { id } = foodstuffData.getFoodStuffs.foodstuff
         .find((item) => item.title === title) || {};
 
@@ -49,23 +50,25 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess }) => {
       title: recipeData.title,
       description,
       image: state.image,
-      food,
+      foods,
     };
     try {
       const { data: { uploadRecipe } } = await addRecipe({ variables: payload });
       handleClose();
       if (!uploadRecipe) return;
 
-      const { recipes, totalCount } = uploadRecipe;
-      onSuccess(recipes[0], totalCount);
+      const { recipe, totalCount } = uploadRecipe;
+      onSuccess(recipe, totalCount);
     } catch (e) {
-      setState((prev) => ({ ...prev, error: e.message, isOpen: false }));
+      setState((prev) => ({ ...prev, error: e.message }));
     }
   };
 
   const onFileChange = (image: File) => {
     setState((prev) => ({ ...prev, image }));
   };
+
+  useNotify(saveError && saveError.message, 'error');
 
   return (
     <div className="recipe-modal">

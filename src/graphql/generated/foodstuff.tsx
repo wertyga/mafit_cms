@@ -54,14 +54,8 @@ export type FoodStuffWithTotal = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  testUpload?: Maybe<Scalars['String']>;
   uploadRecipe?: Maybe<RecipeWithTotal>;
   addFoodstuff?: Maybe<FoodStuffWithTotal>;
-};
-
-
-export type MutationTestUploadArgs = {
-  file?: Maybe<Scalars['Upload']>;
 };
 
 
@@ -69,7 +63,7 @@ export type MutationUploadRecipeArgs = {
   title: Scalars['String'];
   description?: Maybe<Array<Maybe<Scalars['String']>>>;
   image?: Maybe<Scalars['Upload']>;
-  food?: Maybe<Array<Maybe<FoodMutationRequest>>>;
+  foods?: Maybe<Array<Maybe<FoodMutationRequest>>>;
 };
 
 
@@ -88,7 +82,7 @@ export type Query = {
   getUser?: Maybe<User>;
   authUser?: Maybe<User>;
   getFoodStuffs?: Maybe<FoodStuffWithTotal>;
-  getRecipes?: Maybe<RecipeWithTotal>;
+  getRecipes?: Maybe<RecipesWithTotal>;
 };
 
 
@@ -136,6 +130,12 @@ export type RecipeInput = {
 
 export type RecipeWithTotal = {
   __typename?: 'RecipeWithTotal';
+  recipe?: Maybe<Recipe>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type RecipesWithTotal = {
+  __typename?: 'RecipesWithTotal';
   recipes?: Maybe<Array<Maybe<Recipe>>>;
   totalCount?: Maybe<Scalars['Int']>;
 };

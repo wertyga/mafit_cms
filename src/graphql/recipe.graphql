@@ -40,14 +40,11 @@ query getRecipes($offset: Int, $limit: Int, $search: String, $by: String) {
 	}
 }
 
-mutation uploadRecipe($image: Upload, $title: String!, $description: [String], $food: [FoodMutationRequest]) {
-	uploadRecipe(image: $image, title: $title, description: $description, food: $food) {
-		recipes {
+mutation uploadRecipe($image: Upload, $title: String!, $description: [String], $foods: [FoodMutationRequest]) {
+	uploadRecipe(image: $image, title: $title, description: $description, foods: $foods) {
+		recipe {
 			...recipeFields
 		}
 		totalCount
 	}
-}
-mutation testUpload($file: Upload) {
-	testUpload(file: $file)
 }

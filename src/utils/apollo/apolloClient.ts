@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { createUploadLink } from 'apollo-upload-client';
 
 let apolloClient;
 
 const createApolloClient = () => (
   new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: new HttpLink({
+    link: createUploadLink({
       uri: process.env.API_GATEWAY,
     }),
     cache: new InMemoryCache(),
