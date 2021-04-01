@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal, Button, Input, Form, Col,
 } from 'antd';
@@ -15,11 +15,15 @@ import { useGetFoodStuffsQuery } from 'graphql/generated/foodstuff';
 import { DescriptionBlock } from './DescriptionBlock/DescriptionBlock';
 import { FoodBlock } from './FoodBlock/FoodBlock';
 
+import { collectEditableData, collectRecipeFormData } from './helpers';
+
 type Props = {
-  onSuccess: (data: Recipe, totalCount: number) => void;
+  editableRecipe?: Partial<Recipe>;
+  onSuccess: (data: Recipe, totalCount: number, editableRecipeID?: string) => void;
+  onClose: () => void;
 };
 
-export const RecipeModal: React.FC<Props> = ({ onSuccess }) => {
+export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClose }) => {
   const [state, setState] = useState({
     isOpen: false,
     error: '',
@@ -31,6 +35,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess }) => {
 
   const handleClose = () => {
     setState((prev) => ({ ...prev, isOpen: false, image: null }));
+    onClose();
     form.resetFields();
   };
   const handleOpen = () => setState((prev) => ({ ...prev, isOpen: true }));
@@ -38,27 +43,20 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess }) => {
   const handleSave = async (recipeData) => {
     setState((prev) => ({ ...prev, error: '' }));
 
-    const description = recipeData.description.map((item) => item.description);
-    const foods = (recipeData.food || []).map(({ food: title, count }) => {
-      const { id } = foodstuffData.getFoodStuffs.foodstuff
-        .find((item) => item.title === title) || {};
-
-      const qt = Number(count);
-      return { id, qt: Number.isNaN(qt) ? 0 : qt };
-    });
+    const requestData = collectRecipeFormData(recipeData, foodstuffData.getFoodStuffs.foodstuff);
     const payload = {
-      title: recipeData.title,
-      description,
-      image: state.image,
-      foods,
+      ...requestData,
+      id: editableRecipe.id,
+      image: editableRecipe.image || state.image,
     };
+
     try {
       const { data: { uploadRecipe } } = await addRecipe({ variables: payload });
       handleClose();
       if (!uploadRecipe) return;
 
       const { recipe, totalCount } = uploadRecipe;
-      onSuccess(recipe, totalCount);
+      onSuccess(recipe, totalCount, editableRecipe.id);
     } catch (e) {
       setState((prev) => ({ ...prev, error: e.message }));
     }
@@ -67,6 +65,13 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess }) => {
   const onFileChange = (image: File) => {
     setState((prev) => ({ ...prev, image }));
   };
+
+  useEffect(() => {
+    if (!editableRecipe.id) return;
+    setState((prev) => ({ ...prev, isOpen: true }));
+    const formData = collectEditableData(editableRecipe);
+    form.setFieldsValue(formData);
+  }, [editableRecipe.id]);
 
   useNotify(saveError && saveError.message, 'error');
 
@@ -96,7 +101,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess }) => {
           labelCol={{ span: 5 }}
           wrapperCol={{ span: 24 }}
         >
-          <UploadImage onChange={onFileChange} />
+          <UploadImage onChange={onFileChange} preview={editableRecipe.image} />
           {gfRecipe.recipeFields.map(({ name }) => {
             const title = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
             return (
@@ -112,7 +117,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess }) => {
             );
           })}
           <DescriptionBlock />
-          <FoodBlock data={foodstuffData} />
+          {!!foodstuffData && <FoodBlock data={foodstuffData} form={form} />}
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Submit

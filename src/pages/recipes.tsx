@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { Loader } from 'components/Common/Loader/Loader';
 import { ContentTable } from 'components/ContentTable/ContentTable';
@@ -8,6 +8,7 @@ import { useGetRecipesLazyQuery, Recipe } from 'graphql/generated/recipe';
 
 import { getRecipeTableData } from 'components/Recipe/helpers';
 import { DEFAULT_PAGE_SIZE } from 'components/Common/Table/helpers';
+import { getDataWithKeys } from 'utils/arr';
 import { gfRecipe } from '../goldfish/gfRecipe';
 
 const Recipes = () => {
@@ -18,6 +19,7 @@ const Recipes = () => {
   const router = useRouter();
   const [state, setState] = useState({
     recipes: [],
+    editableRecipe: {},
     totalCount: 0,
   });
 
@@ -32,11 +34,14 @@ const Recipes = () => {
     getRecipes({ variables: payload });
   };
 
-  const onSuccessAdd = (recipe: Recipe, totalCount: number) => {
+  const onSuccessAdd = (recipe: Recipe, totalCount: number, editableID) => {
     setState((prev) => ({
       ...prev,
-      recipes: [...prev.recipes, recipe],
+      recipes: editableID
+        ? prev.recipes.map((item) => (item.id === editableID ? recipe : item))
+        : [recipe, ...prev.recipes],
       totalCount,
+      editableRecipe: {},
     }));
   };
 
@@ -47,22 +52,44 @@ const Recipes = () => {
   useEffect(() => {
     if (loading || error || !called) return;
     const { getRecipes: { recipes, totalCount } } = data;
-    setState((prev) => ({ ...prev, recipes, totalCount }));
+    setState((prev) => ({
+      ...prev,
+      recipes: getDataWithKeys(recipes),
+      totalCount,
+    }));
   }, [loading]);
 
-  const tableConfig = getRecipeTableData({
+  const handleEditRecipe = (recipeId) => () => {
+    setState((prev) => ({
+      ...prev,
+      editableRecipe: prev.recipes.find(({ id }) => id === recipeId),
+    }));
+  };
+
+  const onCloseModal = () => setState((prev) => ({ ...prev, editableRecipe: {} }));
+
+  const tableConfig = useMemo(() => getRecipeTableData({
     totalCount: state.totalCount,
     handleChangePage,
-  });
+  }), [state.totalCount]);
 
   return (
     <div>
       <Loader isActive={loading} />
       <ContentTable
         title={gfRecipe.title}
-        data={state.recipes}
-        columns={gfRecipe.columns({ filter: { currentFilter: router.query } })}
-        ModalComponent={<RecipeModal onSuccess={onSuccessAdd} />}
+        dataSource={state.recipes}
+        columns={gfRecipe.columns({
+          filter: { currentFilter: router.query },
+          onEdit: handleEditRecipe,
+        })}
+        ModalComponent={(
+          <RecipeModal
+            onSuccess={onSuccessAdd}
+            editableRecipe={state.editableRecipe}
+            onClose={onCloseModal}
+          />
+        )}
         {...tableConfig}
       />
     </div>

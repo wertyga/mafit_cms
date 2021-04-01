@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Form, Input, Select, Button, Col, Row,
+  Form, Input, Select, Button, Col, Row, FormInstance,
 } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { GetFoodStuffsQuery } from 'graphql/generated/foodstuff';
@@ -11,22 +11,33 @@ import { getFormItemMeta } from './helpers';
 
 type Props = {
   data: GetFoodStuffsQuery;
+  form: FormInstance<any>;
 }
 
-export const FoodBlock: React.FC<Props> = ({ data }) => {
-  const [state, setState] = useState<Record<string, string>>({});
-  const [units, setUnits] = useState<Record<string, string>>({});
-
+export const FoodBlock: React.FC<Props> = ({ data, form }) => {
+  const [units, setUnits] = useState({});
   const handleFoodSetChange = (key: number) => (title: SelectValue) => {
-    setState((prev) => ({ ...prev, [key]: title }));
+    const foodSelectState = form.getFieldValue('foodSelectState');
+    form.setFieldsValue({ foodSelectState: { ...foodSelectState, [key]: title } });
+  };
+
+  const handleDeleteFoodField = (
+    fieldName: number,
+    fieldKey: number,
+    remove: (index: number | number[]) => void,
+  ) => () => {
+    const foodSelectState = form.getFieldValue('foodSelectState');
+    form.setFieldsValue({ foodSelectState: { ...foodSelectState, [fieldKey]: '' } });
+    remove(fieldName);
   };
 
   useEffect(() => {
     if (!data) return;
-    setUnits(data.getFoodStuffs.foodstuff.reduce((acc, { unit, title }) => ({
+    const accumulateUnits = data.getFoodStuffs.foodstuff.reduce((acc, { unit, title }) => ({
       ...acc,
       [title]: unit,
-    }), {}));
+    }), {});
+    setUnits(accumulateUnits);
   }, [!!data]);
 
   const options = useMemo(() => (
@@ -36,59 +47,62 @@ export const FoodBlock: React.FC<Props> = ({ data }) => {
   [!!data]);
 
   return (
-    <Form.List name="food">
-      {(fields, { add, remove }) => (
-        <div>
-          {fields.map((field) => {
-            const { fieldKey } = field;
-            const {
-              currentOptions,
-              unit,
-            } = getFormItemMeta(fieldKey, state, units, options);
-            return (
-              <Row key={fieldKey} gutter={16} className="mb-4">
-                <Col span={16}>
-                  <Form.Item
-                    {...field}
-                    label="Type"
-                    className="mb-0"
-                    name={[field.name, 'food']}
-                    rules={[{ required: true, message: gfErrors.emptyField }]}
-                  >
-                    <Select options={currentOptions} onChange={handleFoodSetChange(fieldKey)} />
-                  </Form.Item>
-                </Col>
-                <Col span={6}>
-                  <Form.Item
-                    className="mb-0"
-                    name={[field.name, 'count']}
-                    rules={[{ required: true, message: gfErrors.emptyField }]}
-                  >
-                    <Input
-                      type="number"
-                      disabled={!state[fieldKey]}
-                      addonAfter={unit}
+    <Form.List name="foods">
+      {(fields, { add, remove }) => {
+        const foodSelectState = form.getFieldValue('foodSelectState') || {};
+        return (
+          <div>
+            {fields.map((field) => {
+              const { fieldKey } = field;
+              const {
+                currentOptions,
+                unit,
+              } = getFormItemMeta(fieldKey, foodSelectState, units, options);
+              return (
+                <Row key={fieldKey} gutter={16} className="mb-4">
+                  <Col span={16}>
+                    <Form.Item
+                      {...field}
+                      label="Type"
+                      className="mb-0"
+                      name={[field.name, 'food']}
+                      rules={[{ required: true, message: gfErrors.emptyField }]}
+                    >
+                      <Select options={currentOptions} onChange={handleFoodSetChange(fieldKey)} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      className="mb-0"
+                      name={[field.name, 'count']}
+                      rules={[{ required: true, message: gfErrors.emptyField }]}
+                    >
+                      <Input
+                        type="number"
+                        disabled={!foodSelectState[fieldKey]}
+                        addonAfter={unit}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={2} className="align-center justify-center">
+                    <MinusCircleOutlined
+                      className="danger icon-md "
+                      onClick={handleDeleteFoodField(field.name, fieldKey, remove)}
                     />
-                  </Form.Item>
-                </Col>
-                <Col span={2} className="align-center justify-center">
-                  <MinusCircleOutlined
-                    className="danger icon-md "
-                    onClick={() => remove(field.name)}
-                  />
-                </Col>
-              </Row>
-            );
-          })}
-          {fields.length < options.length && (
-            <Form.Item>
-              <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                Add Food Set
-              </Button>
-            </Form.Item>
-          )}
-        </div>
-      )}
+                  </Col>
+                </Row>
+              );
+            })}
+            {fields.length < options.length && (
+              <Form.Item>
+                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                  Add Food Set
+                </Button>
+              </Form.Item>
+            )}
+          </div>
+        );
+      }}
     </Form.List>
   );
 };

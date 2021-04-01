@@ -1,63 +1,59 @@
-import React, { useState } from 'react';
-import { Upload, Modal } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import {
+  Upload, Modal, Image, FormInstance,
+} from 'antd';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import { getBase64 } from 'utils/file';
 
 type Props = {
 	onChange: (file: File) => void;
+	preview?: string;
 };
 
-export const UploadImage: React.FC<Props> = ({ onChange }) => {
+export const UploadImage: React.FC<Props> = ({ onChange, preview }) => {
   const [state, setState] = useState({
-    previewVisible: false,
-    previewImage: '',
-    previewTitle: '',
-	  fileList: [],
+    preview: '',
   });
-
-  const handleCancel = () => setState((prev) => ({ ...prev, previewVisible: false }));
-  const handleChange = ({ file, fileList }) => {
-  	setState((prev) => ({ ...prev, fileList }));
+  const handleChange = async ({ file }) => {
+	  let { preview: filePreview } = file;
+	  if (!file.url && !filePreview) {
+		  filePreview = await getBase64(file.originFileObj);
+	  }
+	  setState((prev) => ({ ...prev, preview: filePreview }));
 	  onChange(file);
   };
-  const handlePreview = async (file) => {
-  	let { preview } = file;
-	  if (!file.url && !preview) {
-		  preview = await getBase64(file.originFileObj);
-	  }
 
-	  setState((prev) => ({
-		  ...prev,
-		  previewImage: file.url || preview,
-		  previewVisible: true,
-		  previewTitle: file.name || file.url.substring(file.url.lastIndexOf('/') + 1),
-	  }));
+  const handleDeletePreview = () => {
+	  setState((prev) => ({ ...prev, preview: '' }));
+	  onChange(null);
   };
 
-  const isCanUpload = state.fileList && state.fileList.length < 1;
+  useEffect(() => {
+    setState((prev) => ({ ...prev, preview }));
+  }, [preview]);
+
   return (
     <div className="mb-4">
-      <Upload
-        listType="picture-card"
-        onPreview={handlePreview}
-        onChange={handleChange}
-      >
-        {isCanUpload && (
-        <div>
-          <PlusOutlined />
-          <div>Upload</div>
-        </div>
-        )}
-      </Upload>
-      <Modal
-        visible={state.previewVisible}
-        title={state.previewTitle}
-        footer={null}
-        onCancel={handleCancel}
-      >
-        <img alt="preview" className="fluid" src={state.previewImage} />
-      </Modal>
+      {!state.preview
+		    && (
+					<Upload
+					  listType="picture-card"
+					  onChange={handleChange}
+					>
+					  <div>
+					    <PlusOutlined />
+					    <div>Upload</div>
+					  </div>
+					</Upload>
+		    )}
+      {!!state.preview
+	      && (
+					<div className="flex align-center">
+					  <Image src={state.preview} className="mr-4" />
+					  <DeleteOutlined onClick={handleDeletePreview} />
+					</div>
+	      )}
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { Table } from 'antd';
 import { Recipe } from 'types/recipes';
 
 import { DraggableBodyRow } from './DraggableBodyRow/DraggableBodyRow';
-import { getDataWithKeys } from './helpers';
+import { getDataWithKeys } from 'utils/arr';
 
 type Props = {
 	data: Record<string, string | number>[];

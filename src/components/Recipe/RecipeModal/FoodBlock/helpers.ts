@@ -2,8 +2,8 @@ import { OptionData } from 'rc-select/es/interface';
 
 export const getFormItemMeta = (
   fieldKey: number,
-  state: Record<string, string>,
-  units: Record<string, string>,
+  state: Partial<Record<string, string>> = {},
+  units: Record<string, string> = {},
   options: OptionData[],
 ) => {
   const unit = units[state[fieldKey]];

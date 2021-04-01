@@ -1,8 +1,9 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { Typography, Row, Button } from 'antd';
+import {
+  Typography, Row, Button, Table,
+} from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import { DraggableTable } from 'components/DraggableTabe/DraggableTable';
 
 const { Title } = Typography;
 
@@ -36,7 +37,7 @@ export const ContentTable: React.FC<Props> = ({
           )}
         </Row>
       </Row>
-      <DraggableTable {...tableProps} />
+      <Table {...tableProps} />
     </div>
   );
 };

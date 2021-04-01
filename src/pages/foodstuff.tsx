@@ -64,7 +64,7 @@ const Foodstuff = () => {
       <Loader isActive={loading} />
       <ContentTable
         title={gfFoodStuff.title}
-        data={state.foodStuff}
+        dataSource={state.foodStuff}
         columns={gfFoodStuff.columns({ filter: { currentFilter: router.query } })}
         ModalComponent={<FoodStuffModal onSuccess={onSuccessAdd} />}
         {...tableConfig}
