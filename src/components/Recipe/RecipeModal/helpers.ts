@@ -8,7 +8,7 @@ type FormDataType = {
 };
 export const collectRecipeFormData = (formData: FormDataType, foodstuffs: FoodStuff[]) => {
   const description = formData.description.map((item) => item.description);
-  const foods = formData.foods.map(({ food: title, count }) => {
+  const foods = (formData.foods || []).map(({ food: title, count }) => {
     const { id } = foodstuffs.find((item) => item.title === title) || {};
 
     const qt = Number(count);
@@ -35,3 +35,5 @@ export const collectEditableData = (state: Partial<Recipe>) => {
     }), {}),
   };
 };
+
+export const getRecipeModalTitle = (isEdit: boolean) => (isEdit ? 'Edit recipe' : 'Add recipe');

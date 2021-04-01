@@ -1,5 +1,5 @@
 import React from 'react';
-import { CloseCircleFilled } from '@ant-design/icons';
+import { CloseCircleFilled, EditOutlined } from '@ant-design/icons';
 import { capitalFirst } from 'utils/string';
 import { getColumnSearchProps } from 'components/Common/Filter/helpers';
 
@@ -29,7 +29,7 @@ export const FOODSTUFF_PROPS = [
 ];
 export const gfFoodStuff = {
   title: 'Food stuff',
-  columns: ({ filter: { currentFilter } }) => ([
+  columns: ({ filter: { currentFilter }, onEdit, onDelete }) => ([
     ...FOODSTUFF_PROPS.map(({ name, number }) => ({
       title: capitalFirst(name),
       dataIndex: name,
@@ -46,7 +46,12 @@ export const gfFoodStuff = {
       title: null,
       dataIndex: 'delete',
       align: 'center',
-      render: () => <CloseCircleFilled className="danger icon-md pointer" />,
+      render: (_, record) => (
+        <div className="flex-column align-center justify-center">
+          <EditOutlined className="success icon-md pointer mb-2" onClick={onEdit(record.id)} />
+          <CloseCircleFilled className="danger icon-md pointer" onClick={onDelete(record.id)} />
+        </div>
+      ),
     },
   ]),
 };

@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import {
-  Modal, Button, Input, Form,
-} from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Button, Input, Form } from 'antd';
+import { WModal } from 'components/Common/Modal/WModal';
 import useNotify from 'hooks/useNotify';
 import { PlusSquareFilled } from '@ant-design/icons';
 import { useAddFoodstuffMutation, FoodStuff } from 'graphql/generated/foodstuff';
@@ -11,11 +10,15 @@ import { gfErrors } from 'goldfish/gfErrors';
 
 import { capitalFirst } from 'utils/string';
 
+import { collectFoodStuffSaveData } from './helpers';
+
 type Props = {
-	onSuccess: (data: FoodStuff, totalCount: number) => void;
+	onSuccess: (data: FoodStuff, totalCount: number, ID: string) => void;
+  editableFoodstuff: Partial<FoodStuff>;
+  onClose: () => void;
 };
 
-export const FoodStuffModal: React.FC<Props> = ({ onSuccess }) => {
+export const FoodStuffModal: React.FC<Props> = ({ onSuccess, editableFoodstuff, onClose }) => {
   const [state, setState] = useState({
     isOpen: false,
     ...FOODSTUFF_PROPS.reduce((acc, { name, number }) => ({
@@ -29,28 +32,32 @@ export const FoodStuffModal: React.FC<Props> = ({ onSuccess }) => {
   const handleClose = () => {
     setState((prev) => ({ ...prev, isOpen: false, image: null }));
     form.resetFields();
+    onClose();
   };
   const handleOpen = () => setState((prev) => ({ ...prev, isOpen: true }));
 
   const handleSave = async (foodStuffData) => {
     try {
-      const dataWithNumeric = Object.entries(foodStuffData)
-        .reduce((acc, [key, value]) => {
-          const isNumeric = FOODSTUFF_PROPS
-            .find(({ name, number }) => key === name && number);
-          const valueProp = isNumeric ? Number(value) : value;
-
-          return { ...acc, [key]: valueProp };
-        }, {});
+      const dataWithNumeric = collectFoodStuffSaveData(foodStuffData);
+      const payload = {
+        ...dataWithNumeric,
+        id: editableFoodstuff.id,
+      };
       const {
         data: { addFoodstuff: { foodstuff, totalCount } },
-      } = await addFoodStuff({ variables: dataWithNumeric });
+      } = await addFoodStuff({ variables: payload });
       handleClose();
-      onSuccess(foodstuff[0], totalCount);
+      onSuccess(foodstuff, totalCount, editableFoodstuff.id);
     } catch (e) {
       console.error(e);
     }
   };
+
+  useEffect(() => {
+    if (!editableFoodstuff.id) return;
+    setState((prev) => ({ ...prev, isOpen: true }));
+    form.setFieldsValue(editableFoodstuff);
+  }, [editableFoodstuff.id]);
 
   useNotify(error && error.message, 'error');
 
@@ -63,11 +70,10 @@ export const FoodStuffModal: React.FC<Props> = ({ onSuccess }) => {
         size="large"
       />
       <Loader isActive={loading} />
-      <Modal
+      <WModal
         title="Add foodstuff"
         visible={state.isOpen}
         onCancel={handleClose}
-        style={{ minWidth: 700 }}
         footer={null}
       >
         <Form
@@ -98,7 +104,7 @@ export const FoodStuffModal: React.FC<Props> = ({ onSuccess }) => {
             </Button>
           </Form.Item>
         </Form>
-      </Modal>
+      </WModal>
     </div>
   );
 };

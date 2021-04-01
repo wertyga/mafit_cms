@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, Button, Input, Form, Col,
+  Button, Input, Form, Col,
 } from 'antd';
 import { PlusSquareFilled } from '@ant-design/icons';
 import useNotify from 'hooks/useNotify';
 import { useUploadRecipeMutation, Recipe } from 'graphql/generated/recipe';
 import { UploadImage } from 'components/Common/UploadImage/UploadImage';
 import { Loader } from 'components/Common/Loader/Loader';
+import { WModal } from 'components/Common/Modal/WModal';
 import { gfRecipe } from 'goldfish/gfRecipe';
 import { gfErrors } from 'goldfish/gfErrors';
 
@@ -15,7 +16,7 @@ import { useGetFoodStuffsQuery } from 'graphql/generated/foodstuff';
 import { DescriptionBlock } from './DescriptionBlock/DescriptionBlock';
 import { FoodBlock } from './FoodBlock/FoodBlock';
 
-import { collectEditableData, collectRecipeFormData } from './helpers';
+import { collectEditableData, collectRecipeFormData, getRecipeModalTitle } from './helpers';
 
 type Props = {
   editableRecipe?: Partial<Recipe>;
@@ -30,7 +31,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
     image: null,
   });
   const [addRecipe, { loading, error: saveError }] = useUploadRecipeMutation();
-  const { data: foodstuffData } = useGetFoodStuffsQuery({ fetchPolicy: 'no-cache' });
+  const { data: foodstuffData, error: getError } = useGetFoodStuffsQuery({ fetchPolicy: 'no-cache' });
   const [form] = Form.useForm();
 
   const handleClose = () => {
@@ -73,8 +74,8 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
     form.setFieldsValue(formData);
   }, [editableRecipe.id]);
 
-  useNotify(saveError && saveError.message, 'error');
-
+  useNotify((getError || {}).message || (saveError || {}).message, 'error');
+  
   return (
     <div className="recipe-modal">
       <Button
@@ -85,11 +86,10 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
       />
       {!!state.error && <span className="error">{state.error}</span>}
       <Loader isActive={loading} />
-      <Modal
-        title="Add recipe"
+      <WModal
         visible={state.isOpen}
         onCancel={handleClose}
-        style={{ minWidth: 700 }}
+        title={getRecipeModalTitle(!!editableRecipe.id)}
         footer={null}
       >
         <Form
@@ -124,7 +124,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
             </Button>
           </Form.Item>
         </Form>
-      </Modal>
+      </WModal>
     </div>
   );
 };

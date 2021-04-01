@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Upload, Modal, Image, FormInstance,
-} from 'antd';
+import { Upload, Image } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import { getBase64 } from 'utils/file';
@@ -30,7 +28,7 @@ export const UploadImage: React.FC<Props> = ({ onChange, preview }) => {
   };
 
   useEffect(() => {
-    setState((prev) => ({ ...prev, preview }));
+    setState((prev) => ({ ...prev, preview: preview || '' }));
   }, [preview]);
 
   return (
@@ -38,20 +36,20 @@ export const UploadImage: React.FC<Props> = ({ onChange, preview }) => {
       {!state.preview
 		    && (
 					<Upload
-					  listType="picture-card"
-					  onChange={handleChange}
+				    listType="picture-card"
+				    onChange={handleChange}
 					>
-					  <div>
-					    <PlusOutlined />
-					    <div>Upload</div>
-					  </div>
+				  <div>
+				    <PlusOutlined />
+				    <div>Upload</div>
+				  </div>
 					</Upload>
 		    )}
       {!!state.preview
 	      && (
-					<div className="flex align-center">
-					  <Image src={state.preview} className="mr-4" />
-					  <DeleteOutlined onClick={handleDeletePreview} />
+					<div className="flex align-center image-preview">
+					  <Image src={state.preview} />
+					  <DeleteOutlined onClick={handleDeletePreview} className="ml-4" />
 					</div>
 	      )}
     </div>

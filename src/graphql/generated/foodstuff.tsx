@@ -48,6 +48,12 @@ export type FoodStuff = {
 
 export type FoodStuffWithTotal = {
   __typename?: 'FoodStuffWithTotal';
+  foodstuff?: Maybe<FoodStuff>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type FoodStuffsWithTotal = {
+  __typename?: 'FoodStuffsWithTotal';
   foodstuff?: Maybe<Array<Maybe<FoodStuff>>>;
   totalCount?: Maybe<Scalars['Int']>;
 };
@@ -56,10 +62,13 @@ export type Mutation = {
   __typename?: 'Mutation';
   uploadRecipe?: Maybe<RecipeWithTotal>;
   addFoodstuff?: Maybe<FoodStuffWithTotal>;
+  deleteRecipe?: Maybe<ResponseStatus>;
+  deleteFoodStuff?: Maybe<ResponseStatus>;
 };
 
 
 export type MutationUploadRecipeArgs = {
+  id?: Maybe<Scalars['ID']>;
   title: Scalars['String'];
   description?: Maybe<Array<Maybe<Scalars['String']>>>;
   image?: Maybe<Scalars['Upload']>;
@@ -68,6 +77,7 @@ export type MutationUploadRecipeArgs = {
 
 
 export type MutationAddFoodstuffArgs = {
+  id?: Maybe<Scalars['ID']>;
   title: Scalars['String'];
   unit: Scalars['String'];
   calories: Scalars['Int'];
@@ -76,12 +86,22 @@ export type MutationAddFoodstuffArgs = {
   protein: Scalars['Int'];
 };
 
+
+export type MutationDeleteRecipeArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteFoodStuffArgs = {
+  id: Scalars['ID'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getAllUsers?: Maybe<Array<Maybe<User>>>;
   getUser?: Maybe<User>;
   authUser?: Maybe<User>;
-  getFoodStuffs?: Maybe<FoodStuffWithTotal>;
+  getFoodStuffs?: Maybe<FoodStuffsWithTotal>;
   getRecipes?: Maybe<RecipesWithTotal>;
 };
 
@@ -140,6 +160,11 @@ export type RecipesWithTotal = {
   totalCount?: Maybe<Scalars['Int']>;
 };
 
+export type ResponseStatus = {
+  __typename?: 'ResponseStatus';
+  id: Scalars['ID'];
+};
+
 
 export type User = {
   __typename?: 'User';
@@ -159,8 +184,8 @@ export type GetFoodStuffsQueryVariables = Types.Exact<{
 export type GetFoodStuffsQuery = (
   { __typename?: 'Query' }
   & { getFoodStuffs?: Types.Maybe<(
-    { __typename?: 'FoodStuffWithTotal' }
-    & Pick<Types.FoodStuffWithTotal, 'totalCount'>
+    { __typename?: 'FoodStuffsWithTotal' }
+    & Pick<Types.FoodStuffsWithTotal, 'totalCount'>
     & { foodstuff?: Types.Maybe<Array<Types.Maybe<(
       { __typename?: 'FoodStuff' }
       & Pick<Types.FoodStuff, 'id' | 'title' | 'unit' | 'calories' | 'fats' | 'carbs' | 'protein'>
@@ -169,6 +194,7 @@ export type GetFoodStuffsQuery = (
 );
 
 export type AddFoodstuffMutationVariables = Types.Exact<{
+  id?: Types.Maybe<Types.Scalars['ID']>;
   title: Types.Scalars['String'];
   unit: Types.Scalars['String'];
   calories: Types.Scalars['Int'];
@@ -183,10 +209,23 @@ export type AddFoodstuffMutation = (
   & { addFoodstuff?: Types.Maybe<(
     { __typename?: 'FoodStuffWithTotal' }
     & Pick<Types.FoodStuffWithTotal, 'totalCount'>
-    & { foodstuff?: Types.Maybe<Array<Types.Maybe<(
+    & { foodstuff?: Types.Maybe<(
       { __typename?: 'FoodStuff' }
       & Pick<Types.FoodStuff, 'id' | 'title' | 'unit' | 'calories' | 'fats' | 'carbs' | 'protein'>
-    )>>> }
+    )> }
+  )> }
+);
+
+export type DeleteFoodStuffMutationVariables = Types.Exact<{
+  id: Types.Scalars['ID'];
+}>;
+
+
+export type DeleteFoodStuffMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteFoodStuff?: Types.Maybe<(
+    { __typename?: 'ResponseStatus' }
+    & Pick<Types.ResponseStatus, 'id'>
   )> }
 );
 
@@ -239,8 +278,9 @@ export type GetFoodStuffsQueryHookResult = ReturnType<typeof useGetFoodStuffsQue
 export type GetFoodStuffsLazyQueryHookResult = ReturnType<typeof useGetFoodStuffsLazyQuery>;
 export type GetFoodStuffsQueryResult = Apollo.QueryResult<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>;
 export const AddFoodstuffDocument = gql`
-    mutation addFoodstuff($title: String!, $unit: String!, $calories: Int!, $fats: Int!, $carbs: Int!, $protein: Int!) {
+    mutation addFoodstuff($id: ID, $title: String!, $unit: String!, $calories: Int!, $fats: Int!, $carbs: Int!, $protein: Int!) {
   addFoodstuff(
+    id: $id
     title: $title
     unit: $unit
     calories: $calories
@@ -276,6 +316,7 @@ export type AddFoodstuffMutationFn = Apollo.MutationFunction<AddFoodstuffMutatio
  * @example
  * const [addFoodstuffMutation, { data, loading, error }] = useAddFoodstuffMutation({
  *   variables: {
+ *      id: // value for 'id'
  *      title: // value for 'title'
  *      unit: // value for 'unit'
  *      calories: // value for 'calories'
@@ -292,3 +333,36 @@ export function useAddFoodstuffMutation(baseOptions?: Apollo.MutationHookOptions
 export type AddFoodstuffMutationHookResult = ReturnType<typeof useAddFoodstuffMutation>;
 export type AddFoodstuffMutationResult = Apollo.MutationResult<AddFoodstuffMutation>;
 export type AddFoodstuffMutationOptions = Apollo.BaseMutationOptions<AddFoodstuffMutation, AddFoodstuffMutationVariables>;
+export const DeleteFoodStuffDocument = gql`
+    mutation deleteFoodStuff($id: ID!) {
+  deleteFoodStuff(id: $id) {
+    id
+  }
+}
+    `;
+export type DeleteFoodStuffMutationFn = Apollo.MutationFunction<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>;
+
+/**
+ * __useDeleteFoodStuffMutation__
+ *
+ * To run a mutation, you first call `useDeleteFoodStuffMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteFoodStuffMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteFoodStuffMutation, { data, loading, error }] = useDeleteFoodStuffMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteFoodStuffMutation(baseOptions?: Apollo.MutationHookOptions<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>(DeleteFoodStuffDocument, options);
+      }
+export type DeleteFoodStuffMutationHookResult = ReturnType<typeof useDeleteFoodStuffMutation>;
+export type DeleteFoodStuffMutationResult = Apollo.MutationResult<DeleteFoodStuffMutation>;
+export type DeleteFoodStuffMutationOptions = Apollo.BaseMutationOptions<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>;

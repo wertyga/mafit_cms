@@ -1,0 +1,8 @@
+.w-modal {
+  padding: var(--space-8) var(--space-10);
+}
+
+.w-modal .ant-modal {
+  top: 0;
+  width: 100% !important;
+}

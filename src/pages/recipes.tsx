@@ -4,23 +4,26 @@ import { Loader } from 'components/Common/Loader/Loader';
 import { ContentTable } from 'components/ContentTable/ContentTable';
 import { RecipeModal } from 'components/Recipe/RecipeModal/RecipeModal';
 
-import { useGetRecipesLazyQuery, Recipe } from 'graphql/generated/recipe';
+import { useGetRecipesLazyQuery, Recipe, useDeleteRecipeMutation } from 'graphql/generated/recipe';
 
 import { getRecipeTableData } from 'components/Recipe/helpers';
 import { DEFAULT_PAGE_SIZE } from 'components/Common/Table/helpers';
 import { getDataWithKeys } from 'utils/arr';
+import { message } from 'antd';
 import { gfRecipe } from '../goldfish/gfRecipe';
 
 const Recipes = () => {
   const [getRecipes, {
     loading, data, error, called,
   }] = useGetRecipesLazyQuery({ fetchPolicy: 'no-cache' });
+  const [deleteRecipeHandler] = useDeleteRecipeMutation();
 
   const router = useRouter();
   const [state, setState] = useState({
     recipes: [],
     editableRecipe: {},
     totalCount: 0,
+    loading: false,
   });
 
   const handleChangePage = async (page = 1, pageSize = DEFAULT_PAGE_SIZE) => {
@@ -34,7 +37,7 @@ const Recipes = () => {
     getRecipes({ variables: payload });
   };
 
-  const onSuccessAdd = (recipe: Recipe, totalCount: number, editableID) => {
+  const onSuccessAdd = (recipe: Recipe, totalCount: number, editableID: string) => {
     setState((prev) => ({
       ...prev,
       recipes: editableID
@@ -43,6 +46,22 @@ const Recipes = () => {
       totalCount,
       editableRecipe: {},
     }));
+  };
+
+  const handleDelete = (id: string) => async () => {
+    try {
+      setState((prev) => ({ ...prev, loading: true }));
+      await deleteRecipeHandler({ variables: { id } });
+
+      setState((prev) => ({
+        ...prev,
+        recipes: prev.recipes.filter((foodstuff) => foodstuff.id !== id),
+        loading: false,
+      }));
+    } catch (e) {
+      message.error(e.message);
+      setState((prev) => ({ ...prev, loading: false }));
+    }
   };
 
   useEffect(() => {
@@ -54,12 +73,12 @@ const Recipes = () => {
     const { getRecipes: { recipes, totalCount } } = data;
     setState((prev) => ({
       ...prev,
-      recipes: getDataWithKeys(recipes),
+      recipes: getDataWithKeys(recipes, 'recipe'),
       totalCount,
     }));
   }, [loading]);
 
-  const handleEditRecipe = (recipeId) => () => {
+  const handleEditRecipe = (recipeId: string) => () => {
     setState((prev) => ({
       ...prev,
       editableRecipe: prev.recipes.find(({ id }) => id === recipeId),
@@ -82,7 +101,9 @@ const Recipes = () => {
         columns={gfRecipe.columns({
           filter: { currentFilter: router.query },
           onEdit: handleEditRecipe,
+          onDelete: handleDelete,
         })}
+        loading={state.loading}
         ModalComponent={(
           <RecipeModal
             onSuccess={onSuccessAdd}

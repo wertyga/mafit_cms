@@ -1,18 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
 import {
-  Form, Input, Select, Button, Col, Row, FormInstance,
+  Form, Button, FormInstance,
 } from 'antd';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { GetFoodStuffsQuery } from 'graphql/generated/foodstuff';
-import { gfErrors } from 'goldfish/gfErrors';
-
 import { SelectValue } from 'antd/es/select';
+import { DragRow } from 'components/Drag/DragRow';
 import { getFormItemMeta } from './helpers';
+import { FoodItem } from './FoodItem/FoodItem';
 
 type Props = {
   data: GetFoodStuffsQuery;
   form: FormInstance<any>;
-}
+};
 
 export const FoodBlock: React.FC<Props> = ({ data, form }) => {
   const [units, setUnits] = useState({});
@@ -47,62 +49,44 @@ export const FoodBlock: React.FC<Props> = ({ data, form }) => {
   [!!data]);
 
   return (
-    <Form.List name="foods">
-      {(fields, { add, remove }) => {
-        const foodSelectState = form.getFieldValue('foodSelectState') || {};
-        return (
-          <div>
-            {fields.map((field) => {
-              const { fieldKey } = field;
-              const {
-                currentOptions,
-                unit,
-              } = getFormItemMeta(fieldKey, foodSelectState, units, options);
-              return (
-                <Row key={fieldKey} gutter={16} className="mb-4">
-                  <Col span={16}>
-                    <Form.Item
-                      {...field}
-                      label="Type"
-                      className="mb-0"
-                      name={[field.name, 'food']}
-                      rules={[{ required: true, message: gfErrors.emptyField }]}
-                    >
-                      <Select options={currentOptions} onChange={handleFoodSetChange(fieldKey)} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      className="mb-0"
-                      name={[field.name, 'count']}
-                      rules={[{ required: true, message: gfErrors.emptyField }]}
-                    >
-                      <Input
-                        type="number"
-                        disabled={!foodSelectState[fieldKey]}
-                        addonAfter={unit}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={2} className="align-center justify-center">
-                    <MinusCircleOutlined
-                      className="danger icon-md "
-                      onClick={handleDeleteFoodField(field.name, fieldKey, remove)}
+    <DndProvider backend={HTML5Backend}>
+      <Form.List name="foods">
+        {(fields, { add, remove, move }) => {
+          const foodSelectState = form.getFieldValue('foodSelectState') || {};
+          return (
+            <div>
+              {fields.map((field, i) => {
+                const { fieldKey } = field;
+                const {
+                  currentOptions,
+                  unit,
+                } = getFormItemMeta(fieldKey, foodSelectState, units, options);
+                return (
+                  <DragRow key={fieldKey} index={i} moveRow={move} dragTypeName="food-drag">
+                    <FoodItem
+                      fieldKey={fieldKey}
+                      field={field}
+                      options={currentOptions}
+                      handleFoodSetChange={handleFoodSetChange}
+                      unit={unit}
+                      foodSelectState={foodSelectState}
+                      handleDeleteFoodField={handleDeleteFoodField}
+                      remove={remove}
                     />
-                  </Col>
-                </Row>
-              );
-            })}
-            {fields.length < options.length && (
-              <Form.Item>
-                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                  Add Food Set
-                </Button>
-              </Form.Item>
-            )}
-          </div>
-        );
-      }}
-    </Form.List>
+                  </DragRow>
+                );
+              })}
+              {fields.length < options.length && (
+                <Form.Item>
+                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                    Add Food Set
+                  </Button>
+                </Form.Item>
+              )}
+            </div>
+          );
+        }}
+      </Form.List>
+    </DndProvider>
   );
 };

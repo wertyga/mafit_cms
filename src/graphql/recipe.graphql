@@ -48,3 +48,9 @@ mutation uploadRecipe($image: Upload, $title: String!, $description: [String], $
 		totalCount
 	}
 }
+
+mutation deleteRecipe($id: ID!) {
+	deleteRecipe(id: $id) {
+		id
+	}
+}

@@ -8,6 +8,10 @@ type FoodStuff {
 	protein: Int
 }
 
+type ResponseStatus {
+	status: String!
+}
+
 query getFoodStuffs($offset: Int, $limit: Int, $search: String, $by: String) {
 	getFoodStuffs(offset: $offset, limit: $limit, search: $search, by: $by) {
 		foodstuff {
@@ -24,6 +28,7 @@ query getFoodStuffs($offset: Int, $limit: Int, $search: String, $by: String) {
 }
 
 mutation addFoodstuff(
+	$id: ID,
 	$title: String!
 	$unit: String!
 	$calories: Int!
@@ -32,6 +37,7 @@ mutation addFoodstuff(
 	$protein: Int!
 ) {
 	addFoodstuff(
+		id: $id
 		title: $title
 		unit: $unit
 		calories: $calories
@@ -50,4 +56,10 @@ mutation addFoodstuff(
 			}
 			totalCount
 		}
+}
+
+mutation deleteFoodStuff($id: ID!) {
+	deleteFoodStuff(id: $id) {
+		id
+	}
 }
