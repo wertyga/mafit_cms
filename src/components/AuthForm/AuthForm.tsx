@@ -18,7 +18,7 @@ const { Title } = Typography;
 export const AuthForm = () => {
   const [authUser, {
     loading, data = {}, error = {} as Error, called,
-  }] = useAuthUserLazyQuery();
+  }] = useAuthUserLazyQuery({ fetchPolicy: 'no-cache' });
 
   const onSubmit = (values: FormType) => {
     authUser({ variables: values });
