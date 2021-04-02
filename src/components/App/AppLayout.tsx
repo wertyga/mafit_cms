@@ -1,21 +1,18 @@
 import React from 'react';
-import { Layout, Typography } from 'antd';
+import { Layout } from 'antd';
 import { SideMenu } from 'components/SideMenu/SideMenu';
-
-const { Text } = Typography;
+import { Header } from './Header';
 
 import './styles.css';
 
-const { Header, Content, Footer } = Layout;
+const { Content, Footer } = Layout;
 
 export const AppLayout = ({ children }) => {
   return (
     <Layout>
       <SideMenu isOpen />
       <Layout style={{ marginLeft: 200, minHeight: '100vh' }}>
-        <Header className="AppLayout__header">
-          <Text className="light font-big">Mafit admin</Text>
-        </Header>
+        <Header />
         <Content className="AppLayout__main">
           {children}
         </Content>

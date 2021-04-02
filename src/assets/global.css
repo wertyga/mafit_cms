@@ -60,6 +60,10 @@ span.light, div.light, p.light {
   color: var(--color-light);
 }
 
+span {
+  line-height: 1rem;
+}
+
 .font-big {
   font-size: var(--font-size-xl);
 }

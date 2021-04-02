@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { Loader } from 'components/Common/Loader/Loader';
 
 import useSelector from 'hooks/useSelector';
+import useConstructor from 'hooks/useConstructor';
 import useNotify from 'hooks/useNotify';
 
-import { useGetUserQuery } from 'graphql/generated/user';
+import { useGetUserLazyQuery } from 'graphql/generated/user';
 import { saveUserAction } from 'redux/actions/user/userActions';
 
 import { AuthForm } from 'components/AuthForm/AuthForm';
@@ -15,17 +16,21 @@ export const App = ({ children }) => {
     userStore: { token: userToken },
     cookiesStore: { token: cookieToken },
   } = useSelector(['userStore', 'cookiesStore']);
-  const {
+  const [getUser, {
     loading,
     error = {} as Error,
     data,
-  } = useGetUserQuery({ variables: { token: cookieToken } });
+  }] = useGetUserLazyQuery();
 
   useEffect(() => {
     if (!data || !data.getUser) return;
     saveUserAction(data.getUser);
   }, [data]);
 
+  useConstructor(() => {
+    if (!cookieToken) return;
+    getUser({ variables: { token: cookieToken } });
+  });
   useNotify(error.message, 'error');
   if (loading) return <Loader isActive />;
   return (

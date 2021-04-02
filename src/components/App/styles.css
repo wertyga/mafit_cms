@@ -3,15 +3,6 @@
   color: var(--color-light);
   padding: 0;
 }
-.AppLayout__header.ant-layout-header {
-  padding: var(--space-4);
-  display: flex;
-  align-items: center;
-}
-
-.AppLayout__header.open {
-  padding-left: 13.5rem;
-}
 
 .AppLayout__main {
   padding: var(--space-8);
