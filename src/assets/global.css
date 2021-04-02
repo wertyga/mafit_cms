@@ -28,11 +28,18 @@
   z-index: 10;
 }
 
+.max-width-50 {
+  max-width: 50rem;
+  margin: 0 auto;
+}
+
 .error {
   width: 100%;
   text-align: center;
   padding: var(--space-1);
   color: var(--color-error);
+  display: flex;
+  justify-content: center;
 }
 
 .fluid {
@@ -48,4 +55,16 @@
 }
 .danger {
   color: var(--color-error);
+}
+span.light, div.light, p.light {
+  color: var(--color-light);
+}
+
+.font-big {
+  font-size: var(--font-size-xl);
+}
+
+.icon-md svg {
+  width: 1.5rem;
+  height: 1.5rem;
 }

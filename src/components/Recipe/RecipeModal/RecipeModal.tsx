@@ -29,13 +29,14 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
     isOpen: false,
     error: '',
     image: null,
+    preview: '',
   });
   const [addRecipe, { loading, error: saveError }] = useUploadRecipeMutation();
-  const { data: foodstuffData, error: getError } = useGetFoodStuffsQuery({ fetchPolicy: 'no-cache' });
+  const { data: foodstuffData, error: getFoodStuffError } = useGetFoodStuffsQuery({ fetchPolicy: 'no-cache' });
   const [form] = Form.useForm();
 
   const handleClose = () => {
-    setState((prev) => ({ ...prev, isOpen: false, image: null }));
+    setState((prev) => ({ ...prev, isOpen: false, image: null, preview: '' }));
     onClose();
     form.resetFields();
   };
@@ -48,7 +49,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
     const payload = {
       ...requestData,
       id: editableRecipe.id,
-      image: editableRecipe.image || state.image,
+      image: state.image || state.preview,
     };
 
     try {
@@ -63,19 +64,19 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
     }
   };
 
-  const onFileChange = (image: File) => {
-    setState((prev) => ({ ...prev, image }));
+  const onFileChange = (image: File, preview?: string) => {
+    setState((prev) => ({ ...prev, image, preview }));
   };
 
   useEffect(() => {
     if (!editableRecipe.id) return;
-    setState((prev) => ({ ...prev, isOpen: true }));
+    setState((prev) => ({ ...prev, isOpen: true, preview: editableRecipe.image }));
     const formData = collectEditableData(editableRecipe);
     form.setFieldsValue(formData);
   }, [editableRecipe.id]);
 
-  useNotify((getError || {}).message || (saveError || {}).message, 'error');
-  
+  useNotify(saveError && saveError.message, 'error');
+
   return (
     <div className="recipe-modal">
       <Button
@@ -96,12 +97,13 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
           form={form}
           labelAlign="left"
           name="dynamic_form_nest_item"
+          className="max-width-50"
           onFinish={handleSave}
           autoComplete="off"
           labelCol={{ span: 5 }}
-          wrapperCol={{ span: 24 }}
+          wrapperCol={{ span: 19 }}
         >
-          <UploadImage onChange={onFileChange} preview={editableRecipe.image} />
+          <UploadImage onChange={onFileChange} preview={state.preview} />
           {gfRecipe.recipeFields.map(({ name }) => {
             const title = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
             return (
@@ -117,6 +119,9 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
             );
           })}
           <DescriptionBlock />
+          {getFoodStuffError
+            && getFoodStuffError.message
+            && <span className="error">{getFoodStuffError.message}</span>}
           {!!foodstuffData && <FoodBlock data={foodstuffData} form={form} />}
           <Form.Item>
             <Button type="primary" htmlType="submit">

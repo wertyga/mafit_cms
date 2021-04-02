@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import useNotify from 'hooks/useNotify';
 import { FoodStuffModal } from 'components/FoodStuff/FoodStuffModal/FoodStuffModal';
 import { ContentTable } from 'components/ContentTable/ContentTable';
 import { Loader } from 'components/Common/Loader/Loader';
@@ -89,6 +90,8 @@ const Foodstuff = () => {
       totalCount,
     }));
   }, [loading]);
+
+  useNotify(error && error.message, 'error');
 
   const tableConfig = useMemo(() => getFoodStuffTableData({
     totalCount: state.totalCount,

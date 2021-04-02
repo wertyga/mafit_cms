@@ -1,32 +1,25 @@
-import React, { useState } from 'react';
-import { Layout, Button } from 'antd';
-import { UnorderedListOutlined } from '@ant-design/icons';
+import React from 'react';
+import { Layout, Typography } from 'antd';
 import { SideMenu } from 'components/SideMenu/SideMenu';
+
+const { Text } = Typography;
 
 import './styles.css';
 
 const { Header, Content, Footer } = Layout;
 
 export const AppLayout = ({ children }) => {
-  const [isOpen, setOpen] = useState(true);
-
-  const toggleOpen = () => setOpen(!isOpen);
-
   return (
     <Layout>
       <SideMenu isOpen />
       <Layout style={{ marginLeft: 200, minHeight: '100vh' }}>
         <Header className="AppLayout__header">
-          <Button
-            type="link"
-            icon={<UnorderedListOutlined className="AppLayout__menu-icon" />}
-            onClick={toggleOpen}
-          />
+          <Text className="light font-big">Mafit admin</Text>
         </Header>
         <Content className="AppLayout__main">
           {children}
         </Content>
-        <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+        <Footer style={{ textAlign: 'center' }}>MaFit Design ©2021</Footer>
       </Layout>
 
     </Layout>

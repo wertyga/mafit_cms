@@ -207,6 +207,7 @@ export type GetRecipesQuery = (
 );
 
 export type UploadRecipeMutationVariables = Types.Exact<{
+  id?: Types.Maybe<Types.Scalars['ID']>;
   image?: Types.Maybe<Types.Scalars['Upload']>;
   title: Types.Scalars['String'];
   description?: Types.Maybe<Array<Types.Maybe<Types.Scalars['String']>> | Types.Maybe<Types.Scalars['String']>>;
@@ -297,8 +298,9 @@ export type GetRecipesQueryHookResult = ReturnType<typeof useGetRecipesQuery>;
 export type GetRecipesLazyQueryHookResult = ReturnType<typeof useGetRecipesLazyQuery>;
 export type GetRecipesQueryResult = Apollo.QueryResult<GetRecipesQuery, GetRecipesQueryVariables>;
 export const UploadRecipeDocument = gql`
-    mutation uploadRecipe($image: Upload, $title: String!, $description: [String], $foods: [FoodMutationRequest]) {
+    mutation uploadRecipe($id: ID, $image: Upload, $title: String!, $description: [String], $foods: [FoodMutationRequest]) {
   uploadRecipe(
+    id: $id
     image: $image
     title: $title
     description: $description
@@ -326,6 +328,7 @@ export type UploadRecipeMutationFn = Apollo.MutationFunction<UploadRecipeMutatio
  * @example
  * const [uploadRecipeMutation, { data, loading, error }] = useUploadRecipeMutation({
  *   variables: {
+ *      id: // value for 'id'
  *      image: // value for 'image'
  *      title: // value for 'title'
  *      description: // value for 'description'

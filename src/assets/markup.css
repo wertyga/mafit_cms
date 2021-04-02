@@ -1,0 +1,36 @@
+.mr-2 {
+  margin-right: var(--space-2);
+}
+.ml-2 {
+  margin-left: var(--space-2);
+}
+.mb-2 {
+  margin-bottom: var(--space-2);
+}
+.pa-2 {
+  padding: var(--space-2);
+}
+.mr-4 {
+  margin-right: var(--space-4);
+}
+.ml-4 {
+  margin-left: var(--space-4);
+}
+.mb-4 {
+  margin-bottom: var(--space-4);
+}
+.pa-4 {
+  padding: var(--space-4);
+}
+.mb-8 {
+  margin-bottom: var(--space-8);
+}
+.pa-8 {
+  padding: var(--space-8);
+}
+.ma-0 {
+  margin: 0;
+}
+.mb-0 {
+  margin-bottom: 0;
+}

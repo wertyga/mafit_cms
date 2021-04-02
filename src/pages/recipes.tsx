@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
+import useNotify from 'hooks/useNotify';
 import { Loader } from 'components/Common/Loader/Loader';
 import { ContentTable } from 'components/ContentTable/ContentTable';
 import { RecipeModal } from 'components/Recipe/RecipeModal/RecipeModal';
@@ -77,6 +78,8 @@ const Recipes = () => {
       totalCount,
     }));
   }, [loading]);
+
+  useNotify(error && error.message, 'error');
 
   const handleEditRecipe = (recipeId: string) => () => {
     setState((prev) => ({

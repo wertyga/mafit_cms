@@ -17,6 +17,7 @@ export const DescriptionBlock = () => (
             <DragRow key={field.key} index={i} moveRow={move} dragTypeName="description-drag">
               <DescriptionRow
                 key={field.key}
+                fiedsCount={fields.length}
                 index={i}
                 field={field}
                 addRow={add}

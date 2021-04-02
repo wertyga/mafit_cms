@@ -81,8 +81,9 @@ export const FoodStuffModal: React.FC<Props> = ({ onSuccess, editableFoodstuff, 
           name="dynamic_form_nest_item"
           onFinish={handleSave}
           autoComplete="off"
+          className="max-width-50"
           labelCol={{ span: 5 }}
-          wrapperCol={{ span: 24 }}
+          wrapperCol={{ span: 19 }}
         >
           {FOODSTUFF_PROPS.map(({ name, number }) => (
             <Form.Item

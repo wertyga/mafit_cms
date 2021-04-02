@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import {
-  Form, Button, FormInstance,
+  Form, Button, FormInstance, Col,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { GetFoodStuffsQuery } from 'graphql/generated/foodstuff';
@@ -78,9 +78,11 @@ export const FoodBlock: React.FC<Props> = ({ data, form }) => {
               })}
               {fields.length < options.length && (
                 <Form.Item>
-                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                    Add Food Set
-                  </Button>
+                  <Col span={12}>
+                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                      Add Food Set
+                    </Button>
+                  </Col>
                 </Form.Item>
               )}
             </div>

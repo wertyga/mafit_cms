@@ -13,6 +13,7 @@ import 'antd/dist/antd.css';
 import 'assets/variables.css';
 import 'assets/global.css';
 import 'assets/csClasses.css';
+import 'assets/markup.css';
 
 const MafitApp = ({ Component, pageProps, reduxProps }) => {
   const reduxStore = getOrInitializeStore(reduxProps);

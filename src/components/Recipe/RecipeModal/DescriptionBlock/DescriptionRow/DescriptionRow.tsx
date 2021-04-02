@@ -11,9 +11,10 @@ type Props = {
 	removeRow: (index: number | number[]) => void;
 	addRow: () => void;
 	index: number;
+	fiedsCount: number;
 };
 
-export const DescriptionRow: React.FC<Props> = ({ field, removeRow, addRow, index }) => (
+export const DescriptionRow: React.FC<Props> = ({ field, removeRow, addRow, index, fiedsCount }) => (
   <Row key={field.key} gutter={16} className="mb-8">
     <Col span={22}>
       <Form.Item
@@ -31,7 +32,7 @@ export const DescriptionRow: React.FC<Props> = ({ field, removeRow, addRow, inde
     </Col>
     <Col span={2} className="align-center justify-center flex-column">
       <PlusCircleFilled onClick={addRow} className="mb-2 icon-md success" />
-      {field.key !== 0 && <MinusCircleFilled onClick={() => removeRow(field.name)} className="icon-md error" />}
+      {fiedsCount > 1 && <MinusCircleFilled onClick={() => removeRow(field.name)} className="icon-md error" />}
     </Col>
   </Row>
 );
