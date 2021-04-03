@@ -1,0 +1,28 @@
+query getHumanTypes {
+	getHumanTypes {
+		humans {
+			id
+			category
+		}
+		totalCount
+	}
+}
+
+mutation saveHumanType($id: ID, $category: String!) {
+	saveHumanType(id: $id, category: $category) {
+		human {
+			id
+			category
+		}
+		totalCount
+	}
+}
+
+mutation deleteHumanType($id: ID!) {
+	deleteHumanType(id: $id) {
+		human {
+			id
+		}
+		totalCount
+	}
+}

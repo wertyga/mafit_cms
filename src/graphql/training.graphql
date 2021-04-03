@@ -1,0 +1,29 @@
+fragment TrainingFields on Training {
+	id
+	humanCategory
+	title
+	video
+	meal {
+		id
+		title
+		unit
+	}
+}
+
+query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
+	getTrainings(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
+		trainings {
+			...TrainingFields
+		}
+		totalCount
+	}
+}
+
+mutation saveTraining($title: String!, $video: Upload, $humanCategory: String!, $meal: [ID]) {
+	saveTraining(title: $title, video: $video, humanCategory: $humanCategory, meal: $meal) {
+		training {
+			...TrainingFields
+		}
+		totalCount
+	}
+}

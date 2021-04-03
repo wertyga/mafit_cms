@@ -24,6 +24,24 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
+export type DeleteFoodstufResponse = {
+  __typename?: 'DeleteFoodstufResponse';
+  foodstuff?: Maybe<FoodStuff>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type DeleteHumanResponse = {
+  __typename?: 'DeleteHumanResponse';
+  human?: Maybe<HumanType>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type DeleteRecipeResponse = {
+  __typename?: 'DeleteRecipeResponse';
+  recipe?: Maybe<Recipe>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
 export type Food = {
   __typename?: 'Food';
   foodstuff?: Maybe<FoodStuff>;
@@ -58,12 +76,33 @@ export type FoodStuffsWithTotal = {
   totalCount?: Maybe<Scalars['Int']>;
 };
 
+export type GetHumanTypesResponse = {
+  __typename?: 'GetHumanTypesResponse';
+  humans?: Maybe<Array<Maybe<HumanType>>>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type GetTrainingsResponse = {
+  __typename?: 'GetTrainingsResponse';
+  trainings?: Maybe<Array<Maybe<Training>>>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type HumanType = {
+  __typename?: 'HumanType';
+  id: Scalars['ID'];
+  category: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   uploadRecipe?: Maybe<RecipeWithTotal>;
   addFoodstuff?: Maybe<FoodStuffWithTotal>;
-  deleteRecipe?: Maybe<ResponseStatus>;
-  deleteFoodStuff?: Maybe<ResponseStatus>;
+  deleteRecipe?: Maybe<DeleteRecipeResponse>;
+  deleteFoodStuff?: Maybe<DeleteFoodstufResponse>;
+  saveHumanType?: Maybe<SaveHumanTypeResponse>;
+  deleteHumanType?: Maybe<DeleteHumanResponse>;
+  saveTraining?: Maybe<SaveTrainingResponse>;
 };
 
 
@@ -96,6 +135,25 @@ export type MutationDeleteFoodStuffArgs = {
   id: Scalars['ID'];
 };
 
+
+export type MutationSaveHumanTypeArgs = {
+  id?: Maybe<Scalars['ID']>;
+  category: Scalars['String'];
+};
+
+
+export type MutationDeleteHumanTypeArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationSaveTrainingArgs = {
+  title: Scalars['String'];
+  video?: Maybe<Scalars['Upload']>;
+  humanCategory: Scalars['String'];
+  meal?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
 export type Query = {
   __typename?: 'Query';
   getAllUsers?: Maybe<Array<Maybe<User>>>;
@@ -103,6 +161,8 @@ export type Query = {
   authUser?: Maybe<User>;
   getFoodStuffs?: Maybe<FoodStuffsWithTotal>;
   getRecipes?: Maybe<RecipesWithTotal>;
+  getTrainings?: Maybe<GetTrainingsResponse>;
+  getHumanTypes?: Maybe<GetHumanTypesResponse>;
 };
 
 
@@ -126,6 +186,15 @@ export type QueryGetFoodStuffsArgs = {
 
 
 export type QueryGetRecipesArgs = {
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetTrainingsArgs = {
+  id?: Maybe<Scalars['ID']>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
@@ -160,9 +229,25 @@ export type RecipesWithTotal = {
   totalCount?: Maybe<Scalars['Int']>;
 };
 
-export type ResponseStatus = {
-  __typename?: 'ResponseStatus';
+export type SaveHumanTypeResponse = {
+  __typename?: 'SaveHumanTypeResponse';
+  human?: Maybe<HumanType>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type SaveTrainingResponse = {
+  __typename?: 'SaveTrainingResponse';
+  training?: Maybe<Training>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type Training = {
+  __typename?: 'Training';
   id: Scalars['ID'];
+  humanCategory: Scalars['String'];
+  title: Scalars['String'];
+  video?: Maybe<Scalars['String']>;
+  meal?: Maybe<Array<Maybe<FoodStuff>>>;
 };
 
 
@@ -235,8 +320,12 @@ export type DeleteRecipeMutationVariables = Types.Exact<{
 export type DeleteRecipeMutation = (
   { __typename?: 'Mutation' }
   & { deleteRecipe?: Types.Maybe<(
-    { __typename?: 'ResponseStatus' }
-    & Pick<Types.ResponseStatus, 'id'>
+    { __typename?: 'DeleteRecipeResponse' }
+    & Pick<Types.DeleteRecipeResponse, 'totalCount'>
+    & { recipe?: Types.Maybe<(
+      { __typename?: 'Recipe' }
+      & Pick<Types.Recipe, 'id'>
+    )> }
   )> }
 );
 
@@ -346,7 +435,10 @@ export type UploadRecipeMutationOptions = Apollo.BaseMutationOptions<UploadRecip
 export const DeleteRecipeDocument = gql`
     mutation deleteRecipe($id: ID!) {
   deleteRecipe(id: $id) {
-    id
+    recipe {
+      id
+    }
+    totalCount
   }
 }
     `;

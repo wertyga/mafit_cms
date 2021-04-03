@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import useNotify from 'hooks/useNotify';
-import { Loader } from 'components/Common/Loader/Loader';
 import { ContentTable } from 'components/ContentTable/ContentTable';
 import { RecipeModal } from 'components/Recipe/RecipeModal/RecipeModal';
 
@@ -13,18 +11,41 @@ import { getDataWithKeys } from 'utils/arr';
 import { message } from 'antd';
 import { gfRecipe } from '../goldfish/gfRecipe';
 
-const Recipes = () => {
-  const [getRecipes, {
-    loading, data, error, called,
-  }] = useGetRecipesLazyQuery({ fetchPolicy: 'no-cache' });
-  const [deleteRecipeHandler] = useDeleteRecipeMutation();
+type StateType = {
+  recipes: Recipe[];
+  editableRecipe: Partial<Recipe>;
+  totalCount: number;
+};
 
+const Recipes = () => {
   const router = useRouter();
-  const [state, setState] = useState({
+  const [state, setState] = useState<StateType>({
     recipes: [],
     editableRecipe: {},
     totalCount: 0,
-    loading: false,
+  });
+  const [getRecipes, { loading: getLoading }] = useGetRecipesLazyQuery({
+    fetchPolicy: 'no-cache',
+    onCompleted: ({ getRecipes: getRecipesResponse }) => {
+      const { recipes = {}, totalCount = 0 } = getRecipesResponse || {};
+      setState((prev) => ({
+        ...prev,
+        recipes: getDataWithKeys(recipes, 'recipe'),
+        totalCount,
+      }));
+    },
+    onError: (e: Error) => message.error(e.message),
+  });
+  const [deleteRecipeHandler, { loading: deleteLoading }] = useDeleteRecipeMutation({
+    onCompleted: ({ deleteRecipe }) => {
+      const { recipe = {}, totalCount = 0 } = deleteRecipe || {};
+      setState((prev) => ({
+        ...prev,
+        humans: prev.recipes.filter((item) => item.id !== recipe.id),
+        totalCount,
+      }));
+    },
+    onError: (e: Error) => message.error(e.message),
   });
 
   const handleChangePage = async (page = 1, pageSize = DEFAULT_PAGE_SIZE) => {
@@ -38,11 +59,11 @@ const Recipes = () => {
     getRecipes({ variables: payload });
   };
 
-  const onSuccessAdd = (recipe: Recipe, totalCount: number, editableID: string) => {
+  const onSuccessAdd = (recipe: Recipe, totalCount: number) => {
     setState((prev) => ({
       ...prev,
-      recipes: editableID
-        ? prev.recipes.map((item) => (item.id === editableID ? recipe : item))
+      recipes: prev.editableRecipe.id
+        ? prev.recipes.map((item) => (item.id === prev.editableRecipe.id ? recipe : item))
         : [recipe, ...prev.recipes],
       totalCount,
       editableRecipe: {},
@@ -50,36 +71,12 @@ const Recipes = () => {
   };
 
   const handleDelete = (id: string) => async () => {
-    try {
-      setState((prev) => ({ ...prev, loading: true }));
-      await deleteRecipeHandler({ variables: { id } });
-
-      setState((prev) => ({
-        ...prev,
-        recipes: prev.recipes.filter((foodstuff) => foodstuff.id !== id),
-        loading: false,
-      }));
-    } catch (e) {
-      message.error(e.message);
-      setState((prev) => ({ ...prev, loading: false }));
-    }
+    return deleteRecipeHandler({ variables: { id } });
   };
 
   useEffect(() => {
     handleChangePage();
   }, [router.query.search, router.query.by]);
-
-  useEffect(() => {
-    if (loading || error || !called) return;
-    const { getRecipes: { recipes, totalCount } } = data;
-    setState((prev) => ({
-      ...prev,
-      recipes: getDataWithKeys(recipes, 'recipe'),
-      totalCount,
-    }));
-  }, [loading]);
-
-  useNotify(error && error.message, 'error');
 
   const handleEditRecipe = (recipeId: string) => () => {
     setState((prev) => ({
@@ -95,9 +92,9 @@ const Recipes = () => {
     handleChangePage,
   }), [state.totalCount]);
 
+  const loading = getLoading || deleteLoading;
   return (
     <div>
-      <Loader isActive={loading} />
       <ContentTable
         title={gfRecipe.title}
         dataSource={state.recipes}
@@ -106,7 +103,7 @@ const Recipes = () => {
           onEdit: handleEditRecipe,
           onDelete: handleDelete,
         })}
-        loading={state.loading}
+        loading={loading}
         ModalComponent={(
           <RecipeModal
             onSuccess={onSuccessAdd}

@@ -51,5 +51,3 @@ export const UploadImage: React.FC<Props> = ({ onChange, preview }) => {
     </div>
   );
 };
-
-// {/*<div className="flex align-center image-preview">*/}

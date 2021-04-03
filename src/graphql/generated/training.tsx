@@ -258,7 +258,17 @@ export type User = {
   token: Scalars['String'];
 };
 
-export type GetFoodStuffsQueryVariables = Types.Exact<{
+export type TrainingFieldsFragment = (
+  { __typename?: 'Training' }
+  & Pick<Types.Training, 'id' | 'humanCategory' | 'title' | 'video'>
+  & { meal?: Types.Maybe<Array<Types.Maybe<(
+    { __typename?: 'FoodStuff' }
+    & Pick<Types.FoodStuff, 'id' | 'title' | 'unit'>
+  )>>> }
+);
+
+export type GetTrainingsQueryVariables = Types.Exact<{
+  id?: Types.Maybe<Types.Scalars['ID']>;
   offset?: Types.Maybe<Types.Scalars['Int']>;
   limit?: Types.Maybe<Types.Scalars['Int']>;
   search?: Types.Maybe<Types.Scalars['String']>;
@@ -266,88 +276,75 @@ export type GetFoodStuffsQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetFoodStuffsQuery = (
+export type GetTrainingsQuery = (
   { __typename?: 'Query' }
-  & { getFoodStuffs?: Types.Maybe<(
-    { __typename?: 'FoodStuffsWithTotal' }
-    & Pick<Types.FoodStuffsWithTotal, 'totalCount'>
-    & { foodstuff?: Types.Maybe<Array<Types.Maybe<(
-      { __typename?: 'FoodStuff' }
-      & Pick<Types.FoodStuff, 'id' | 'title' | 'unit' | 'calories' | 'fats' | 'carbs' | 'protein'>
+  & { getTrainings?: Types.Maybe<(
+    { __typename?: 'GetTrainingsResponse' }
+    & Pick<Types.GetTrainingsResponse, 'totalCount'>
+    & { trainings?: Types.Maybe<Array<Types.Maybe<(
+      { __typename?: 'Training' }
+      & TrainingFieldsFragment
     )>>> }
   )> }
 );
 
-export type AddFoodstuffMutationVariables = Types.Exact<{
-  id?: Types.Maybe<Types.Scalars['ID']>;
+export type SaveTrainingMutationVariables = Types.Exact<{
   title: Types.Scalars['String'];
-  unit: Types.Scalars['String'];
-  calories: Types.Scalars['Int'];
-  fats: Types.Scalars['Int'];
-  carbs: Types.Scalars['Int'];
-  protein: Types.Scalars['Int'];
+  video?: Types.Maybe<Types.Scalars['Upload']>;
+  humanCategory: Types.Scalars['String'];
+  meal?: Types.Maybe<Array<Types.Maybe<Types.Scalars['ID']>> | Types.Maybe<Types.Scalars['ID']>>;
 }>;
 
 
-export type AddFoodstuffMutation = (
+export type SaveTrainingMutation = (
   { __typename?: 'Mutation' }
-  & { addFoodstuff?: Types.Maybe<(
-    { __typename?: 'FoodStuffWithTotal' }
-    & Pick<Types.FoodStuffWithTotal, 'totalCount'>
-    & { foodstuff?: Types.Maybe<(
-      { __typename?: 'FoodStuff' }
-      & Pick<Types.FoodStuff, 'id' | 'title' | 'unit' | 'calories' | 'fats' | 'carbs' | 'protein'>
+  & { saveTraining?: Types.Maybe<(
+    { __typename?: 'SaveTrainingResponse' }
+    & Pick<Types.SaveTrainingResponse, 'totalCount'>
+    & { training?: Types.Maybe<(
+      { __typename?: 'Training' }
+      & TrainingFieldsFragment
     )> }
   )> }
 );
 
-export type DeleteFoodStuffMutationVariables = Types.Exact<{
-  id: Types.Scalars['ID'];
-}>;
-
-
-export type DeleteFoodStuffMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteFoodStuff?: Types.Maybe<(
-    { __typename?: 'DeleteFoodstufResponse' }
-    & Pick<Types.DeleteFoodstufResponse, 'totalCount'>
-    & { foodstuff?: Types.Maybe<(
-      { __typename?: 'FoodStuff' }
-      & Pick<Types.FoodStuff, 'id'>
-    )> }
-  )> }
-);
-
-
-export const GetFoodStuffsDocument = gql`
-    query getFoodStuffs($offset: Int, $limit: Int, $search: String, $by: String) {
-  getFoodStuffs(offset: $offset, limit: $limit, search: $search, by: $by) {
-    foodstuff {
-      id
-      title
-      unit
-      calories
-      fats
-      carbs
-      protein
+export const TrainingFieldsFragmentDoc = gql`
+    fragment TrainingFields on Training {
+  id
+  humanCategory
+  title
+  video
+  meal {
+    id
+    title
+    unit
+  }
+}
+    `;
+export const GetTrainingsDocument = gql`
+    query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
+  getTrainings(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
+    trainings {
+      ...TrainingFields
     }
     totalCount
   }
 }
-    `;
+    ${TrainingFieldsFragmentDoc}`;
 
 /**
- * __useGetFoodStuffsQuery__
+ * __useGetTrainingsQuery__
  *
- * To run a query within a React component, call `useGetFoodStuffsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetFoodStuffsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetTrainingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTrainingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetFoodStuffsQuery({
+ * const { data, loading, error } = useGetTrainingsQuery({
  *   variables: {
+ *      id: // value for 'id'
  *      offset: // value for 'offset'
  *      limit: // value for 'limit'
  *      search: // value for 'search'
@@ -355,106 +352,58 @@ export const GetFoodStuffsDocument = gql`
  *   },
  * });
  */
-export function useGetFoodStuffsQuery(baseOptions?: Apollo.QueryHookOptions<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>) {
+export function useGetTrainingsQuery(baseOptions?: Apollo.QueryHookOptions<GetTrainingsQuery, GetTrainingsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>(GetFoodStuffsDocument, options);
+        return Apollo.useQuery<GetTrainingsQuery, GetTrainingsQueryVariables>(GetTrainingsDocument, options);
       }
-export function useGetFoodStuffsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>) {
+export function useGetTrainingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTrainingsQuery, GetTrainingsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>(GetFoodStuffsDocument, options);
+          return Apollo.useLazyQuery<GetTrainingsQuery, GetTrainingsQueryVariables>(GetTrainingsDocument, options);
         }
-export type GetFoodStuffsQueryHookResult = ReturnType<typeof useGetFoodStuffsQuery>;
-export type GetFoodStuffsLazyQueryHookResult = ReturnType<typeof useGetFoodStuffsLazyQuery>;
-export type GetFoodStuffsQueryResult = Apollo.QueryResult<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>;
-export const AddFoodstuffDocument = gql`
-    mutation addFoodstuff($id: ID, $title: String!, $unit: String!, $calories: Int!, $fats: Int!, $carbs: Int!, $protein: Int!) {
-  addFoodstuff(
-    id: $id
+export type GetTrainingsQueryHookResult = ReturnType<typeof useGetTrainingsQuery>;
+export type GetTrainingsLazyQueryHookResult = ReturnType<typeof useGetTrainingsLazyQuery>;
+export type GetTrainingsQueryResult = Apollo.QueryResult<GetTrainingsQuery, GetTrainingsQueryVariables>;
+export const SaveTrainingDocument = gql`
+    mutation saveTraining($title: String!, $video: Upload, $humanCategory: String!, $meal: [ID]) {
+  saveTraining(
     title: $title
-    unit: $unit
-    calories: $calories
-    fats: $fats
-    carbs: $carbs
-    protein: $protein
+    video: $video
+    humanCategory: $humanCategory
+    meal: $meal
   ) {
-    foodstuff {
-      id
-      title
-      unit
-      calories
-      fats
-      carbs
-      protein
+    training {
+      ...TrainingFields
     }
     totalCount
   }
 }
-    `;
-export type AddFoodstuffMutationFn = Apollo.MutationFunction<AddFoodstuffMutation, AddFoodstuffMutationVariables>;
+    ${TrainingFieldsFragmentDoc}`;
+export type SaveTrainingMutationFn = Apollo.MutationFunction<SaveTrainingMutation, SaveTrainingMutationVariables>;
 
 /**
- * __useAddFoodstuffMutation__
+ * __useSaveTrainingMutation__
  *
- * To run a mutation, you first call `useAddFoodstuffMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddFoodstuffMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSaveTrainingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveTrainingMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [addFoodstuffMutation, { data, loading, error }] = useAddFoodstuffMutation({
+ * const [saveTrainingMutation, { data, loading, error }] = useSaveTrainingMutation({
  *   variables: {
- *      id: // value for 'id'
  *      title: // value for 'title'
- *      unit: // value for 'unit'
- *      calories: // value for 'calories'
- *      fats: // value for 'fats'
- *      carbs: // value for 'carbs'
- *      protein: // value for 'protein'
+ *      video: // value for 'video'
+ *      humanCategory: // value for 'humanCategory'
+ *      meal: // value for 'meal'
  *   },
  * });
  */
-export function useAddFoodstuffMutation(baseOptions?: Apollo.MutationHookOptions<AddFoodstuffMutation, AddFoodstuffMutationVariables>) {
+export function useSaveTrainingMutation(baseOptions?: Apollo.MutationHookOptions<SaveTrainingMutation, SaveTrainingMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddFoodstuffMutation, AddFoodstuffMutationVariables>(AddFoodstuffDocument, options);
+        return Apollo.useMutation<SaveTrainingMutation, SaveTrainingMutationVariables>(SaveTrainingDocument, options);
       }
-export type AddFoodstuffMutationHookResult = ReturnType<typeof useAddFoodstuffMutation>;
-export type AddFoodstuffMutationResult = Apollo.MutationResult<AddFoodstuffMutation>;
-export type AddFoodstuffMutationOptions = Apollo.BaseMutationOptions<AddFoodstuffMutation, AddFoodstuffMutationVariables>;
-export const DeleteFoodStuffDocument = gql`
-    mutation deleteFoodStuff($id: ID!) {
-  deleteFoodStuff(id: $id) {
-    foodstuff {
-      id
-    }
-    totalCount
-  }
-}
-    `;
-export type DeleteFoodStuffMutationFn = Apollo.MutationFunction<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>;
-
-/**
- * __useDeleteFoodStuffMutation__
- *
- * To run a mutation, you first call `useDeleteFoodStuffMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteFoodStuffMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteFoodStuffMutation, { data, loading, error }] = useDeleteFoodStuffMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteFoodStuffMutation(baseOptions?: Apollo.MutationHookOptions<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>(DeleteFoodStuffDocument, options);
-      }
-export type DeleteFoodStuffMutationHookResult = ReturnType<typeof useDeleteFoodStuffMutation>;
-export type DeleteFoodStuffMutationResult = Apollo.MutationResult<DeleteFoodStuffMutation>;
-export type DeleteFoodStuffMutationOptions = Apollo.BaseMutationOptions<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>;
+export type SaveTrainingMutationHookResult = ReturnType<typeof useSaveTrainingMutation>;
+export type SaveTrainingMutationResult = Apollo.MutationResult<SaveTrainingMutation>;
+export type SaveTrainingMutationOptions = Apollo.BaseMutationOptions<SaveTrainingMutation, SaveTrainingMutationVariables>;

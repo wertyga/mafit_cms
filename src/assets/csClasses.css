@@ -6,7 +6,6 @@
   display: flex;
 }
 .flex-wrap {
-  display: flex;
   flex-wrap: wrap;
 }
 .flex-column {
@@ -14,17 +13,17 @@
   flex-direction: column;
 }
 .align-center {
-  display: flex;
   align-items: center;
 }
 .justify-center {
-  display: flex;
   justify-content: center;
 }
 .justify-between {
   justify-content: space-between;
 }
 .justify-end {
-  display: flex;
   justify-content: flex-end;
+}
+.align-end {
+  align-items: flex-end;
 }

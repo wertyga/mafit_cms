@@ -1,13 +1,3 @@
-type FoodStuff {
-	id: ID!
-	title: String!
-	unit: String!
-	calories: Int
-	fats: Int
-	carbs: Int
-	protein: Int
-}
-
 type ResponseStatus {
 	status: String!
 }
@@ -60,6 +50,9 @@ mutation addFoodstuff(
 
 mutation deleteFoodStuff($id: ID!) {
 	deleteFoodStuff(id: $id) {
-		id
+		foodstuff {
+			id
+		}
+		totalCount
 	}
 }

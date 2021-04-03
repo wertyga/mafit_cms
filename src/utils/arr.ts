@@ -1,3 +1,5 @@
-export const getDataWithKeys = (data: Record<string, string | number>[], prefix?: string) => (
-  data.map((item, i) => ({ ...item, key: `${prefix || ''}-${i}` }))
+import { Recipe } from 'graphql/generated/recipe';
+
+export const getDataWithKeys = (recipes: Recipe[], prefix?: string) => (
+	recipes.map((item, i) => ({ ...item, key: `${prefix || ''}-${i}` }))
 );

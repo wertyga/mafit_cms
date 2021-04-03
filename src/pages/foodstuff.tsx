@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import useNotify from 'hooks/useNotify';
 import { FoodStuffModal } from 'components/FoodStuff/FoodStuffModal/FoodStuffModal';
 import { ContentTable } from 'components/ContentTable/ContentTable';
-import { Loader } from 'components/Common/Loader/Loader';
 import { gfFoodStuff } from 'goldfish/gfFoodStuff';
 import { message } from 'antd';
 
@@ -16,21 +14,40 @@ import { getDataWithKeys } from '../utils/arr';
 type State = {
 	foodStuff: FoodStuff[];
 	totalCount: number;
-	loading: boolean;
   editableFoodstuff: Partial<FoodStuff>;
 };
 
 const Foodstuff = () => {
   const router = useRouter();
-  const [getFoodStuffs, {
-    loading, error, data, called,
-  }] = useGetFoodStuffsLazyQuery({ fetchPolicy: 'no-cache' });
-  const [deleteFoodStuffHandler] = useDeleteFoodStuffMutation();
   const [state, setState] = useState<State>({
     foodStuff: [],
     totalCount: 0,
     editableFoodstuff: {},
-    loading: false,
+  });
+  const [getFoodStuffs, { loading: getLoading }] = useGetFoodStuffsLazyQuery(
+    {
+      fetchPolicy: 'no-cache',
+      onCompleted: ({ getFoodStuffs: foodStuffRes }) => {
+        const { foodstuff, totalCount } = foodStuffRes || {};
+        setState((prev) => ({
+          ...prev,
+          foodStuff: getDataWithKeys(foodstuff, 'foodstuff') as unknown as FoodStuff[],
+          totalCount,
+        }));
+      },
+      onError: (e: Error) => message.error(e.message),
+    },
+  );
+  const [deleteFoodStuffHandler, { loading: deleteLoading }] = useDeleteFoodStuffMutation({
+    onCompleted: ({ deleteFoodStuff }) => {
+      const { foodstuff, totalCount } = deleteFoodStuff || {};
+      setState((prev) => ({
+        ...prev,
+        foodStuff: prev.foodStuff.filter((item) => item.id !== foodstuff.id),
+        totalCount,
+      }));
+    },
+    onError: (e: Error) => message.error(e.message),
   });
 
   const handleChangePage = async (page = 1, pageSize = DEFAULT_PAGE_SIZE) => {
@@ -44,31 +61,18 @@ const Foodstuff = () => {
     getFoodStuffs({ variables: payload });
   };
 
-  const onSuccessAdd = (foodStuff: FoodStuff, totalCount: number, editableID: string) => {
+  const onSuccessAdd = (foodStuff: FoodStuff, totalCount: number) => {
     setState((prev) => ({
       ...prev,
-      foodStuff: editableID
-        ? prev.foodStuff.map((item) => (item.id === editableID ? foodStuff : item))
-        : [...prev.foodStuff, foodStuff],
+      foodStuff: state.editableFoodstuff.id
+        ? prev.foodStuff.map((item) => (item.id === state.editableFoodstuff.id ? foodStuff : item))
+        : [foodStuff, ...prev.foodStuff],
       totalCount,
+      editableFoodstuff: {},
     }));
   };
 
-  const handleDelete = (id: string) => async () => {
-    try {
-      setState((prev) => ({ ...prev, loading: true }));
-      await deleteFoodStuffHandler({ variables: { id } });
-
-      setState((prev) => ({
-        ...prev,
-        foodStuff: prev.foodStuff.filter((foodstuff) => foodstuff.id !== id),
-        loading: false,
-      }));
-    } catch (e) {
-      message.error(e.message);
-      setState((prev) => ({ ...prev, loading: false }));
-    }
-  };
+  const handleDelete = (id: string) => async () => deleteFoodStuffHandler({ variables: { id } });
 
   const handleEdit = (foodStuffID: string) => () => {
     const editableFoodstuff = state.foodStuff.find(({ id }) => foodStuffID === id);
@@ -81,26 +85,14 @@ const Foodstuff = () => {
     handleChangePage();
   }, [router.query.search, router.query.by]);
 
-  useEffect(() => {
-    if (loading || error || !called) return;
-    const { getFoodStuffs: { foodstuff, totalCount } } = data;
-    setState((prev) => ({
-      ...prev,
-      foodStuff: getDataWithKeys(foodstuff, 'foodstuff') as unknown as FoodStuff[],
-      totalCount,
-    }));
-  }, [loading]);
-
-  useNotify(error && error.message, 'error');
-
   const tableConfig = useMemo(() => getFoodStuffTableData({
     totalCount: state.totalCount,
     handleChangePage,
   }), [state.totalCount]);
 
+  const loading = getLoading || deleteLoading;
   return (
     <div>
-      <Loader isActive={loading} />
       <ContentTable
         title={gfFoodStuff.title}
         dataSource={state.foodStuff}
@@ -109,7 +101,7 @@ const Foodstuff = () => {
           onDelete: handleDelete,
           onEdit: handleEdit,
         })}
-        loading={state.loading}
+        loading={loading}
         ModalComponent={(
           <FoodStuffModal
             onSuccess={onSuccessAdd}

@@ -24,11 +24,11 @@ export const ContentTable: React.FC<Props> = ({
   return (
     <div className="contentTable">
       <Row justify="start" className="mb-4 flex-column">
-        <Title className="contentTable__title align-center" level={2}>
+        <Title className="contentTable__title align-center flex" level={2}>
           <span>{title}</span>
           {ModalComponent}
         </Title>
-        <Row className="flex-column">
+        <Row className="flex">
           {search
           && (
             <Button type="primary" icon={<CloseOutlined />} onClick={handleRestSearch}>

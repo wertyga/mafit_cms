@@ -258,78 +258,63 @@ export type User = {
   token: Scalars['String'];
 };
 
-export type GetFoodStuffsQueryVariables = Types.Exact<{
-  offset?: Types.Maybe<Types.Scalars['Int']>;
-  limit?: Types.Maybe<Types.Scalars['Int']>;
-  search?: Types.Maybe<Types.Scalars['String']>;
-  by?: Types.Maybe<Types.Scalars['String']>;
-}>;
+export type GetHumanTypesQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type GetFoodStuffsQuery = (
+export type GetHumanTypesQuery = (
   { __typename?: 'Query' }
-  & { getFoodStuffs?: Types.Maybe<(
-    { __typename?: 'FoodStuffsWithTotal' }
-    & Pick<Types.FoodStuffsWithTotal, 'totalCount'>
-    & { foodstuff?: Types.Maybe<Array<Types.Maybe<(
-      { __typename?: 'FoodStuff' }
-      & Pick<Types.FoodStuff, 'id' | 'title' | 'unit' | 'calories' | 'fats' | 'carbs' | 'protein'>
+  & { getHumanTypes?: Types.Maybe<(
+    { __typename?: 'GetHumanTypesResponse' }
+    & Pick<Types.GetHumanTypesResponse, 'totalCount'>
+    & { humans?: Types.Maybe<Array<Types.Maybe<(
+      { __typename?: 'HumanType' }
+      & Pick<Types.HumanType, 'id' | 'category'>
     )>>> }
   )> }
 );
 
-export type AddFoodstuffMutationVariables = Types.Exact<{
+export type SaveHumanTypeMutationVariables = Types.Exact<{
   id?: Types.Maybe<Types.Scalars['ID']>;
-  title: Types.Scalars['String'];
-  unit: Types.Scalars['String'];
-  calories: Types.Scalars['Int'];
-  fats: Types.Scalars['Int'];
-  carbs: Types.Scalars['Int'];
-  protein: Types.Scalars['Int'];
+  category: Types.Scalars['String'];
 }>;
 
 
-export type AddFoodstuffMutation = (
+export type SaveHumanTypeMutation = (
   { __typename?: 'Mutation' }
-  & { addFoodstuff?: Types.Maybe<(
-    { __typename?: 'FoodStuffWithTotal' }
-    & Pick<Types.FoodStuffWithTotal, 'totalCount'>
-    & { foodstuff?: Types.Maybe<(
-      { __typename?: 'FoodStuff' }
-      & Pick<Types.FoodStuff, 'id' | 'title' | 'unit' | 'calories' | 'fats' | 'carbs' | 'protein'>
+  & { saveHumanType?: Types.Maybe<(
+    { __typename?: 'SaveHumanTypeResponse' }
+    & Pick<Types.SaveHumanTypeResponse, 'totalCount'>
+    & { human?: Types.Maybe<(
+      { __typename?: 'HumanType' }
+      & Pick<Types.HumanType, 'id' | 'category'>
     )> }
   )> }
 );
 
-export type DeleteFoodStuffMutationVariables = Types.Exact<{
+export type DeleteHumanTypeMutationVariables = Types.Exact<{
   id: Types.Scalars['ID'];
 }>;
 
 
-export type DeleteFoodStuffMutation = (
+export type DeleteHumanTypeMutation = (
   { __typename?: 'Mutation' }
-  & { deleteFoodStuff?: Types.Maybe<(
-    { __typename?: 'DeleteFoodstufResponse' }
-    & Pick<Types.DeleteFoodstufResponse, 'totalCount'>
-    & { foodstuff?: Types.Maybe<(
-      { __typename?: 'FoodStuff' }
-      & Pick<Types.FoodStuff, 'id'>
+  & { deleteHumanType?: Types.Maybe<(
+    { __typename?: 'DeleteHumanResponse' }
+    & Pick<Types.DeleteHumanResponse, 'totalCount'>
+    & { human?: Types.Maybe<(
+      { __typename?: 'HumanType' }
+      & Pick<Types.HumanType, 'id'>
     )> }
   )> }
 );
 
 
-export const GetFoodStuffsDocument = gql`
-    query getFoodStuffs($offset: Int, $limit: Int, $search: String, $by: String) {
-  getFoodStuffs(offset: $offset, limit: $limit, search: $search, by: $by) {
-    foodstuff {
+export const GetHumanTypesDocument = gql`
+    query getHumanTypes {
+  getHumanTypes {
+    humans {
       id
-      title
-      unit
-      calories
-      fats
-      carbs
-      protein
+      category
     }
     totalCount
   }
@@ -337,124 +322,102 @@ export const GetFoodStuffsDocument = gql`
     `;
 
 /**
- * __useGetFoodStuffsQuery__
+ * __useGetHumanTypesQuery__
  *
- * To run a query within a React component, call `useGetFoodStuffsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetFoodStuffsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetHumanTypesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetHumanTypesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetFoodStuffsQuery({
+ * const { data, loading, error } = useGetHumanTypesQuery({
  *   variables: {
- *      offset: // value for 'offset'
- *      limit: // value for 'limit'
- *      search: // value for 'search'
- *      by: // value for 'by'
  *   },
  * });
  */
-export function useGetFoodStuffsQuery(baseOptions?: Apollo.QueryHookOptions<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>) {
+export function useGetHumanTypesQuery(baseOptions?: Apollo.QueryHookOptions<GetHumanTypesQuery, GetHumanTypesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>(GetFoodStuffsDocument, options);
+        return Apollo.useQuery<GetHumanTypesQuery, GetHumanTypesQueryVariables>(GetHumanTypesDocument, options);
       }
-export function useGetFoodStuffsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>) {
+export function useGetHumanTypesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetHumanTypesQuery, GetHumanTypesQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>(GetFoodStuffsDocument, options);
+          return Apollo.useLazyQuery<GetHumanTypesQuery, GetHumanTypesQueryVariables>(GetHumanTypesDocument, options);
         }
-export type GetFoodStuffsQueryHookResult = ReturnType<typeof useGetFoodStuffsQuery>;
-export type GetFoodStuffsLazyQueryHookResult = ReturnType<typeof useGetFoodStuffsLazyQuery>;
-export type GetFoodStuffsQueryResult = Apollo.QueryResult<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>;
-export const AddFoodstuffDocument = gql`
-    mutation addFoodstuff($id: ID, $title: String!, $unit: String!, $calories: Int!, $fats: Int!, $carbs: Int!, $protein: Int!) {
-  addFoodstuff(
-    id: $id
-    title: $title
-    unit: $unit
-    calories: $calories
-    fats: $fats
-    carbs: $carbs
-    protein: $protein
-  ) {
-    foodstuff {
+export type GetHumanTypesQueryHookResult = ReturnType<typeof useGetHumanTypesQuery>;
+export type GetHumanTypesLazyQueryHookResult = ReturnType<typeof useGetHumanTypesLazyQuery>;
+export type GetHumanTypesQueryResult = Apollo.QueryResult<GetHumanTypesQuery, GetHumanTypesQueryVariables>;
+export const SaveHumanTypeDocument = gql`
+    mutation saveHumanType($id: ID, $category: String!) {
+  saveHumanType(id: $id, category: $category) {
+    human {
       id
-      title
-      unit
-      calories
-      fats
-      carbs
-      protein
+      category
     }
     totalCount
   }
 }
     `;
-export type AddFoodstuffMutationFn = Apollo.MutationFunction<AddFoodstuffMutation, AddFoodstuffMutationVariables>;
+export type SaveHumanTypeMutationFn = Apollo.MutationFunction<SaveHumanTypeMutation, SaveHumanTypeMutationVariables>;
 
 /**
- * __useAddFoodstuffMutation__
+ * __useSaveHumanTypeMutation__
  *
- * To run a mutation, you first call `useAddFoodstuffMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddFoodstuffMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSaveHumanTypeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveHumanTypeMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [addFoodstuffMutation, { data, loading, error }] = useAddFoodstuffMutation({
+ * const [saveHumanTypeMutation, { data, loading, error }] = useSaveHumanTypeMutation({
  *   variables: {
  *      id: // value for 'id'
- *      title: // value for 'title'
- *      unit: // value for 'unit'
- *      calories: // value for 'calories'
- *      fats: // value for 'fats'
- *      carbs: // value for 'carbs'
- *      protein: // value for 'protein'
+ *      category: // value for 'category'
  *   },
  * });
  */
-export function useAddFoodstuffMutation(baseOptions?: Apollo.MutationHookOptions<AddFoodstuffMutation, AddFoodstuffMutationVariables>) {
+export function useSaveHumanTypeMutation(baseOptions?: Apollo.MutationHookOptions<SaveHumanTypeMutation, SaveHumanTypeMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddFoodstuffMutation, AddFoodstuffMutationVariables>(AddFoodstuffDocument, options);
+        return Apollo.useMutation<SaveHumanTypeMutation, SaveHumanTypeMutationVariables>(SaveHumanTypeDocument, options);
       }
-export type AddFoodstuffMutationHookResult = ReturnType<typeof useAddFoodstuffMutation>;
-export type AddFoodstuffMutationResult = Apollo.MutationResult<AddFoodstuffMutation>;
-export type AddFoodstuffMutationOptions = Apollo.BaseMutationOptions<AddFoodstuffMutation, AddFoodstuffMutationVariables>;
-export const DeleteFoodStuffDocument = gql`
-    mutation deleteFoodStuff($id: ID!) {
-  deleteFoodStuff(id: $id) {
-    foodstuff {
+export type SaveHumanTypeMutationHookResult = ReturnType<typeof useSaveHumanTypeMutation>;
+export type SaveHumanTypeMutationResult = Apollo.MutationResult<SaveHumanTypeMutation>;
+export type SaveHumanTypeMutationOptions = Apollo.BaseMutationOptions<SaveHumanTypeMutation, SaveHumanTypeMutationVariables>;
+export const DeleteHumanTypeDocument = gql`
+    mutation deleteHumanType($id: ID!) {
+  deleteHumanType(id: $id) {
+    human {
       id
     }
     totalCount
   }
 }
     `;
-export type DeleteFoodStuffMutationFn = Apollo.MutationFunction<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>;
+export type DeleteHumanTypeMutationFn = Apollo.MutationFunction<DeleteHumanTypeMutation, DeleteHumanTypeMutationVariables>;
 
 /**
- * __useDeleteFoodStuffMutation__
+ * __useDeleteHumanTypeMutation__
  *
- * To run a mutation, you first call `useDeleteFoodStuffMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteFoodStuffMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteHumanTypeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteHumanTypeMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteFoodStuffMutation, { data, loading, error }] = useDeleteFoodStuffMutation({
+ * const [deleteHumanTypeMutation, { data, loading, error }] = useDeleteHumanTypeMutation({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useDeleteFoodStuffMutation(baseOptions?: Apollo.MutationHookOptions<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>) {
+export function useDeleteHumanTypeMutation(baseOptions?: Apollo.MutationHookOptions<DeleteHumanTypeMutation, DeleteHumanTypeMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>(DeleteFoodStuffDocument, options);
+        return Apollo.useMutation<DeleteHumanTypeMutation, DeleteHumanTypeMutationVariables>(DeleteHumanTypeDocument, options);
       }
-export type DeleteFoodStuffMutationHookResult = ReturnType<typeof useDeleteFoodStuffMutation>;
-export type DeleteFoodStuffMutationResult = Apollo.MutationResult<DeleteFoodStuffMutation>;
-export type DeleteFoodStuffMutationOptions = Apollo.BaseMutationOptions<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>;
+export type DeleteHumanTypeMutationHookResult = ReturnType<typeof useDeleteHumanTypeMutation>;
+export type DeleteHumanTypeMutationResult = Apollo.MutationResult<DeleteHumanTypeMutation>;
+export type DeleteHumanTypeMutationOptions = Apollo.BaseMutationOptions<DeleteHumanTypeMutation, DeleteHumanTypeMutationVariables>;
