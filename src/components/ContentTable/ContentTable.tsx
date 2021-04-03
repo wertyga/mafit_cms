@@ -7,12 +7,12 @@ import { CloseOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 
-type Props = {
+interface Props {
   title: string;
   ModalComponent?: React.ReactElement;
-};
+}
 
-export const ContentTable: React.FC<Props> = ({
+export const ContentTable = <DataType extends React.FC<Props>>({
   title, ModalComponent, ...tableProps
 }) => {
   const router = useRouter();
@@ -37,7 +37,7 @@ export const ContentTable: React.FC<Props> = ({
           )}
         </Row>
       </Row>
-      <Table {...tableProps} />
+      <Table<DataType> {...tableProps} />
     </div>
   );
 };
