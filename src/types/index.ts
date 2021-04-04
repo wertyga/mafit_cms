@@ -1,5 +1,5 @@
 export * as cookieTypes from './cookies';
-export * as foodstuffTypes from './foodstaff';
+export * as foodstuffTypes from './foodstuff';
 export * as recipeTypes from './recipes';
 export * as rootTypes from './root';
 export * as userTypes from './user';
