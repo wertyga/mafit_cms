@@ -1,1 +1,1 @@
-export const getModalTitle = (isEdit: boolean) => isEdit ? 'Edit human model' : 'Add human model';
+export const getModalTitle = (isEdit: boolean) => (isEdit ? 'Edit human model' : 'Add human model');

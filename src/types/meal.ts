@@ -1,8 +1,8 @@
-import { FoodStuff } from './foodstaff';
+import { Food } from './foodstuff';
 
 export type Meal = {
 	type: string;
 	title: string;
 	description: string;
-	foodstuff: Partial<FoodStuff>[];
+	foods: Food[];
 }

@@ -7,7 +7,7 @@ export const gfMenu = [
     Icon: ScheduleOutlined,
   },
   {
-    title: 'Food sets',
+    title: 'Food stuff',
     href: '/foodstuff',
     Icon: ShopOutlined,
   },

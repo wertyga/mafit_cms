@@ -25,7 +25,7 @@ const Recipes = () => {
     totalCount: 0,
   });
   const [getRecipes, { loading: getLoading }] = useGetRecipesLazyQuery({
-    fetchPolicy: 'no-cache',
+    fetchPolicy: 'network-only',
     onCompleted: ({ getRecipes: getRecipesResponse }) => {
       const { recipes = {}, totalCount = 0 } = getRecipesResponse || {};
       setState((prev) => ({

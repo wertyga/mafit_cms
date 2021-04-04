@@ -42,6 +42,12 @@ export type DeleteRecipeResponse = {
   totalCount?: Maybe<Scalars['Int']>;
 };
 
+export type DeleteTrainingResponse = {
+  __typename?: 'DeleteTrainingResponse';
+  training?: Maybe<Training>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
 export type Food = {
   __typename?: 'Food';
   foodstuff?: Maybe<FoodStuff>;
@@ -94,6 +100,15 @@ export type HumanType = {
   category: Scalars['String'];
 };
 
+export type Meal = {
+  __typename?: 'Meal';
+  id?: Maybe<Scalars['ID']>;
+  type: Scalars['String'];
+  title: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  foods?: Maybe<Array<Maybe<Food>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   uploadRecipe?: Maybe<RecipeWithTotal>;
@@ -103,6 +118,7 @@ export type Mutation = {
   saveHumanType?: Maybe<SaveHumanTypeResponse>;
   deleteHumanType?: Maybe<DeleteHumanResponse>;
   saveTraining?: Maybe<SaveTrainingResponse>;
+  deleteTraining?: Maybe<DeleteTrainingResponse>;
 };
 
 
@@ -148,10 +164,16 @@ export type MutationDeleteHumanTypeArgs = {
 
 
 export type MutationSaveTrainingArgs = {
+  id?: Maybe<Scalars['ID']>;
   title: Scalars['String'];
   video?: Maybe<Scalars['Upload']>;
   humanCategory: Scalars['String'];
   meal?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+
+export type MutationDeleteTrainingArgs = {
+  id: Scalars['ID'];
 };
 
 export type Query = {
@@ -178,8 +200,6 @@ export type QueryAuthUserArgs = {
 
 
 export type QueryGetFoodStuffsArgs = {
-  offset?: Maybe<Scalars['Int']>;
-  limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
 };
@@ -197,6 +217,12 @@ export type QueryGetTrainingsArgs = {
   id?: Maybe<Scalars['ID']>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetHumanTypesArgs = {
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
 };
@@ -244,10 +270,15 @@ export type SaveTrainingResponse = {
 export type Training = {
   __typename?: 'Training';
   id: Scalars['ID'];
-  humanCategory: Scalars['String'];
   title: Scalars['String'];
   video?: Maybe<Scalars['String']>;
-  meal?: Maybe<Array<Maybe<FoodStuff>>>;
+  meal?: Maybe<TrainingMeal>;
+};
+
+export type TrainingMeal = {
+  __typename?: 'TrainingMeal';
+  human?: Maybe<HumanType>;
+  meal?: Maybe<Array<Maybe<Meal>>>;
 };
 
 
@@ -258,7 +289,10 @@ export type User = {
   token: Scalars['String'];
 };
 
-export type GetHumanTypesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type GetHumanTypesQueryVariables = Types.Exact<{
+  search?: Types.Maybe<Types.Scalars['String']>;
+  by?: Types.Maybe<Types.Scalars['String']>;
+}>;
 
 
 export type GetHumanTypesQuery = (
@@ -310,8 +344,8 @@ export type DeleteHumanTypeMutation = (
 
 
 export const GetHumanTypesDocument = gql`
-    query getHumanTypes {
-  getHumanTypes {
+    query getHumanTypes($search: String, $by: String) {
+  getHumanTypes(search: $search, by: $by) {
     humans {
       id
       category
@@ -333,6 +367,8 @@ export const GetHumanTypesDocument = gql`
  * @example
  * const { data, loading, error } = useGetHumanTypesQuery({
  *   variables: {
+ *      search: // value for 'search'
+ *      by: // value for 'by'
  *   },
  * });
  */

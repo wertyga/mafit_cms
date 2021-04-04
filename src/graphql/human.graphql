@@ -1,5 +1,5 @@
-query getHumanTypes {
-	getHumanTypes {
+query getHumanTypes($search: String, $by: String) {
+	getHumanTypes(search: $search, by: $by) {
 		humans {
 			id
 			category

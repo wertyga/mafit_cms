@@ -1,7 +1,6 @@
-import React from 'react';
-import { CloseCircleFilled, EditOutlined } from '@ant-design/icons';
 import { capitalFirst } from 'utils/string';
 import { getColumnSearchProps } from 'components/Common/Filter/helpers';
+import { getDeleteEditColumn } from 'components/Common/Table/helpers';
 
 export const FOODSTUFF_PROPS = [
   {
@@ -29,29 +28,22 @@ export const FOODSTUFF_PROPS = [
 ];
 export const gfFoodStuff = {
   title: 'Food stuff',
-  columns: ({ filter: { currentFilter }, onEdit, onDelete }) => ([
-    ...FOODSTUFF_PROPS.map(({ name, number }) => ({
-      title: capitalFirst(name),
-      dataIndex: name,
-      sorter: (a, b) => {
-        const asc = !number ? a[name] < b[name] : Number(a[name]) < Number(b[name]);
-        if (asc) return 1;
-        if (!asc) return -1;
-        return 0;
-      },
-      align: 'center',
-      ...getColumnSearchProps({ name, currentFilter }),
-    })),
-    {
-      title: null,
-      dataIndex: 'delete',
-      align: 'center',
-      render: (_, record) => (
-        <div className="flex-column align-center justify-center">
-          <EditOutlined className="success icon-md pointer mb-2" onClick={onEdit(record.id)} />
-          <CloseCircleFilled className="danger icon-md pointer" onClick={onDelete(record.id)} />
-        </div>
-      ),
-    },
-  ]),
+  columns: ({ filter: { currentFilter }, onEdit, onDelete }) => {
+    const deleteEditColumn = getDeleteEditColumn({ onEdit, onDelete });
+    return [
+      ...FOODSTUFF_PROPS.map(({ name, number }) => ({
+        title: capitalFirst(name),
+        dataIndex: name,
+        sorter: (a, b) => {
+          const asc = !number ? a[name] < b[name] : Number(a[name]) < Number(b[name]);
+          if (asc) return 1;
+          if (!asc) return -1;
+          return 0;
+        },
+        align: 'center',
+        ...getColumnSearchProps({ name, currentFilter }),
+      })),
+      deleteEditColumn,
+    ];
+  },
 };

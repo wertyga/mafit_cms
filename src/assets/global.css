@@ -72,3 +72,25 @@ span {
   width: 1.5rem;
   height: 1.5rem;
 }
+
+.image-table {
+  width: 8rem;
+}
+
+.row-col-title {
+  background-color: var(--color-grey);
+  padding: var(--space-4);
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+}
+
+.border-bottom-cell {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-grey);
+}
+.border-cell {
+  padding: var(--space-4);
+  border: 1px solid var(--color-grey);
+  border-radius: var(--radius-xs);
+}

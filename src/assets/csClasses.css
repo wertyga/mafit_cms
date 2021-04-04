@@ -12,9 +12,6 @@
   display: flex;
   flex-direction: column;
 }
-.align-center {
-  align-items: center;
-}
 .justify-center {
   justify-content: center;
 }
@@ -24,6 +21,12 @@
 .justify-end {
   justify-content: flex-end;
 }
+.align-center {
+  align-items: center;
+}
 .align-end {
   align-items: flex-end;
+}
+.align-start {
+  align-items: flex-start;
 }

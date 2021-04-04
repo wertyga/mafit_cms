@@ -23,6 +23,9 @@
   --image-preview-width: 4.5rem;
   --image-preview-fluid-width: 10rem;
 
+  /* Radius */
+  --radius-xs: 3px;
+
   /* Layers */
   --layer-upperest: 10000;
 }

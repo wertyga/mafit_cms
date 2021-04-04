@@ -1,12 +1,25 @@
 fragment TrainingFields on Training {
 	id
-	humanCategory
 	title
 	video
 	meal {
-		id
-		title
-		unit
+		human {
+			id
+			category
+		}
+		meal {
+			type
+			title
+			description
+			foods {
+				foodstuff {
+					id
+					title
+					unit
+				}
+				qt
+			}
+		}
 	}
 }
 
@@ -19,10 +32,18 @@ query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: Str
 	}
 }
 
-mutation saveTraining($title: String!, $video: Upload, $humanCategory: String!, $meal: [ID]) {
-	saveTraining(title: $title, video: $video, humanCategory: $humanCategory, meal: $meal) {
+mutation saveTraining($id: ID, $title: String!, $video: Upload, $humanCategory: String!, $meal: [ID]) {
+	saveTraining(id: $id, title: $title, video: $video, humanCategory: $humanCategory, meal: $meal) {
 		training {
 			...TrainingFields
+		}
+		totalCount
+	}
+}
+mutation deleteTraining($id: ID!) {
+	deleteTraining(id: $id) {
+		training {
+			id
 		}
 		totalCount
 	}

@@ -2,8 +2,8 @@ type ResponseStatus {
 	status: String!
 }
 
-query getFoodStuffs($offset: Int, $limit: Int, $search: String, $by: String) {
-	getFoodStuffs(offset: $offset, limit: $limit, search: $search, by: $by) {
+query getFoodStuffs($search: String, $by: String) {
+	getFoodStuffs(search: $search, by: $by) {
 		foodstuff {
 			id
 			title

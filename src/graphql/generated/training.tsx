@@ -42,6 +42,12 @@ export type DeleteRecipeResponse = {
   totalCount?: Maybe<Scalars['Int']>;
 };
 
+export type DeleteTrainingResponse = {
+  __typename?: 'DeleteTrainingResponse';
+  training?: Maybe<Training>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
 export type Food = {
   __typename?: 'Food';
   foodstuff?: Maybe<FoodStuff>;
@@ -94,6 +100,15 @@ export type HumanType = {
   category: Scalars['String'];
 };
 
+export type Meal = {
+  __typename?: 'Meal';
+  id?: Maybe<Scalars['ID']>;
+  type: Scalars['String'];
+  title: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  foods?: Maybe<Array<Maybe<Food>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   uploadRecipe?: Maybe<RecipeWithTotal>;
@@ -103,6 +118,7 @@ export type Mutation = {
   saveHumanType?: Maybe<SaveHumanTypeResponse>;
   deleteHumanType?: Maybe<DeleteHumanResponse>;
   saveTraining?: Maybe<SaveTrainingResponse>;
+  deleteTraining?: Maybe<DeleteTrainingResponse>;
 };
 
 
@@ -148,10 +164,16 @@ export type MutationDeleteHumanTypeArgs = {
 
 
 export type MutationSaveTrainingArgs = {
+  id?: Maybe<Scalars['ID']>;
   title: Scalars['String'];
   video?: Maybe<Scalars['Upload']>;
   humanCategory: Scalars['String'];
   meal?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+
+export type MutationDeleteTrainingArgs = {
+  id: Scalars['ID'];
 };
 
 export type Query = {
@@ -178,8 +200,6 @@ export type QueryAuthUserArgs = {
 
 
 export type QueryGetFoodStuffsArgs = {
-  offset?: Maybe<Scalars['Int']>;
-  limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
 };
@@ -197,6 +217,12 @@ export type QueryGetTrainingsArgs = {
   id?: Maybe<Scalars['ID']>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetHumanTypesArgs = {
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
 };
@@ -244,10 +270,15 @@ export type SaveTrainingResponse = {
 export type Training = {
   __typename?: 'Training';
   id: Scalars['ID'];
-  humanCategory: Scalars['String'];
   title: Scalars['String'];
   video?: Maybe<Scalars['String']>;
-  meal?: Maybe<Array<Maybe<FoodStuff>>>;
+  meal?: Maybe<TrainingMeal>;
+};
+
+export type TrainingMeal = {
+  __typename?: 'TrainingMeal';
+  human?: Maybe<HumanType>;
+  meal?: Maybe<Array<Maybe<Meal>>>;
 };
 
 
@@ -260,11 +291,25 @@ export type User = {
 
 export type TrainingFieldsFragment = (
   { __typename?: 'Training' }
-  & Pick<Types.Training, 'id' | 'humanCategory' | 'title' | 'video'>
-  & { meal?: Types.Maybe<Array<Types.Maybe<(
-    { __typename?: 'FoodStuff' }
-    & Pick<Types.FoodStuff, 'id' | 'title' | 'unit'>
-  )>>> }
+  & Pick<Types.Training, 'id' | 'title' | 'video'>
+  & { meal?: Types.Maybe<(
+    { __typename?: 'TrainingMeal' }
+    & { human?: Types.Maybe<(
+      { __typename?: 'HumanType' }
+      & Pick<Types.HumanType, 'id' | 'category'>
+    )>, meal?: Types.Maybe<Array<Types.Maybe<(
+      { __typename?: 'Meal' }
+      & Pick<Types.Meal, 'type' | 'title' | 'description'>
+      & { foods?: Types.Maybe<Array<Types.Maybe<(
+        { __typename?: 'Food' }
+        & Pick<Types.Food, 'qt'>
+        & { foodstuff?: Types.Maybe<(
+          { __typename?: 'FoodStuff' }
+          & Pick<Types.FoodStuff, 'id' | 'title' | 'unit'>
+        )> }
+      )>>> }
+    )>>> }
+  )> }
 );
 
 export type GetTrainingsQueryVariables = Types.Exact<{
@@ -289,6 +334,7 @@ export type GetTrainingsQuery = (
 );
 
 export type SaveTrainingMutationVariables = Types.Exact<{
+  id?: Types.Maybe<Types.Scalars['ID']>;
   title: Types.Scalars['String'];
   video?: Types.Maybe<Types.Scalars['Upload']>;
   humanCategory: Types.Scalars['String'];
@@ -308,16 +354,46 @@ export type SaveTrainingMutation = (
   )> }
 );
 
+export type DeleteTrainingMutationVariables = Types.Exact<{
+  id: Types.Scalars['ID'];
+}>;
+
+
+export type DeleteTrainingMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteTraining?: Types.Maybe<(
+    { __typename?: 'DeleteTrainingResponse' }
+    & Pick<Types.DeleteTrainingResponse, 'totalCount'>
+    & { training?: Types.Maybe<(
+      { __typename?: 'Training' }
+      & Pick<Types.Training, 'id'>
+    )> }
+  )> }
+);
+
 export const TrainingFieldsFragmentDoc = gql`
     fragment TrainingFields on Training {
   id
-  humanCategory
   title
   video
   meal {
-    id
-    title
-    unit
+    human {
+      id
+      category
+    }
+    meal {
+      type
+      title
+      description
+      foods {
+        foodstuff {
+          id
+          title
+          unit
+        }
+        qt
+      }
+    }
   }
 }
     `;
@@ -364,8 +440,9 @@ export type GetTrainingsQueryHookResult = ReturnType<typeof useGetTrainingsQuery
 export type GetTrainingsLazyQueryHookResult = ReturnType<typeof useGetTrainingsLazyQuery>;
 export type GetTrainingsQueryResult = Apollo.QueryResult<GetTrainingsQuery, GetTrainingsQueryVariables>;
 export const SaveTrainingDocument = gql`
-    mutation saveTraining($title: String!, $video: Upload, $humanCategory: String!, $meal: [ID]) {
+    mutation saveTraining($id: ID, $title: String!, $video: Upload, $humanCategory: String!, $meal: [ID]) {
   saveTraining(
+    id: $id
     title: $title
     video: $video
     humanCategory: $humanCategory
@@ -393,6 +470,7 @@ export type SaveTrainingMutationFn = Apollo.MutationFunction<SaveTrainingMutatio
  * @example
  * const [saveTrainingMutation, { data, loading, error }] = useSaveTrainingMutation({
  *   variables: {
+ *      id: // value for 'id'
  *      title: // value for 'title'
  *      video: // value for 'video'
  *      humanCategory: // value for 'humanCategory'
@@ -407,3 +485,39 @@ export function useSaveTrainingMutation(baseOptions?: Apollo.MutationHookOptions
 export type SaveTrainingMutationHookResult = ReturnType<typeof useSaveTrainingMutation>;
 export type SaveTrainingMutationResult = Apollo.MutationResult<SaveTrainingMutation>;
 export type SaveTrainingMutationOptions = Apollo.BaseMutationOptions<SaveTrainingMutation, SaveTrainingMutationVariables>;
+export const DeleteTrainingDocument = gql`
+    mutation deleteTraining($id: ID!) {
+  deleteTraining(id: $id) {
+    training {
+      id
+    }
+    totalCount
+  }
+}
+    `;
+export type DeleteTrainingMutationFn = Apollo.MutationFunction<DeleteTrainingMutation, DeleteTrainingMutationVariables>;
+
+/**
+ * __useDeleteTrainingMutation__
+ *
+ * To run a mutation, you first call `useDeleteTrainingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTrainingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTrainingMutation, { data, loading, error }] = useDeleteTrainingMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTrainingMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTrainingMutation, DeleteTrainingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTrainingMutation, DeleteTrainingMutationVariables>(DeleteTrainingDocument, options);
+      }
+export type DeleteTrainingMutationHookResult = ReturnType<typeof useDeleteTrainingMutation>;
+export type DeleteTrainingMutationResult = Apollo.MutationResult<DeleteTrainingMutation>;
+export type DeleteTrainingMutationOptions = Apollo.BaseMutationOptions<DeleteTrainingMutation, DeleteTrainingMutationVariables>;

@@ -1,12 +1,12 @@
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
 import * as Types from '../../types';
 
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions = {};
+const defaultOptions =  {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -17,6 +17,7 @@ export type Scalars = {
   /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
+
 
 export enum CacheControlScope {
   Public = 'PUBLIC',
@@ -38,6 +39,12 @@ export type DeleteHumanResponse = {
 export type DeleteRecipeResponse = {
   __typename?: 'DeleteRecipeResponse';
   recipe?: Maybe<Recipe>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type DeleteTrainingResponse = {
+  __typename?: 'DeleteTrainingResponse';
+  training?: Maybe<Training>;
   totalCount?: Maybe<Scalars['Int']>;
 };
 
@@ -93,6 +100,15 @@ export type HumanType = {
   category: Scalars['String'];
 };
 
+export type Meal = {
+  __typename?: 'Meal';
+  id?: Maybe<Scalars['ID']>;
+  type: Scalars['String'];
+  title: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  foods?: Maybe<Array<Maybe<Food>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   uploadRecipe?: Maybe<RecipeWithTotal>;
@@ -102,7 +118,9 @@ export type Mutation = {
   saveHumanType?: Maybe<SaveHumanTypeResponse>;
   deleteHumanType?: Maybe<DeleteHumanResponse>;
   saveTraining?: Maybe<SaveTrainingResponse>;
+  deleteTraining?: Maybe<DeleteTrainingResponse>;
 };
+
 
 export type MutationUploadRecipeArgs = {
   id?: Maybe<Scalars['ID']>;
@@ -111,6 +129,7 @@ export type MutationUploadRecipeArgs = {
   image?: Maybe<Scalars['Upload']>;
   foods?: Maybe<Array<Maybe<FoodMutationRequest>>>;
 };
+
 
 export type MutationAddFoodstuffArgs = {
   id?: Maybe<Scalars['ID']>;
@@ -122,28 +141,39 @@ export type MutationAddFoodstuffArgs = {
   protein: Scalars['Int'];
 };
 
+
 export type MutationDeleteRecipeArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationDeleteFoodStuffArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationSaveHumanTypeArgs = {
   id?: Maybe<Scalars['ID']>;
   category: Scalars['String'];
 };
 
+
 export type MutationDeleteHumanTypeArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationSaveTrainingArgs = {
+  id?: Maybe<Scalars['ID']>;
   title: Scalars['String'];
   video?: Maybe<Scalars['Upload']>;
   humanCategory: Scalars['String'];
   meal?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+
+export type MutationDeleteTrainingArgs = {
+  id: Scalars['ID'];
 };
 
 export type Query = {
@@ -157,21 +187,23 @@ export type Query = {
   getHumanTypes?: Maybe<GetHumanTypesResponse>;
 };
 
+
 export type QueryGetUserArgs = {
   token?: Maybe<Scalars['String']>;
 };
+
 
 export type QueryAuthUserArgs = {
   username?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
 };
 
+
 export type QueryGetFoodStuffsArgs = {
-  offset?: Maybe<Scalars['Int']>;
-  limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
 };
+
 
 export type QueryGetRecipesArgs = {
   offset?: Maybe<Scalars['Int']>;
@@ -180,10 +212,17 @@ export type QueryGetRecipesArgs = {
   by?: Maybe<Scalars['String']>;
 };
 
+
 export type QueryGetTrainingsArgs = {
   id?: Maybe<Scalars['ID']>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetHumanTypesArgs = {
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
 };
@@ -231,11 +270,17 @@ export type SaveTrainingResponse = {
 export type Training = {
   __typename?: 'Training';
   id: Scalars['ID'];
-  humanCategory: Scalars['String'];
   title: Scalars['String'];
   video?: Maybe<Scalars['String']>;
-  meal?: Maybe<Array<Maybe<FoodStuff>>>;
+  meal?: Maybe<TrainingMeal>;
 };
+
+export type TrainingMeal = {
+  __typename?: 'TrainingMeal';
+  human?: Maybe<HumanType>;
+  meal?: Maybe<Array<Maybe<Meal>>>;
+};
+
 
 export type User = {
   __typename?: 'User';
@@ -245,11 +290,10 @@ export type User = {
 };
 
 export type GetFoodStuffsQueryVariables = Types.Exact<{
-  offset?: Types.Maybe<Types.Scalars['Int']>;
-  limit?: Types.Maybe<Types.Scalars['Int']>;
   search?: Types.Maybe<Types.Scalars['String']>;
   by?: Types.Maybe<Types.Scalars['String']>;
 }>;
+
 
 export type GetFoodStuffsQuery = (
   { __typename?: 'Query' }
@@ -273,6 +317,7 @@ export type AddFoodstuffMutationVariables = Types.Exact<{
   protein: Types.Scalars['Int'];
 }>;
 
+
 export type AddFoodstuffMutation = (
   { __typename?: 'Mutation' }
   & { addFoodstuff?: Types.Maybe<(
@@ -289,6 +334,7 @@ export type DeleteFoodStuffMutationVariables = Types.Exact<{
   id: Types.Scalars['ID'];
 }>;
 
+
 export type DeleteFoodStuffMutation = (
   { __typename?: 'Mutation' }
   & { deleteFoodStuff?: Types.Maybe<(
@@ -301,9 +347,10 @@ export type DeleteFoodStuffMutation = (
   )> }
 );
 
+
 export const GetFoodStuffsDocument = gql`
-    query getFoodStuffs($offset: Int, $limit: Int, $search: String, $by: String) {
-  getFoodStuffs(offset: $offset, limit: $limit, search: $search, by: $by) {
+    query getFoodStuffs($search: String, $by: String) {
+  getFoodStuffs(search: $search, by: $by) {
     foodstuff {
       id
       title
@@ -330,21 +377,19 @@ export const GetFoodStuffsDocument = gql`
  * @example
  * const { data, loading, error } = useGetFoodStuffsQuery({
  *   variables: {
- *      offset: // value for 'offset'
- *      limit: // value for 'limit'
  *      search: // value for 'search'
  *      by: // value for 'by'
  *   },
  * });
  */
 export function useGetFoodStuffsQuery(baseOptions?: Apollo.QueryHookOptions<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>(GetFoodStuffsDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>(GetFoodStuffsDocument, options);
+      }
 export function useGetFoodStuffsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>(GetFoodStuffsDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>(GetFoodStuffsDocument, options);
+        }
 export type GetFoodStuffsQueryHookResult = ReturnType<typeof useGetFoodStuffsQuery>;
 export type GetFoodStuffsLazyQueryHookResult = ReturnType<typeof useGetFoodStuffsLazyQuery>;
 export type GetFoodStuffsQueryResult = Apollo.QueryResult<GetFoodStuffsQuery, GetFoodStuffsQueryVariables>;
@@ -398,9 +443,9 @@ export type AddFoodstuffMutationFn = Apollo.MutationFunction<AddFoodstuffMutatio
  * });
  */
 export function useAddFoodstuffMutation(baseOptions?: Apollo.MutationHookOptions<AddFoodstuffMutation, AddFoodstuffMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<AddFoodstuffMutation, AddFoodstuffMutationVariables>(AddFoodstuffDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddFoodstuffMutation, AddFoodstuffMutationVariables>(AddFoodstuffDocument, options);
+      }
 export type AddFoodstuffMutationHookResult = ReturnType<typeof useAddFoodstuffMutation>;
 export type AddFoodstuffMutationResult = Apollo.MutationResult<AddFoodstuffMutation>;
 export type AddFoodstuffMutationOptions = Apollo.BaseMutationOptions<AddFoodstuffMutation, AddFoodstuffMutationVariables>;
@@ -434,9 +479,9 @@ export type DeleteFoodStuffMutationFn = Apollo.MutationFunction<DeleteFoodStuffM
  * });
  */
 export function useDeleteFoodStuffMutation(baseOptions?: Apollo.MutationHookOptions<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>(DeleteFoodStuffDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>(DeleteFoodStuffDocument, options);
+      }
 export type DeleteFoodStuffMutationHookResult = ReturnType<typeof useDeleteFoodStuffMutation>;
 export type DeleteFoodStuffMutationResult = Apollo.MutationResult<DeleteFoodStuffMutation>;
 export type DeleteFoodStuffMutationOptions = Apollo.BaseMutationOptions<DeleteFoodStuffMutation, DeleteFoodStuffMutationVariables>;
