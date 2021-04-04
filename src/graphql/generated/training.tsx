@@ -219,6 +219,7 @@ export type QueryGetTrainingsArgs = {
   limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
+  humanType?: Maybe<Scalars['String']>;
 };
 
 
@@ -318,6 +319,7 @@ export type GetTrainingsQueryVariables = Types.Exact<{
   limit?: Types.Maybe<Types.Scalars['Int']>;
   search?: Types.Maybe<Types.Scalars['String']>;
   by?: Types.Maybe<Types.Scalars['String']>;
+  humanType?: Types.Maybe<Types.Scalars['String']>;
 }>;
 
 
@@ -398,8 +400,15 @@ export const TrainingFieldsFragmentDoc = gql`
 }
     `;
 export const GetTrainingsDocument = gql`
-    query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
-  getTrainings(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
+    query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String, $humanType: String) {
+  getTrainings(
+    id: $id
+    offset: $offset
+    limit: $limit
+    search: $search
+    by: $by
+    humanType: $humanType
+  ) {
     trainings {
       ...TrainingFields
     }
@@ -425,6 +434,7 @@ export const GetTrainingsDocument = gql`
  *      limit: // value for 'limit'
  *      search: // value for 'search'
  *      by: // value for 'by'
+ *      humanType: // value for 'humanType'
  *   },
  * });
  */

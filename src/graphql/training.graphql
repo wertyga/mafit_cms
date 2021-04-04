@@ -23,8 +23,8 @@ fragment TrainingFields on Training {
 	}
 }
 
-query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
-	getTrainings(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
+query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String, $humanType: String) {
+	getTrainings(id: $id, offset: $offset, limit: $limit, search: $search, by: $by, humanType: $humanType) {
 		trainings {
 			...TrainingFields
 		}

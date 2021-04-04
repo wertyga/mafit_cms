@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import { constructUrl } from 'w-querify';
 import {
   Typography, Row, Button, Table,
 } from 'antd';
@@ -9,17 +10,20 @@ const { Title } = Typography;
 
 interface Props {
   title: string;
+  preTableSlot?: React.ReactElement;
   ModalComponent?: React.ReactElement;
 }
 
 export const ContentTable = <DataType extends React.FC<Props>>({
-  title, ModalComponent, ...tableProps
+  title, ModalComponent, preTableSlot, ...tableProps
 }) => {
   const router = useRouter();
   const { search } = router.query;
 
-  const handleRestSearch = () => {
-    router.replace(router.pathname);
+  const handleResetSearch = () => {
+    const { query: { search: searchQuery, by, ...rest } } = router;
+    const resetUrl = constructUrl(router.pathname, rest);
+    router.replace(resetUrl);
   };
   return (
     <div className="contentTable">
@@ -31,12 +35,13 @@ export const ContentTable = <DataType extends React.FC<Props>>({
         <Row className="flex">
           {search
           && (
-            <Button type="primary" icon={<CloseOutlined />} onClick={handleRestSearch}>
+            <Button type="primary" icon={<CloseOutlined />} onClick={handleResetSearch}>
               {search}
             </Button>
           )}
         </Row>
       </Row>
+      {preTableSlot}
       <Table<DataType> {...tableProps} />
     </div>
   );

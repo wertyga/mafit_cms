@@ -1,20 +1,23 @@
 import React from 'react';
-import { Upload, Image } from 'antd';
-import { PlusOutlined, DeleteFilled } from '@ant-design/icons';
-
+import { Upload } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { getBase64 } from 'utils/file';
+import { UploadPreview } from './UploadPreview';
 
 import './styles.css';
 
 type Props = {
 	onChange: (file: File, preview: string) => void;
 	preview?: string;
+	type?: 'image' | 'video';
 };
 
-export const UploadImage: React.FC<Props> = ({ onChange, preview }) => {
+export const UploadImage: React.FC<Props> = ({ onChange, preview, type = 'image' }) => {
   const handleChange = async ({ file }) => {
 	  let { preview: filePreview } = file;
-	  if (!file.url && !filePreview) {
+	  if (type === 'video') {
+		  filePreview = file.name;
+	  } else if (!file.url && !filePreview) {
 		  filePreview = await getBase64(file.originFileObj);
 	  }
 	  onChange(file, filePreview);
@@ -26,8 +29,7 @@ export const UploadImage: React.FC<Props> = ({ onChange, preview }) => {
 
   return (
     <div className="mb-4">
-      {!preview
-		    && (
+      {!preview &&
 					<Upload
 					  listType="picture-card"
 					  onChange={handleChange}
@@ -37,17 +39,14 @@ export const UploadImage: React.FC<Props> = ({ onChange, preview }) => {
 				    <div>Upload</div>
 				  </div>
 					</Upload>
-          )}
-          {!!preview
-            && (
-          	  <div className="upload__preview">
-							  <Image src={preview} />
-							  <DeleteFilled
-							    onClick={handleDeletePreview}
-							    className="ml-4 icon-md upload__preview__icon"
-							  />
-							</div>
-	      )}
+      }
+      {!!preview && (
+	      <UploadPreview
+	        preview={preview}
+	        type={type}
+	        handleDelete={handleDeletePreview}
+	      />
+      )}
     </div>
   );
 };

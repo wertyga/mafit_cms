@@ -8,10 +8,12 @@ import { message } from 'antd';
 import { gfTrainings } from 'goldfish/gfTrainings';
 import { getTrainingTableData } from 'components/Training/helpers';
 import { setHumansAction } from 'redux/actions/human/humanActions';
+import { setFoodStuffsAction } from 'redux/actions/foodstuff/foodstuffActions';
+import { TrainingModal } from 'components/Training/TrainingModal/TrainingModal';
+import { TabTrainingMenu } from 'components/Training/TabTrainingMenu/TabTrainingMenu';
 
-import {
-  Training, FoodStuff, useGetTrainingsLazyQuery, useDeleteTrainingMutation,
-} from 'graphql/generated/training';
+import { Training } from 'types/training';
+import { useGetTrainingsLazyQuery, useDeleteTrainingMutation } from 'graphql/generated/training';
 import { GetFoodStuffsDocument } from 'graphql/generated/foodstuff';
 import { GetHumanTypesDocument } from 'graphql/generated/human';
 import { ContentTable } from '../components/ContentTable/ContentTable';
@@ -67,24 +69,25 @@ const Trainings = () => {
       const { humans = [], totalCount: humansCount } = humanResponse || {};
       const { foodstuffs = [], totalCount: foodsCount } = foodstuffResponse || {};
       setHumansAction(humans, humansCount);
-      setHumansAction(foodstuffs, foodsCount);
+      setFoodStuffsAction(foodstuffs, foodsCount);
     } catch (e) {
       message.error(e.message);
     }
   };
 
   const handleChangePage = async (page = 1, pageSize = DEFAULT_PAGE_SIZE) => {
-    const { query: { search, by } } = router;
+    const { query: { search, by, humanType } } = router;
     const payload = {
       offset: (page - 1) * pageSize,
       limit: pageSize,
       search,
       by,
+      humanType,
     };
     getTrainings({ variables: payload });
   };
 
-  const onSuccessAdd = (foodStuff: FoodStuff, totalCount: number) => {
+  const onSuccessAdd = (foodStuff: Training, totalCount: number) => {
     // setState((prev) => ({
     //   ...prev,
     //   foodStuff: state.editableFoodstuff.id
@@ -107,7 +110,7 @@ const Trainings = () => {
 
   useEffect(() => {
     handleChangePage();
-  }, [router.query.search, router.query.by]);
+  }, [router.query.search, router.query.by, router.query.humanType]);
 
   useConstructor(initialFetchData);
 
@@ -126,14 +129,15 @@ const Trainings = () => {
         onDelete: handleDelete,
         onEdit: handleEdit,
       })}
+      preTableSlot={<TabTrainingMenu />}
       loading={loading}
-      // ModalComponent={(
-      //   <FoodStuffModal
-      //     onSuccess={onSuccessAdd}
-      //     editableFoodstuff={state.editableTraining}
-      //     onClose={onCloseModal}
-      //   />
-      // )}
+      ModalComponent={(
+        <TrainingModal
+          onSuccess={onSuccessAdd}
+          editableTraining={state.editableTraining}
+          onClose={onCloseModal}
+        />
+      )}
       {...tableConfig}
     />
   );

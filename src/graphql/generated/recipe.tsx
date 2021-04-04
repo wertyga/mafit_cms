@@ -219,6 +219,7 @@ export type QueryGetTrainingsArgs = {
   limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
+  humanType?: Maybe<Scalars['String']>;
 };
 
 

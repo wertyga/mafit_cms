@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { constructUrl } from 'w-querify';
 import { useRouter } from 'next/router';
 import {
   Input, Form, Button,
@@ -16,12 +17,12 @@ export const SearchField: React.FC<Props> = ({ name, confirm }) => {
   const handleSearch = ({ search }) => {
     const { query } = router;
     if (query.search === search && query.by === name) return;
-    router.replace(`${router.pathname}?search=${search}&by=${name}`);
-    confirm();
-  };
-
-  const handleDelete = () => {
-    router.replace(router.pathname);
+    const redirectUrl = constructUrl(router.pathname, {
+      ...query,
+      search,
+      by: name,
+    });
+    router.replace(redirectUrl);
     confirm();
   };
 
@@ -41,7 +42,6 @@ export const SearchField: React.FC<Props> = ({ name, confirm }) => {
           />
         </Form.Item>
         <Button type="primary" htmlType="submit" className="ml-2">Search</Button>
-        <Button type="primary" onClick={handleDelete} className="ml-2" danger>Delete</Button>
       </div>
     </Form>
   );

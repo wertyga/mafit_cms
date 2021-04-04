@@ -39,7 +39,7 @@ export const gfTrainings = {
 			  title: 'Video',
 			  dataIndex: 'video',
 			  align: 'center',
-			  render: (url) => <Image src={url} />,
+			  render: (url) => <video className="image-table"><source src={url} /></video>,
 		  },
 		  deleteEditColumn,
 	  ];
