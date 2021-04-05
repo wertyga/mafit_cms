@@ -1,4 +1,4 @@
-import { Food } from './foodstaff';
+import { Food } from './foodstuff';
 
 export type Recipe = {
 	id: string;

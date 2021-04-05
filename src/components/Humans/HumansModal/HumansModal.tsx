@@ -3,7 +3,7 @@ import {
   Col, Form, Input, message,
 } from 'antd';
 import { gfErrors } from 'goldfish/gfErrors';
-import { HumanType, useSaveHumanTypeMutation } from 'graphql/generated/human';
+import { useSaveHumanTypeMutation, HumanType } from 'graphql/types';
 import { TableModal } from 'components/Common/Table/TableModal/TableModal';
 
 import { getModalTitle } from './helpers';
@@ -18,7 +18,7 @@ export const HumansModal: React.FC<Props> = ({ onSuccess, editableHuman, onClose
   const [form] = Form.useForm();
   const [saveHumanCategory, { loading }] = useSaveHumanTypeMutation({
     onCompleted: ({ saveHumanType }) => {
-      const { human = {}, totalCount = 0 } = saveHumanType || {};
+      const { human, totalCount = 0 } = saveHumanType || {};
       onSuccess(human, totalCount);
     },
     onError: (e: Error) => message.error(e.message),

@@ -1,0 +1,30 @@
+.video-component {
+  display: flex;
+  justify-content: center;
+}
+
+.video-component video, .video-modal video {
+  width: 100%;
+}
+
+.video-component__preview {
+  cursor: pointer;
+  position: relative;
+}
+.video-component__preview:hover:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .1);
+}
+
+.video-modal {
+  padding: var(--space-8) var(--space-10);
+}
+.video-modal .ant-modal {
+  top: 0;
+  width: 100% !important;
+}

@@ -1,5 +1,5 @@
 import { FOODSTUFF_PROPS } from 'goldfish/gfFoodStuff';
-import { FoodStuff } from 'types/foodstaff';
+import { FoodStuff } from 'graphql/types';
 
 export const collectFoodStuffSaveData = (foodStuffData: FoodStuff) => (
   Object.entries(foodStuffData)

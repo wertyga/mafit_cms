@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import { Radio } from 'antd';
 import useSelector from 'hooks/useSelector';
 
+import './styles.css';
+
 export const TabTrainingMenu = () => {
   const { query: { humanType, ...restQuery }, push, pathname } = useRouter();
   const { humanStore: { humans } } = useSelector('humanStore');
@@ -17,7 +19,7 @@ export const TabTrainingMenu = () => {
   };
 
   return (
-    <Radio.Group value={humanType} className="mb-4">
+    <Radio.Group value={humanType} className="tab-training mb-4">
       {humans.map(({ id, category }) => (
         <Radio.Button value={id} key={id} onClick={onChange(id)}>{category}</Radio.Button>
       ))}

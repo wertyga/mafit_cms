@@ -6,7 +6,7 @@ import { Loader } from 'components/Common/Loader/Loader';
 
 import { saveUserAction, logoutUserAction } from 'redux/actions/user/userActions';
 import useNotify from 'hooks/useNotify';
-import { useAuthUserLazyQuery } from 'graphql/generated/user';
+import { useAuthUserLazyQuery } from 'graphql/types';
 
 import { gfErrors } from 'goldfish/gfErrors';
 
@@ -17,7 +17,7 @@ const { Title } = Typography;
 
 export const AuthForm = () => {
   const [authUser, {
-    loading, data = {}, error = {} as Error, called,
+    loading, data, error = {} as Error, called,
   }] = useAuthUserLazyQuery({ fetchPolicy: 'no-cache' });
 
   const onSubmit = (values: FormType) => {

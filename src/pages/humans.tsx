@@ -3,11 +3,12 @@ import { useRouter } from 'next/router';
 import { message } from 'antd';
 import useSelector from 'hooks/useSelector';
 import { setHumansAction, updateHumansAction } from 'redux/actions/human/humanActions';
-import { useGetHumanTypesLazyQuery, useDeleteHumanTypeMutation, HumanType } from 'graphql/generated/human';
+import { useGetHumanTypesLazyQuery, useDeleteHumanTypeMutation, HumanType } from 'graphql/types';
 import { HumansModal } from 'components/Humans/HumansModal/HumansModal';
 import { ContentTable } from 'components/ContentTable/ContentTable';
 import { getHumansTableData } from 'components/Humans/helpers';
 import { gfHumans } from 'goldfish/gfHumans';
+import { ParsedUrlQuery } from 'querystring';
 
 type StateType = {
   editableHuman: Partial<HumanType>;
@@ -52,7 +53,7 @@ const Humans = () => {
 
   useEffect(() => {
     const { query: { search, by } } = router;
-    getHumans({ variables: { search, by } });
+    getHumans({ variables: { search, by } as ParsedUrlQuery });
   }, [router.query.search, router.query.by]);
 
   const tableConfig = useMemo(() => getHumansTableData({

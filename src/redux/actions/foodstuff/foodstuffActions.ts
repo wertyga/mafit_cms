@@ -1,4 +1,4 @@
-import { FoodStuff, FOODSTUFF_ACTION_TYPES } from 'types/foodstuff';
+import { FOODSTUFF_ACTION_TYPES, FoodStuff } from 'types';
 import { rootAction } from '../rootAction';
 
 export const setFoodStuffsAction = (foodstuffs: FoodStuff[], totalCount: number) => {
@@ -12,7 +12,7 @@ export const setFoodStuffsAction = (foodstuffs: FoodStuff[], totalCount: number)
   });
 };
 
-export const updateFoodStuffsAction = (foodstuff: FoodStuff, totalCount: number, requestType: 'add' | 'update' | 'delete') => {
+export const updateFoodStuffsAction = (foodstuff: Partial<FoodStuff>, totalCount: number, requestType: 'add' | 'update' | 'delete') => {
   const { dispatch } = rootAction();
   let type;
   if (requestType === 'add') type = FOODSTUFF_ACTION_TYPES.ADD_FOODSTUFF;

@@ -2,13 +2,11 @@ import React, { useState, useEffect } from 'react';
 import {
   Input, Form, Col, message,
 } from 'antd';
-import { useUploadRecipeMutation, Recipe } from 'graphql/generated/recipe';
-import { UploadImage } from 'components/Common/UploadImage/UploadImage';
+import { Upload } from 'components/Common/Upload/Upload';
 import { TableModal } from 'components/Common/Table/TableModal/TableModal';
 import { gfRecipe } from 'goldfish/gfRecipe';
 import { gfErrors } from 'goldfish/gfErrors';
-
-import { useGetFoodStuffsQuery } from 'graphql/generated/foodstuff';
+import { useUploadRecipeMutation, Recipe, useGetFoodStuffsQuery } from 'graphql/types';
 
 import { DescriptionBlock } from './DescriptionBlock/DescriptionBlock';
 import { FoodBlock } from './FoodBlock/FoodBlock';
@@ -29,7 +27,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
   });
   const [addRecipe, { loading }] = useUploadRecipeMutation({
     onCompleted: ({ uploadRecipe }) => {
-      const { recipe = {}, totalCount = 0 } = uploadRecipe || {};
+      const { recipe, totalCount = 0 } = uploadRecipe || {};
       setState((prev) => ({ ...prev, image: null, preview: '' }));
       onSuccess(recipe, totalCount);
     },
@@ -78,7 +76,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
       onClose={onClose}
       openTrigger={!!editableRecipe.id}
     >
-      <UploadImage onChange={onFileChange} preview={state.preview} />
+      <Upload onChange={onFileChange} preview={state.preview} />
       {gfRecipe.recipeFields.map(({ name }) => {
         const title = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
         return (

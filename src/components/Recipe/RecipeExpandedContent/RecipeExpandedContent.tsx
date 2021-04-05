@@ -1,8 +1,7 @@
 import React from 'react';
-import {Col, Descriptions, Row} from 'antd';
 import { Description } from 'components/Common/Description/Description';
-import { Recipe } from 'graphql/generated/recipe';
-/*eslint-disable*/
+import { Recipe } from 'graphql/types';
+
 export const RecipeExpandedContent: React.FC<Recipe> = ({ description = [], title, foods }) => (
   <div>
     <Description label="Foodstuff" className="mb-2">

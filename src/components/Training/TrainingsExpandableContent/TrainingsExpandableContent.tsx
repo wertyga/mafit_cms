@@ -1,8 +1,7 @@
 import React from 'react';
 import { Typography } from 'antd';
 import { Description } from 'components/Common/Description/Description';
-
-import { Training } from 'types/training';
+import { Training } from 'graphql/types';
 
 const { Text } = Typography;
 

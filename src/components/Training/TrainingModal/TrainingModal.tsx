@@ -1,10 +1,10 @@
 import { Col, Form, Input } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { UploadImage } from 'components/Common/UploadImage/UploadImage';
+import { Upload } from 'components/Common/Upload/Upload';
 import { TableModal } from 'components/Common/Table/TableModal/TableModal';
 import { gfErrors } from 'goldfish/gfErrors';
 
-import { Training } from 'types/training';
+import { Training } from 'graphql/types';
 
 type Props = {
 	editableTraining: Partial<Training>;
@@ -46,7 +46,7 @@ export const TrainingModal: React.FC<Props> = ({ editableTraining, onClose, onSu
       onClose={onClose}
       openTrigger={!!editableTraining.id}
     >
-      <UploadImage onChange={onFileChange} preview={state.preview} type="video" />
+      <Upload onChange={onFileChange} preview={state.preview} type="video" />
       <Col span={22}>
         <Form.Item
           name="title"

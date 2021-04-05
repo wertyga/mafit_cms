@@ -1,7 +1,7 @@
 import React from 'react';
 import _noop from 'lodash/noop';
 import { Image } from 'antd';
-import { Food } from 'graphql/generated/foodstuff';
+import { Food } from 'graphql/types';
 
 import { getColumnSearchProps } from 'components/Common/Filter/helpers';
 import { getDeleteEditColumn } from 'components/Common/Table/helpers';

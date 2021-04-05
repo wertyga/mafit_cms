@@ -1,8 +1,7 @@
 import React from 'react';
 import { TrainingsExpandableContent } from 'components/Training/TrainingsExpandableContent/TrainingsExpandableContent';
 import { getTableData } from 'components/Common/Table/helpers';
-
-import { Training } from 'types/training';
+import { Training } from 'graphql/types';
 
 export const getTrainingTableData = ({
   totalCount, handleChangePage,

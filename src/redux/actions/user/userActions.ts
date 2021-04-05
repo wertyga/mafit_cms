@@ -1,5 +1,4 @@
-import { UserState, UserTypes } from 'types/user';
-import { CookiesTypes } from 'types/cookies';
+import { UserState, UserTypes, CookiesTypes } from 'types';
 
 import { rootAction } from '../rootAction';
 

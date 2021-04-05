@@ -1,4 +1,4 @@
-import { FOODSTUFF_ACTION_TYPES, FoodstuffState } from 'types/foodstuff';
+import { FOODSTUFF_ACTION_TYPES, FoodstuffState } from 'types';
 
 const initialState = {
   foodstuffs: [],

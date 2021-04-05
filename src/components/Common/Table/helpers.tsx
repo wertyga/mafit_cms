@@ -1,7 +1,7 @@
 import React from 'react';
 import { PaginationConfig } from 'antd/es/pagination';
 import { ExpandableConfig } from 'rc-table/es/interface';
-import { CloseCircleFilled, EditOutlined } from '@ant-design/icons';
+import { CloseCircleFilled, EditFilled } from '@ant-design/icons';
 
 export const DEFAULT_PAGE_SIZE = 10;
 
@@ -22,7 +22,7 @@ export const getTableData = (config: {
 type DeleteEditColumnProps = {
 	onEdit: (id: string) => () => void;
 	onDelete: (id: string) => () => void;
-	align: 'center' | 'left' | 'right';
+	align?: 'center' | 'left' | 'right';
 };
 export const getDeleteEditColumn = ({ onEdit, onDelete, align = 'center' }: DeleteEditColumnProps) => {
   let alignClass = '';
@@ -35,7 +35,7 @@ export const getDeleteEditColumn = ({ onEdit, onDelete, align = 'center' }: Dele
     align: 'center',
     render: (_, record) => (
       <div className={`flex-column ${alignClass} justify-center`}>
-        <EditOutlined className="success icon-md pointer mb-2" onClick={onEdit(record.id)} />
+        <EditFilled className="success icon-md pointer mb-2" onClick={onEdit(record.id)} />
         <CloseCircleFilled className="danger icon-md pointer" onClick={onDelete(record.id)} />
       </div>
     ),

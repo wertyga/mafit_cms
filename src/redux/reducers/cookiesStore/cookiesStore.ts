@@ -1,5 +1,5 @@
 import Cookies, { CookieSetOptions } from 'universal-cookie';
-import { CookieAction, CookiesTypes, CookieState } from 'types/cookies';
+import { CookieAction, CookiesTypes, CookieState } from 'types';
 
 const MONTH_IN_SECONDS = 2592000;
 const defaultOptions = {

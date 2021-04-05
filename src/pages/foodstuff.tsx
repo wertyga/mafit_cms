@@ -8,8 +8,8 @@ import { gfFoodStuff } from 'goldfish/gfFoodStuff';
 import { message } from 'antd';
 
 import { getFoodStuffTableData } from 'components/FoodStuff/helpers';
-
-import { useGetFoodStuffsLazyQuery, useDeleteFoodStuffMutation, FoodStuff } from 'graphql/generated/foodstuff';
+import { useGetFoodStuffsLazyQuery, useDeleteFoodStuffMutation, FoodStuff } from 'graphql/types';
+import { ParsedUrlQuery } from 'querystring';
 
 type State = {
   editableFoodstuff: Partial<FoodStuff>;
@@ -33,7 +33,7 @@ const Foodstuff = () => {
   );
   const [deleteFoodStuffHandler, { loading: deleteLoading }] = useDeleteFoodStuffMutation({
     onCompleted: ({ deleteFoodStuff }) => {
-      const { foodstuff, totalCount } = deleteFoodStuff || {};
+      const { foodstuff = {}, totalCount } = deleteFoodStuff || {};
       updateFoodStuffsAction(foodstuff, totalCount, 'delete');
     },
     onError: (e: Error) => message.error(e.message),
@@ -59,7 +59,7 @@ const Foodstuff = () => {
 
   useEffect(() => {
     const { query: { search, by } } = router;
-    getFoodStuffs({ variables: { search, by } });
+    getFoodStuffs({ variables: { search, by } as ParsedUrlQuery });
   }, [router.query.search, router.query.by]);
 
   const tableConfig = useMemo(() => getFoodStuffTableData({

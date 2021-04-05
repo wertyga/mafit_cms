@@ -1,5 +1,8 @@
-import { Recipe } from 'graphql/generated/recipe';
+import { Recipe } from 'graphql/types';
 
 export const getDataWithKeys = (recipes: Recipe[], prefix?: string) => (
-	recipes.map((item, i) => ({ ...item, key: `${prefix || ''}-${i}` }))
+  recipes.map((item, i) => ({
+    ...item,
+    key: `${prefix || ''}-${i}`,
+  }))
 );

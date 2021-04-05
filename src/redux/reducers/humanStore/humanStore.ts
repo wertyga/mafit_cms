@@ -1,4 +1,4 @@
-import { HUMAN_ACTION_TYPES, HumanState } from 'types/human';
+import { HUMAN_ACTION_TYPES, HumanState } from 'types';
 
 const initialState = {
   humans: [],

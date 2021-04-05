@@ -1,4 +1,4 @@
-import { Human, HUMAN_ACTION_TYPES } from 'types/human';
+import { Human, HUMAN_ACTION_TYPES } from 'types';
 import { rootAction } from '../rootAction';
 
 export const setHumansAction = (humans: Human[], totalCount: number) => {
@@ -12,7 +12,7 @@ export const setHumansAction = (humans: Human[], totalCount: number) => {
   });
 };
 
-export const updateHumansAction = (human: Human, totalCount: number, requestType: 'add' | 'update' | 'delete') => {
+export const updateHumansAction = (human: Partial<Human>, totalCount: number, requestType: 'add' | 'update' | 'delete') => {
   const { dispatch } = rootAction();
   let type;
   if (requestType === 'add') type = HUMAN_ACTION_TYPES.ADD_HUMAN;

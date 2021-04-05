@@ -5,7 +5,7 @@ import {
   Form, Button, FormInstance, Col,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { GetFoodStuffsQuery } from 'graphql/generated/foodstuff';
+import { GetFoodStuffsQuery } from 'graphql/types';
 import { SelectValue } from 'antd/es/select';
 import { DragRow } from 'components/Drag/DragRow';
 import { getFormItemMeta } from './helpers';

@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const ContentTable = <DataType extends React.FC<Props>>({
-  title, ModalComponent, preTableSlot, ...tableProps
+  title, ModalComponent, preTableSlot = null, ...tableProps
 }) => {
   const router = useRouter();
   const { search } = router.query;

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Input, Form, message } from 'antd';
-import { useAddFoodstuffMutation, FoodStuff } from 'graphql/generated/foodstuff';
+import { useAddFoodstuffMutation, FoodStuff } from 'graphql/types';
 import { TableModal } from 'components/Common/Table/TableModal/TableModal';
 
 import { FOODSTUFF_PROPS } from 'goldfish/gfFoodStuff';
@@ -32,7 +32,7 @@ export const FoodStuffModal: React.FC<Props> = ({ onSuccess, editableFoodstuff, 
         ...dataWithNumeric,
         id: editableFoodstuff.id,
       };
-      await addFoodStuff({ variables: payload });
+      await addFoodStuff({ variables: payload } as unknown as any);
 
       return {};
     } catch (e) {

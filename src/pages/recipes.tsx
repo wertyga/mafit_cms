@@ -3,13 +3,14 @@ import { useRouter } from 'next/router';
 import { ContentTable } from 'components/ContentTable/ContentTable';
 import { RecipeModal } from 'components/Recipe/RecipeModal/RecipeModal';
 
-import { useGetRecipesLazyQuery, Recipe, useDeleteRecipeMutation } from 'graphql/generated/recipe';
+import { useGetRecipesLazyQuery, useDeleteRecipeMutation, Recipe } from 'graphql/types';
 
 import { getRecipeTableData } from 'components/Recipe/helpers';
 import { DEFAULT_PAGE_SIZE } from 'components/Common/Table/helpers';
 import { getDataWithKeys } from 'utils/arr';
 import { message } from 'antd';
-import { gfRecipe } from '../goldfish/gfRecipe';
+import { gfRecipe } from 'goldfish/gfRecipe';
+import { ParsedUrlQuery } from 'querystring';
 
 type StateType = {
   recipes: Recipe[];
@@ -27,7 +28,7 @@ const Recipes = () => {
   const [getRecipes, { loading: getLoading }] = useGetRecipesLazyQuery({
     fetchPolicy: 'network-only',
     onCompleted: ({ getRecipes: getRecipesResponse }) => {
-      const { recipes = {}, totalCount = 0 } = getRecipesResponse || {};
+      const { recipes = [], totalCount = 0 } = getRecipesResponse || {};
       setState((prev) => ({
         ...prev,
         recipes: getDataWithKeys(recipes, 'recipe'),
@@ -38,7 +39,7 @@ const Recipes = () => {
   });
   const [deleteRecipeHandler, { loading: deleteLoading }] = useDeleteRecipeMutation({
     onCompleted: ({ deleteRecipe }) => {
-      const { recipe = {}, totalCount = 0 } = deleteRecipe || {};
+      const { recipe = {} as Partial<Recipe>, totalCount = 0 } = deleteRecipe || {};
       setState((prev) => ({
         ...prev,
         humans: prev.recipes.filter((item) => item.id !== recipe.id),
@@ -56,7 +57,7 @@ const Recipes = () => {
       search,
       by,
     };
-    getRecipes({ variables: payload });
+    getRecipes({ variables: payload } as unknown as ParsedUrlQuery);
   };
 
   const onSuccessAdd = (recipe: Recipe, totalCount: number) => {
@@ -70,9 +71,7 @@ const Recipes = () => {
     }));
   };
 
-  const handleDelete = (id: string) => async () => {
-    return deleteRecipeHandler({ variables: { id } });
-  };
+  const handleDelete = (id: string) => async () => deleteRecipeHandler({ variables: { id } });
 
   useEffect(() => {
     handleChangePage();

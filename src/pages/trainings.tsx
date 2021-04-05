@@ -12,10 +12,14 @@ import { setFoodStuffsAction } from 'redux/actions/foodstuff/foodstuffActions';
 import { TrainingModal } from 'components/Training/TrainingModal/TrainingModal';
 import { TabTrainingMenu } from 'components/Training/TabTrainingMenu/TabTrainingMenu';
 
-import { Training } from 'types/training';
-import { useGetTrainingsLazyQuery, useDeleteTrainingMutation } from 'graphql/generated/training';
-import { GetFoodStuffsDocument } from 'graphql/generated/foodstuff';
-import { GetHumanTypesDocument } from 'graphql/generated/human';
+import {
+  useGetTrainingsLazyQuery,
+  useDeleteTrainingMutation,
+  Training,
+  GetFoodStuffsDocument,
+  GetHumanTypesDocument,
+} from 'graphql/types';
+import { ParsedUrlQuery } from 'querystring';
 import { ContentTable } from '../components/ContentTable/ContentTable';
 import { DEFAULT_PAGE_SIZE } from '../components/Common/Table/helpers';
 
@@ -84,7 +88,7 @@ const Trainings = () => {
       by,
       humanType,
     };
-    getTrainings({ variables: payload });
+    getTrainings({ variables: payload } as unknown as ParsedUrlQuery);
   };
 
   const onSuccessAdd = (foodStuff: Training, totalCount: number) => {

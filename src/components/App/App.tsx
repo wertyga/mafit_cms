@@ -5,7 +5,7 @@ import useSelector from 'hooks/useSelector';
 import useConstructor from 'hooks/useConstructor';
 import useNotify from 'hooks/useNotify';
 
-import { useGetUserLazyQuery } from 'graphql/generated/user';
+import { useGetUserLazyQuery } from 'graphql/types';
 import { saveUserAction } from 'redux/actions/user/userActions';
 
 import { AuthForm } from 'components/AuthForm/AuthForm';

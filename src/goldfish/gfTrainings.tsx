@@ -1,9 +1,8 @@
 import React from 'react';
-import { Image } from 'antd';
+import { Video } from 'components/Common/Video/Video';
 import { getDeleteEditColumn } from 'components/Common/Table/helpers';
 import { getColumnSearchProps } from 'components/Common/Filter/helpers';
-
-import { Training } from 'types/training';
+import { Training } from 'graphql/types';
 
 export const gfTrainings = {
   title: 'Trainings',
@@ -39,7 +38,7 @@ export const gfTrainings = {
 			  title: 'Video',
 			  dataIndex: 'video',
 			  align: 'center',
-			  render: (url) => <video className="image-table"><source src={url} /></video>,
+			  render: (url) => <Video className="image-table" src={url} />,
 		  },
 		  deleteEditColumn,
 	  ];

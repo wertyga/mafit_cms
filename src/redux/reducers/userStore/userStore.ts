@@ -1,4 +1,4 @@
-import { UserAction, UserState, UserTypes } from 'types/user';
+import { UserAction, UserState, UserTypes } from 'types';
 
 const initialState = {
   token: '',

@@ -1,5 +1,5 @@
 import { useSelector as reduxSelector } from 'react-redux';
-import { RootState } from 'types/root';
+import { RootState } from 'types';
 
 type Selector = keyof RootState;
 

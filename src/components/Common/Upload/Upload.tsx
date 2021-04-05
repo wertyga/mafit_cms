@@ -1,5 +1,5 @@
 import React from 'react';
-import { Upload } from 'antd';
+import { Upload as AntdUpload } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { getBase64 } from 'utils/file';
 import { UploadPreview } from './UploadPreview';
@@ -12,7 +12,7 @@ type Props = {
 	type?: 'image' | 'video';
 };
 
-export const UploadImage: React.FC<Props> = ({ onChange, preview, type = 'image' }) => {
+export const Upload: React.FC<Props> = ({ onChange, preview, type = 'image' }) => {
   const handleChange = async ({ file }) => {
 	  let { preview: filePreview } = file;
 	  if (type === 'video') {
@@ -30,7 +30,7 @@ export const UploadImage: React.FC<Props> = ({ onChange, preview, type = 'image'
   return (
     <div className="mb-4">
       {!preview &&
-					<Upload
+					<AntdUpload
 					  listType="picture-card"
 					  onChange={handleChange}
 					>
@@ -38,7 +38,7 @@ export const UploadImage: React.FC<Props> = ({ onChange, preview, type = 'image'
 				    <PlusOutlined />
 				    <div>Upload</div>
 				  </div>
-					</Upload>
+					</AntdUpload>
       }
       {!!preview && (
 	      <UploadPreview

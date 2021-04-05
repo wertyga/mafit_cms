@@ -1,5 +1,4 @@
-import { Recipe } from 'graphql/generated/recipe';
-import { FoodStuff } from 'graphql/generated/foodstuff';
+import { FoodStuff, Recipe } from 'graphql/types';
 
 type FormDataType = {
   description: { description: string }[];
