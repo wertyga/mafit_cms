@@ -4,7 +4,7 @@ type ResponseStatus {
 
 query getFoodStuffs($search: String, $by: String) {
 	getFoodStuffs(search: $search, by: $by) {
-		foodstuff {
+		foodstuffs {
 			id
 			title
 			unit

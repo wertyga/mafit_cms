@@ -18,8 +18,8 @@ export const HumansModal: React.FC<Props> = ({ onSuccess, editableHuman, onClose
   const [form] = Form.useForm();
   const [saveHumanCategory, { loading }] = useSaveHumanTypeMutation({
     onCompleted: ({ saveHumanType }) => {
-      const { human, totalCount = 0 } = saveHumanType || {};
-      onSuccess(human, totalCount);
+      const { human = {}, totalCount = 0 } = saveHumanType || {};
+      onSuccess(human as HumanType, totalCount);
     },
     onError: (e: Error) => message.error(e.message),
   });

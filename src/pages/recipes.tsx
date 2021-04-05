@@ -61,10 +61,11 @@ const Recipes = () => {
   };
 
   const onSuccessAdd = (recipe: Recipe, totalCount: number) => {
+    const editableId = state.editableRecipe.id;
     setState((prev) => ({
       ...prev,
-      recipes: prev.editableRecipe.id
-        ? prev.recipes.map((item) => (item.id === prev.editableRecipe.id ? recipe : item))
+      recipes: editableId
+        ? prev.recipes.map((item) => (item.id === editableId ? recipe : item))
         : [recipe, ...prev.recipes],
       totalCount,
       editableRecipe: {},

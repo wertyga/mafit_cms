@@ -14,7 +14,7 @@ const nextConfig = {
     ];
   },
   env: {
-    API_GATEWAY: isProd ? 'http://localhost:3000/graphql' : 'http://localhost:3000/graphql',
+    API_GATEWAY: isProd ? 'http://localhost:3002/graphql' : 'http://localhost:3002/graphql',
   },
 };
 

@@ -43,7 +43,7 @@ const Trainings = () => {
       const { trainings = [], totalCount = 0 } = trainingResponse || {};
       setState((prev) => ({
         ...prev,
-        trainings,
+        trainings: trainings as Training[],
         totalCount,
       }));
     },
@@ -91,16 +91,16 @@ const Trainings = () => {
     getTrainings({ variables: payload } as unknown as ParsedUrlQuery);
   };
 
-  const onSuccessAdd = (foodStuff: Training, totalCount: number) => {
-    // setState((prev) => ({
-    //   ...prev,
-    //   foodStuff: state.editableFoodstuff.id
-    //     ? prev.foodStuff
-    //        .map((item) => (item.id === state.editableFoodstuff.id ? foodStuff : item))
-    //     : [foodStuff, ...prev.foodStuff],
-    //   totalCount,
-    //   editableFoodstuff: {},
-    // }));
+  const onSuccessAdd = (training: Training, totalCount: number) => {
+    const editableId = state.editableTraining.id;
+    setState((prev) => ({
+      ...prev,
+      trainings: editableId
+        ? prev.trainings.map((item) => (item.id === editableId ? training : item))
+        : [training, ...prev.trainings],
+      totalCount,
+      editableFoodstuff: {},
+    }));
   };
 
   const handleDelete = (id: string) => () => deleteTraining({ variables: { id } });

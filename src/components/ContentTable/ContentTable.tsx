@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const ContentTable = <DataType extends React.FC<Props>>({
-  title, ModalComponent, preTableSlot = null, ...tableProps
+  title, ModalComponent, preTableSlot = null, dataSource, ...tableProps
 }) => {
   const router = useRouter();
   const { search } = router.query;
@@ -42,7 +42,10 @@ export const ContentTable = <DataType extends React.FC<Props>>({
         </Row>
       </Row>
       {preTableSlot}
-      <Table<DataType> {...tableProps} />
+      <Table<DataType>
+        dataSource={dataSource.map((item, i) => ({ ...item, key: `${title}-${i}` }))}
+        {...tableProps}
+      />
     </div>
   );
 };

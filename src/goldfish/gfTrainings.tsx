@@ -12,6 +12,7 @@ export const gfTrainings = {
 		  {
 			  title: 'Title',
 			  dataIndex: 'title',
+			  key: 'title',
 			  sorter: (a, b) => {
 				  const asc = a < b;
 				  if (asc) return 1;
@@ -22,8 +23,9 @@ export const gfTrainings = {
 			  ...getColumnSearchProps({ name: 'title', currentFilter }),
 		  },
 		  {
-			  title: 'Meal',
-			  dataIndex: 'meal',
+			  title: 'Meals',
+			  dataIndex: 'meals',
+			  key: 'meals',
 			  sorter: (a, b) => {
 				  const asc = a.length < b.length;
 				  if (asc) return 1;
@@ -31,12 +33,17 @@ export const gfTrainings = {
 				  return 0;
 			  },
 			  align: 'left',
-			  render: (_, { meal: { meal = [] } }: Training) => <span>{meal[0].title}</span>,
-			  ...getColumnSearchProps({ name: 'meal', currentFilter }),
+			  render: (_, { meals = [] }: Training) => (
+			  	<div>
+					  {meals.map(({ type }) => <span key={type} className="mr-2">{type}</span>)}
+				  </div>
+			  ),
+			  ...getColumnSearchProps({ name: 'meals', currentFilter }),
 		  },
 		  {
 			  title: 'Video',
 			  dataIndex: 'video',
+			  key: 'video',
 			  align: 'center',
 			  render: (url) => <Video className="image-table" src={url} />,
 		  },

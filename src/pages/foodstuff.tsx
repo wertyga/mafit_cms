@@ -25,8 +25,8 @@ const Foodstuff = () => {
     {
       fetchPolicy: 'network-only',
       onCompleted: ({ getFoodStuffs: foodStuffRes }) => {
-        const { foodstuff, totalCount } = foodStuffRes || {};
-        setFoodStuffsAction(foodstuff, totalCount);
+        const { foodstuffs, totalCount } = foodStuffRes || {};
+        setFoodStuffsAction(foodstuffs, totalCount);
       },
       onError: (e: Error) => message.error(e.message),
     },

@@ -38,6 +38,7 @@ export const FoodItem: React.FC<FoodItemProps> = ({
         {...field}
         label="Type"
         className="mb-0"
+        labelAlign="left"
         name={[field.name, 'food']}
         rules={[{ required: true, message: gfErrors.emptyField }]}
       >
@@ -57,7 +58,7 @@ export const FoodItem: React.FC<FoodItemProps> = ({
         />
       </Form.Item>
     </Col>
-    <Col span={2} className="align-center justify-center">
+    <Col span={2} className="align-center justify-center flex">
       <MinusCircleOutlined
         className="danger icon-md "
         onClick={handleDeleteFoodField(field.name, fieldKey, remove)}

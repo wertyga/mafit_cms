@@ -19,8 +19,8 @@ export const FoodStuffModal: React.FC<Props> = ({ onSuccess, editableFoodstuff, 
   const [form] = Form.useForm();
   const [addFoodStuff, { loading }] = useAddFoodstuffMutation({
     onCompleted: ({ addFoodstuff }) => {
-      const { foodstuff, totalCount } = addFoodstuff || {};
-      onSuccess(foodstuff, totalCount);
+      const { foodstuff = {}, totalCount } = addFoodstuff || {};
+      onSuccess(foodstuff as FoodStuff, totalCount);
     },
     onError: (e: Error) => message.error(e.message),
   });

@@ -20,6 +20,7 @@ export const DescriptionRow: React.FC<Props> = ({ field, removeRow, addRow, inde
       <Form.Item
         {...field}
         className="mb-0"
+        labelAlign="left"
         label={`Description #${index + 1}`}
         name={[field.name, 'description']}
         fieldKey={[field.fieldKey, 'description']}

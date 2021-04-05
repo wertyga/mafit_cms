@@ -2,23 +2,20 @@ fragment TrainingFields on Training {
 	id
 	title
 	video
-	meal {
-		human {
-			id
-			category
-		}
-		meal {
-			type
-			title
-			description
-			foods {
-				foodstuff {
-					id
-					title
-					unit
-				}
-				qt
+	humanType {
+		id
+		category
+	}
+	meals {
+		type
+		description
+		foods {
+			foodstuff {
+				id
+				title
+				unit
 			}
+			qt
 		}
 	}
 }
@@ -32,8 +29,8 @@ query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: Str
 	}
 }
 
-mutation saveTraining($id: ID, $title: String!, $video: Upload, $humanCategory: String!, $meal: [ID]) {
-	saveTraining(id: $id, title: $title, video: $video, humanCategory: $humanCategory, meal: $meal) {
+mutation saveTraining($id: ID, $title: String!, $video: Upload, $humanCategoryId: ID!, $meals: [MealInput]) {
+	saveTraining(id: $id, title: $title, video: $video, humanCategoryId: $humanCategoryId, meals: $meals) {
 		training {
 			...TrainingFields
 		}

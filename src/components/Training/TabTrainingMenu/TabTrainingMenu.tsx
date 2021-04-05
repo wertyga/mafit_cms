@@ -21,7 +21,7 @@ export const TabTrainingMenu = () => {
   return (
     <Radio.Group value={humanType} className="tab-training mb-4">
       {humans.map(({ id, category }) => (
-        <Radio.Button value={id} key={id} onClick={onChange(id)}>{category}</Radio.Button>
+        <Radio.Button value={id} key={id} onClick={onChange(id)} className="flex nowrap align-center">{category}</Radio.Button>
       ))}
     </Radio.Group>
   );

@@ -7,23 +7,20 @@ const { Text } = Typography;
 
 export const TrainingsExpandableContent: React.FC<Training> = ({
   title,
-  meal: {
-    human: {
-      category: humanCategory,
-    },
-    meal = [],
+  humanType: {
+    category: humanCategory,
   },
+  meals = [],
 }) => (
   <div className="border-cell">
     <Description label="Title" className="mb-2">{title}</Description>
     <Description label="Category" className="mb-2">{humanCategory}</Description>
 
-    {meal.map(({
-      type, title: mealTitle, description, foods,
+    {meals.map(({
+      type, description, foods,
     }) => (
       <Description key={type} className="flex align-start mb-2" label={type}>
         <div className="flex-column">
-          <Text strong className="mb-2">{mealTitle}</Text>
           <Text className="mb-4">{description}</Text>
           <div className="flex">
             {foods.map(({ foodstuff, qt }) => (

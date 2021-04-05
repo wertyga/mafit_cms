@@ -1,18 +1,24 @@
-import { FoodStuff, Recipe } from 'graphql/types';
+import {FoodInput, FoodStuff, Recipe} from 'graphql/types';
 
 type FormDataType = {
   description: { description: string }[];
-  foods: { food: string, count: number }[];
+  foods: { food: string, count: string }[];
   title: string;
 };
-export const collectRecipeFormData = (formData: FormDataType, foodstuffs: FoodStuff[]) => {
-  const description = formData.description.map((item) => item.description);
-  const foods = (formData.foods || []).map(({ food: title, count }) => {
+export const collectFoods = (
+  foods: { food: string, count: string }[] = [],
+  foodstuffs: FoodStuff[],
+): FoodInput[] => (
+  foods.map(({ food: title, count }) => {
     const { id } = foodstuffs.find((item) => item.title === title) || {};
 
     const qt = Number(count);
     return { id, qt: Number.isNaN(qt) ? 0 : qt };
-  });
+  })
+);
+export const collectRecipeFormData = (formData: FormDataType, foodstuffs: FoodStuff[]) => {
+  const description = formData.description.map((item) => item.description);
+  const foods = collectFoods(formData.foods, foodstuffs);
 
   return {
     title: formData.title,

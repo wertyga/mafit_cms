@@ -6,7 +6,7 @@ import { Upload } from 'components/Common/Upload/Upload';
 import { TableModal } from 'components/Common/Table/TableModal/TableModal';
 import { gfRecipe } from 'goldfish/gfRecipe';
 import { gfErrors } from 'goldfish/gfErrors';
-import { useUploadRecipeMutation, Recipe, useGetFoodStuffsQuery } from 'graphql/types';
+import {useUploadRecipeMutation, Recipe, useGetFoodStuffsQuery, FoodStuff} from 'graphql/types';
 
 import { DescriptionBlock } from './DescriptionBlock/DescriptionBlock';
 import { FoodBlock } from './FoodBlock/FoodBlock';
@@ -27,9 +27,9 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
   });
   const [addRecipe, { loading }] = useUploadRecipeMutation({
     onCompleted: ({ uploadRecipe }) => {
-      const { recipe, totalCount = 0 } = uploadRecipe || {};
+      const { recipe = {}, totalCount = 0 } = uploadRecipe || {};
       setState((prev) => ({ ...prev, image: null, preview: '' }));
-      onSuccess(recipe, totalCount);
+      onSuccess(recipe as Recipe, totalCount);
     },
     onError: (e: Error) => message.error(e.message),
   });
@@ -40,7 +40,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
 
   const handleSave = async (recipeData) => {
     try {
-      const requestData = collectRecipeFormData(recipeData, foodstuffData.getFoodStuffs.foodstuff);
+      const requestData = collectRecipeFormData(recipeData, foodstuffData.getFoodStuffs.foodstuffs);
       const payload = {
         ...requestData,
         id: editableRecipe.id,
@@ -65,6 +65,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
     setState((prev) => ({ ...prev, preview: editableRecipe.image }));
   }, [editableRecipe.id]);
 
+  const foodstuffs = foodstuffData && foodstuffData.getFoodStuffs.foodstuffs;
   return (
     <TableModal
       modalTitle="Add/Edit recipe"
@@ -84,6 +85,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
             <Form.Item
               name={name}
               label={title}
+              labelAlign="left"
               rules={[{ required: true, message: gfErrors.emptyField }]}
             >
               <Input placeholder={`${title}...`} />
@@ -92,7 +94,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
         );
       })}
       <DescriptionBlock />
-      {!!foodstuffData && <FoodBlock data={foodstuffData} form={form} />}
+      {!!foodstuffs && <FoodBlock foodstuffs={foodstuffs} form={form} />}
     </TableModal>
   );
 };
