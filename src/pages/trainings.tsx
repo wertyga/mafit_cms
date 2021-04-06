@@ -20,8 +20,8 @@ import {
   GetHumanTypesDocument,
 } from 'graphql/types';
 import { ParsedUrlQuery } from 'querystring';
-import { ContentTable } from '../components/ContentTable/ContentTable';
-import { DEFAULT_PAGE_SIZE } from '../components/Common/Table/helpers';
+import { ContentTable } from 'components/ContentTable/ContentTable';
+import { DEFAULT_PAGE_SIZE } from 'components/Common/Table/helpers';
 
 type StateTypes = {
   trainings: Training[];
@@ -80,13 +80,13 @@ const Trainings = () => {
   };
 
   const handleChangePage = async (page = 1, pageSize = DEFAULT_PAGE_SIZE) => {
-    const { query: { search, by, humanType } } = router;
+    const { query: { search, by, human } } = router;
     const payload = {
       offset: (page - 1) * pageSize,
       limit: pageSize,
       search,
       by,
-      humanType,
+      human,
     };
     getTrainings({ variables: payload } as unknown as ParsedUrlQuery);
   };
@@ -114,7 +114,7 @@ const Trainings = () => {
 
   useEffect(() => {
     handleChangePage();
-  }, [router.query.search, router.query.by, router.query.humanType]);
+  }, [router.query.search, router.query.by, router.query.human]);
 
   useConstructor(initialFetchData);
 

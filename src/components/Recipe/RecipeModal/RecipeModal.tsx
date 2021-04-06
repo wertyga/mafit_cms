@@ -6,7 +6,9 @@ import { Upload } from 'components/Common/Upload/Upload';
 import { TableModal } from 'components/Common/Table/TableModal/TableModal';
 import { gfRecipe } from 'goldfish/gfRecipe';
 import { gfErrors } from 'goldfish/gfErrors';
-import {useUploadRecipeMutation, Recipe, useGetFoodStuffsQuery, FoodStuff} from 'graphql/types';
+import {
+  useUploadRecipeMutation, Recipe, useGetFoodStuffsQuery,
+} from 'graphql/types';
 
 import { DescriptionBlock } from './DescriptionBlock/DescriptionBlock';
 import { FoodBlock } from './FoodBlock/FoodBlock';
@@ -24,6 +26,7 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
   const [state, setState] = useState({
     image: null,
     preview: '',
+    initialFoods: null,
   });
   const [addRecipe, { loading }] = useUploadRecipeMutation({
     onCompleted: ({ uploadRecipe }) => {
@@ -62,7 +65,11 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
     if (!editableRecipe.id) return;
     const formData = collectEditableData(editableRecipe);
     form.setFieldsValue(formData);
-    setState((prev) => ({ ...prev, preview: editableRecipe.image }));
+    setState((prev) => ({
+      ...prev,
+      preview: editableRecipe.image,
+      initialFoods: formData.foods,
+    }));
   }, [editableRecipe.id]);
 
   const foodstuffs = foodstuffData && foodstuffData.getFoodStuffs.foodstuffs;
@@ -94,7 +101,13 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
         );
       })}
       <DescriptionBlock />
-      {!!foodstuffs && <FoodBlock foodstuffs={foodstuffs} form={form} />}
+      {!!foodstuffs
+        && <FoodBlock
+          foodstuffs={foodstuffs}
+          form={form}
+          initialFoods={state.initialFoods}
+        />
+      }
     </TableModal>
   );
 };

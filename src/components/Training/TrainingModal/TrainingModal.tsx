@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import useSelector from 'hooks/useSelector';
 import {
-  Col, Form, Input, Select, Row, Typography, Button, message,
+  Col, Form, Input, Select, Row, Typography, message,
 } from 'antd';
 import { Upload } from 'components/Common/Upload/Upload';
 import { TableModal } from 'components/Common/Table/TableModal/TableModal';
@@ -9,7 +9,7 @@ import { gfErrors } from 'goldfish/gfErrors';
 
 import { Training, useSaveTrainingMutation } from 'graphql/types';
 import { MealBlock } from './MealBlock/MealBlock';
-import { collectTrainingRequest, getMealOptions } from './helpers';
+import { collectTrainingRequest, getHumanOptions, collectEditableTraining } from './helpers';
 
 const { Title } = Typography;
 
@@ -21,10 +21,14 @@ type Props = {
 
 export const TrainingModal: React.FC<Props> = ({ editableTraining, onClose, onSuccess }) => {
   const [form] = Form.useForm();
-  const { humanStore: { humans }, foodstuffStore: { foodstuffs } } = useSelector(['humanStore', 'foodstuffStore']);
+  const {
+    humanStore: { humans },
+    foodstuffStore: { foodstuffs },
+  } = useSelector(['humanStore', 'foodstuffStore']);
   const [state, setState] = useState({
     video: null,
     preview: '',
+    editableFoods: null,
   });
   const [handleSaveTraining, { loading }] = useSaveTrainingMutation({
     onCompleted: ({ saveTraining }) => {
@@ -38,8 +42,9 @@ export const TrainingModal: React.FC<Props> = ({ editableTraining, onClose, onSu
       const requestData = collectTrainingRequest(formData, foodstuffs, humans);
       await handleSaveTraining({
         variables: {
-          ...requestData,
+          id: editableTraining.id,
           video: editableTraining.id ? state.preview : state.video,
+          data: requestData,
         },
       });
       return {};
@@ -59,13 +64,17 @@ export const TrainingModal: React.FC<Props> = ({ editableTraining, onClose, onSu
 
   useEffect(() => {
     if (!editableTraining.id) return;
-    console.log('editableTraining: ', editableTraining);
-    // const formData = collectEditableData(editableRecipe);
-    // form.setFieldsValue(formData);
-    // setState((prev) => ({ ...prev, preview: editableRecipe.image }));
+    const formData = collectEditableTraining(editableTraining as Training, humans);
+    const selectedFoods = formData.meals.map(({ foods }) => foods);
+    form.setFieldsValue(formData);
+    setState((prev) => ({
+      ...prev,
+      preview: editableTraining.video,
+      editableFoods: selectedFoods,
+    }));
   }, [editableTraining.id]);
 
-  const { humanOptions } = getMealOptions(humans);
+  const humanOptions = getHumanOptions(humans);
   return (
     <TableModal
       modalTitle="Add/Edit training"
@@ -91,17 +100,17 @@ export const TrainingModal: React.FC<Props> = ({ editableTraining, onClose, onSu
           <Input placeholder="Title..." />
         </Form.Item>
       </Col>
-      <Col span={24}>
+      <Col span={24} className="mb-4">
         <Form.Item
           name="humanType"
-          label="Human category"
+          label="HumanType"
           labelAlign="left"
           rules={[{ required: true, message: gfErrors.emptyField }]}
         >
           <Select options={humanOptions} />
         </Form.Item>
       </Col>
-      <MealBlock form={form} />
+      <MealBlock form={form} initialFoods={state.editableFoods} />
 
     </TableModal>
   );

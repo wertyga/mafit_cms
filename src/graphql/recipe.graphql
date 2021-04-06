@@ -1,4 +1,4 @@
-type FoodMutationRequest {
+type FoodInput {
 	id: ID!
 	qt: Int!
 }
@@ -27,7 +27,7 @@ query getRecipes($offset: Int, $limit: Int, $search: String, $by: String) {
 	}
 }
 
-mutation uploadRecipe($id: ID, $image: Upload, $title: String!, $description: [String], $foods: [FoodMutationRequest]) {
+mutation uploadRecipe($id: ID, $image: Upload, $title: String!, $description: [String], $foods: [FoodInput]) {
 	uploadRecipe(id: $id, image: $image, title: $title, description: $description, foods: $foods) {
 		recipe {
 			...recipeFields

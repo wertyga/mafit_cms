@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import useSelector from 'hooks/useSelector';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import {
@@ -8,18 +9,20 @@ import { PlusOutlined } from '@ant-design/icons';
 import { FoodStuff } from 'graphql/types';
 import { SelectValue } from 'antd/es/select';
 import { DragRow } from 'components/Drag/DragRow';
-import { getFormItemMeta } from './helpers';
+import { FoodForm } from 'types/foodstuff';
+
 import { FoodItem } from './FoodItem/FoodItem';
 
 type Props = {
   foodstuffs: FoodStuff[];
   form: FormInstance<any>;
   parentFieldName?: string | number | (string | number)[];
+  initialFoods: FoodForm[];
 };
 
-export const FoodBlock: React.FC<Props> = ({ foodstuffs, parentFieldName }) => {
-  const [units, setUnits] = useState({});
-  const [foodsChosen, setFoodChosen] = useState({});
+export const FoodBlock: React.FC<Props> = ({ foodstuffs, parentFieldName, initialFoods }) => {
+  const { foodstuffStore: { units } } = useSelector('foodstuffStore');
+  const [foodsChosenState, setFoodChosen] = useState({});
 
   const handleFoodSetChange = (key: number) => (title: SelectValue) => {
     setFoodChosen((prev) => ({ ...prev, [key]: title }));
@@ -35,40 +38,35 @@ export const FoodBlock: React.FC<Props> = ({ foodstuffs, parentFieldName }) => {
   };
 
   useEffect(() => {
-    if (!foodstuffs) return;
-    const accumulateUnits = foodstuffs.reduce((acc, { unit, title }) => ({
+    if (!initialFoods) return;
+    const foods = initialFoods.reduce((acc, { food }, i) => ({
       ...acc,
-      [title]: unit,
+      [i]: food,
     }), {});
-    setUnits(accumulateUnits);
-  }, [!!foodstuffs]);
+    setFoodChosen(foods);
+  }, [initialFoods]);
 
   const options = useMemo(() => (
     foodstuffs
       ? foodstuffs.map(({ title, id }) => ({ label: title, value: title, id }))
       : []),
   [!!foodstuffs]);
-
   return (
     <DndProvider backend={HTML5Backend}>
       <Form.List name={parentFieldName || 'foods'}>
         {(fields, { add, remove, move }) => (
           <div>
             {fields.map((field, i) => {
-              const { fieldKey } = field;
-              const {
-                currentOptions,
-                unit,
-              } = getFormItemMeta(fieldKey, foodsChosen, units, options);
+              const filteredOptions = options
+                .filter(({ value }) => !Object.values(foodsChosenState).includes(value));
               return (
-                <DragRow key={`foods-${fieldKey}`} index={i} moveRow={move} dragTypeName="food-drag">
+                <DragRow key={`foods-${field.fieldKey}`} index={i} moveRow={move} dragTypeName="food-drag">
                   <FoodItem
-                    fieldKey={fieldKey}
+                    countDisabled={!foodsChosenState[field.fieldKey]}
                     field={field}
-                    options={currentOptions}
+                    options={filteredOptions}
                     handleFoodSetChange={handleFoodSetChange}
-                    unit={unit}
-                    foodSelectState={foodsChosen}
+                    unit={units[foodsChosenState[field.fieldKey]]}
                     handleDeleteFoodField={handleDeleteFoodField}
                     remove={remove}
                   />

@@ -7,19 +7,19 @@ import useSelector from 'hooks/useSelector';
 import './styles.css';
 
 export const TabTrainingMenu = () => {
-  const { query: { humanType, ...restQuery }, push, pathname } = useRouter();
+  const { query: { human, ...restQuery }, push, pathname } = useRouter();
   const { humanStore: { humans } } = useSelector('humanStore');
 
   const onChange = (id: string) => () => {
     const redirectUrl = constructUrl(pathname, {
       ...restQuery,
-      humanType: humanType === id ? '' : id,
+      human: human === id ? '' : id,
     });
     push(redirectUrl);
   };
 
   return (
-    <Radio.Group value={humanType} className="tab-training mb-4">
+    <Radio.Group value={human} className="tab-training mb-4">
       {humans.map(({ id, category }) => (
         <Radio.Button value={id} key={id} onClick={onChange(id)} className="flex nowrap align-center">{category}</Radio.Button>
       ))}

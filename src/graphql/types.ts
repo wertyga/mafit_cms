@@ -57,11 +57,6 @@ export type FoodInput = {
   qt: Scalars['Int'];
 };
 
-export type FoodMutationRequest = {
-  id: Scalars['ID'];
-  qt: Scalars['Int'];
-};
-
 export type FoodStuff = {
   __typename?: 'FoodStuff';
   id: Scalars['ID'];
@@ -114,6 +109,7 @@ export type Meal = {
 
 export type MealInput = {
   type: Scalars['String'];
+  title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   foods?: Maybe<Array<Maybe<FoodInput>>>;
 };
@@ -136,7 +132,7 @@ export type MutationUploadRecipeArgs = {
   title: Scalars['String'];
   description?: Maybe<Array<Maybe<Scalars['String']>>>;
   image?: Maybe<Scalars['Upload']>;
-  foods?: Maybe<Array<Maybe<FoodMutationRequest>>>;
+  foods?: Maybe<Array<Maybe<FoodInput>>>;
 };
 
 
@@ -174,10 +170,8 @@ export type MutationDeleteHumanTypeArgs = {
 
 export type MutationSaveTrainingArgs = {
   id?: Maybe<Scalars['ID']>;
-  title: Scalars['String'];
   video?: Maybe<Scalars['Upload']>;
-  humanCategoryId: Scalars['ID'];
-  meals?: Maybe<Array<Maybe<MealInput>>>;
+  data?: Maybe<TrainingInput>;
 };
 
 
@@ -228,7 +222,7 @@ export type QueryGetTrainingsArgs = {
   limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
-  humanType?: Maybe<Scalars['String']>;
+  human?: Maybe<Scalars['String']>;
 };
 
 
@@ -282,8 +276,23 @@ export type Training = {
   id: Scalars['ID'];
   title: Scalars['String'];
   video?: Maybe<Scalars['String']>;
-  meals?: Maybe<Array<Maybe<Meal>>>;
-  humanType?: Maybe<HumanType>;
+  meal?: Maybe<TrainingMeal>;
+};
+
+export type TrainingInput = {
+  title: Scalars['String'];
+  meal?: Maybe<TrainingMealInput>;
+};
+
+export type TrainingMeal = {
+  __typename?: 'TrainingMeal';
+  human: Scalars['ID'];
+  meal?: Maybe<Array<Maybe<Meal>>>;
+};
+
+export type TrainingMealInput = {
+  human: Scalars['ID'];
+  meal?: Maybe<Array<Maybe<MealInput>>>;
 };
 
 
@@ -443,7 +452,7 @@ export type UploadRecipeMutationVariables = Exact<{
   image?: Maybe<Scalars['Upload']>;
   title: Scalars['String'];
   description?: Maybe<Array<Maybe<Scalars['String']>> | Maybe<Scalars['String']>>;
-  foods?: Maybe<Array<Maybe<FoodMutationRequest>> | Maybe<FoodMutationRequest>>;
+  foods?: Maybe<Array<Maybe<FoodInput>> | Maybe<FoodInput>>;
 }>;
 
 
@@ -479,21 +488,22 @@ export type DeleteRecipeMutation = (
 export type TrainingFieldsFragment = (
   { __typename?: 'Training' }
   & Pick<Training, 'id' | 'title' | 'video'>
-  & { humanType?: Maybe<(
-    { __typename?: 'HumanType' }
-    & Pick<HumanType, 'id' | 'category'>
-  )>, meals?: Maybe<Array<Maybe<(
-    { __typename?: 'Meal' }
-    & Pick<Meal, 'type' | 'description'>
-    & { foods?: Maybe<Array<Maybe<(
-      { __typename?: 'Food' }
-      & Pick<Food, 'qt'>
-      & { foodstuff?: Maybe<(
-        { __typename?: 'FoodStuff' }
-        & Pick<FoodStuff, 'id' | 'title' | 'unit'>
-      )> }
+  & { meal?: Maybe<(
+    { __typename?: 'TrainingMeal' }
+    & Pick<TrainingMeal, 'human'>
+    & { meal?: Maybe<Array<Maybe<(
+      { __typename?: 'Meal' }
+      & Pick<Meal, 'type' | 'title' | 'description'>
+      & { foods?: Maybe<Array<Maybe<(
+        { __typename?: 'Food' }
+        & Pick<Food, 'qt'>
+        & { foodstuff?: Maybe<(
+          { __typename?: 'FoodStuff' }
+          & Pick<FoodStuff, 'id' | 'title' | 'unit'>
+        )> }
+      )>>> }
     )>>> }
-  )>>> }
+  )> }
 );
 
 export type GetTrainingsQueryVariables = Exact<{
@@ -502,7 +512,7 @@ export type GetTrainingsQueryVariables = Exact<{
   limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
-  humanType?: Maybe<Scalars['String']>;
+  human?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -520,10 +530,8 @@ export type GetTrainingsQuery = (
 
 export type SaveTrainingMutationVariables = Exact<{
   id?: Maybe<Scalars['ID']>;
-  title: Scalars['String'];
   video?: Maybe<Scalars['Upload']>;
-  humanCategoryId: Scalars['ID'];
-  meals?: Maybe<Array<Maybe<MealInput>> | Maybe<MealInput>>;
+  data?: Maybe<TrainingInput>;
 }>;
 
 
@@ -604,20 +612,20 @@ export const TrainingFieldsFragmentDoc = gql`
   id
   title
   video
-  humanType {
-    id
-    category
-  }
-  meals {
-    type
-    description
-    foods {
-      foodstuff {
-        id
-        title
-        unit
+  meal {
+    human
+    meal {
+      type
+      title
+      description
+      foods {
+        foodstuff {
+          id
+          title
+          unit
+        }
+        qt
       }
-      qt
     }
   }
 }
@@ -915,7 +923,7 @@ export type GetRecipesQueryHookResult = ReturnType<typeof useGetRecipesQuery>;
 export type GetRecipesLazyQueryHookResult = ReturnType<typeof useGetRecipesLazyQuery>;
 export type GetRecipesQueryResult = Apollo.QueryResult<GetRecipesQuery, GetRecipesQueryVariables>;
 export const UploadRecipeDocument = gql`
-    mutation uploadRecipe($id: ID, $image: Upload, $title: String!, $description: [String], $foods: [FoodMutationRequest]) {
+    mutation uploadRecipe($id: ID, $image: Upload, $title: String!, $description: [String], $foods: [FoodInput]) {
   uploadRecipe(
     id: $id
     image: $image
@@ -997,14 +1005,14 @@ export type DeleteRecipeMutationHookResult = ReturnType<typeof useDeleteRecipeMu
 export type DeleteRecipeMutationResult = Apollo.MutationResult<DeleteRecipeMutation>;
 export type DeleteRecipeMutationOptions = Apollo.BaseMutationOptions<DeleteRecipeMutation, DeleteRecipeMutationVariables>;
 export const GetTrainingsDocument = gql`
-    query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String, $humanType: String) {
+    query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String, $human: String) {
   getTrainings(
     id: $id
     offset: $offset
     limit: $limit
     search: $search
     by: $by
-    humanType: $humanType
+    human: $human
   ) {
     trainings {
       ...TrainingFields
@@ -1031,7 +1039,7 @@ export const GetTrainingsDocument = gql`
  *      limit: // value for 'limit'
  *      search: // value for 'search'
  *      by: // value for 'by'
- *      humanType: // value for 'humanType'
+ *      human: // value for 'human'
  *   },
  * });
  */
@@ -1047,14 +1055,8 @@ export type GetTrainingsQueryHookResult = ReturnType<typeof useGetTrainingsQuery
 export type GetTrainingsLazyQueryHookResult = ReturnType<typeof useGetTrainingsLazyQuery>;
 export type GetTrainingsQueryResult = Apollo.QueryResult<GetTrainingsQuery, GetTrainingsQueryVariables>;
 export const SaveTrainingDocument = gql`
-    mutation saveTraining($id: ID, $title: String!, $video: Upload, $humanCategoryId: ID!, $meals: [MealInput]) {
-  saveTraining(
-    id: $id
-    title: $title
-    video: $video
-    humanCategoryId: $humanCategoryId
-    meals: $meals
-  ) {
+    mutation saveTraining($id: ID, $video: Upload, $data: TrainingInput) {
+  saveTraining(id: $id, video: $video, data: $data) {
     training {
       ...TrainingFields
     }
@@ -1078,10 +1080,8 @@ export type SaveTrainingMutationFn = Apollo.MutationFunction<SaveTrainingMutatio
  * const [saveTrainingMutation, { data, loading, error }] = useSaveTrainingMutation({
  *   variables: {
  *      id: // value for 'id'
- *      title: // value for 'title'
  *      video: // value for 'video'
- *      humanCategoryId: // value for 'humanCategoryId'
- *      meals: // value for 'meals'
+ *      data: // value for 'data'
  *   },
  * });
  */

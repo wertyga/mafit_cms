@@ -1,17 +1,5 @@
-import { OptionData } from 'rc-select/es/interface';
-
-export const getFormItemMeta = (
-  fieldKey: number,
-  state: Partial<Record<string, string>> = {},
-  units: Record<string, string> = {},
-  options: OptionData[],
-) => {
-  const unit = units[state[fieldKey]];
-  const currentOptions: OptionData[] = options
-    .filter(({ label }) => !Object.values(state).find((value) => value === label));
-
-  return {
-    currentOptions,
-    unit,
-  };
-};
+export const collectSelectedFoods = (foods: { food: string, count: string }[]) => (
+  foods
+    .map(({ food }) => food)
+    .filter((item) => !!item)
+);

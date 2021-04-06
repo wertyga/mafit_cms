@@ -12,25 +12,23 @@ export type FoodItemProps = {
 	field: FormListFieldData;
 	options: (OptionData | OptionGroupData)[];
 	handleFoodSetChange: (key: number) => (title: SelectValue) => void;
-	fieldKey: number;
 	unit: string;
 	handleDeleteFoodField: (
 		fieldName: number,
 		fieldKey: number,
 		remove: (index: number | number[]) => void) => () => void;
 	remove: (index: number | number[]) => void;
-	foodSelectState: Record<string, string>;
+	countDisabled: boolean;
 };
 
 export const FoodItem: React.FC<FoodItemProps> = ({
   field,
   options,
   handleFoodSetChange,
-  fieldKey,
   unit,
   handleDeleteFoodField,
   remove,
-  foodSelectState,
+  countDisabled,
 }) => (
   <Row gutter={16} className="mb-4">
     <Col span={16}>
@@ -42,7 +40,10 @@ export const FoodItem: React.FC<FoodItemProps> = ({
         name={[field.name, 'food']}
         rules={[{ required: true, message: gfErrors.emptyField }]}
       >
-        <Select options={options} onChange={handleFoodSetChange(fieldKey)} />
+        <Select
+          options={options}
+          onChange={handleFoodSetChange(field.fieldKey)}
+        />
       </Form.Item>
     </Col>
     <Col span={6}>
@@ -53,7 +54,7 @@ export const FoodItem: React.FC<FoodItemProps> = ({
       >
         <Input
           type="number"
-          disabled={!foodSelectState[fieldKey]}
+          disabled={countDisabled}
           addonAfter={unit}
         />
       </Form.Item>
@@ -61,7 +62,7 @@ export const FoodItem: React.FC<FoodItemProps> = ({
     <Col span={2} className="align-center justify-center flex">
       <MinusCircleOutlined
         className="danger icon-md "
-        onClick={handleDeleteFoodField(field.name, fieldKey, remove)}
+        onClick={handleDeleteFoodField(field.name, field.fieldKey, remove)}
       />
     </Col>
   </Row>

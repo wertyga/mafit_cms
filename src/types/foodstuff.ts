@@ -17,10 +17,16 @@ export type FoodStuff = {
 
 export type FoodstuffState = {
 	foodstuffs: FoodStuff[];
+	units: Partial<Record<string, string>>;
 	totalCount: number;
 };
 
 export type Food = {
 	foodstuff: FoodStuff;
 	qt: number;
+};
+
+export type FoodForm = {
+  food: string;
+  count: string;
 };

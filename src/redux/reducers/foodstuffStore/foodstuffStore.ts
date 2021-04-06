@@ -2,6 +2,7 @@ import { FOODSTUFF_ACTION_TYPES, FoodstuffState } from 'types';
 
 const initialState = {
   foodstuffs: [],
+  units: {},
   totalCount: 0,
 };
 
@@ -11,6 +12,10 @@ export const foodstuffStore = (state: FoodstuffState = initialState, { type, dat
       return {
         foodstuffs: data.foodstuffs,
         totalCount: data.totalCount,
+        units: data.foodstuffs.reduce((acc, { title, unit }) => ({
+          ...acc,
+          [title]: unit,
+        }), {}),
       };
     case FOODSTUFF_ACTION_TYPES.ADD_FOODSTUFF:
       return {

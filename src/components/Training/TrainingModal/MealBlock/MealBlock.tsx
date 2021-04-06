@@ -1,20 +1,25 @@
 import useSelector from 'hooks/useSelector';
 import {
-  Col, Form, Select, Row, Input, Typography, FormInstance,
+  Col, Form, Row, Input, Typography, FormInstance, Select,
 } from 'antd';
 import { MinusCircleOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { gfErrors } from 'goldfish/gfErrors';
 import React from 'react';
 import { FoodBlock } from 'components/Recipe/RecipeModal/FoodBlock/FoodBlock';
 
+import { FoodForm } from 'types/foodstuff';
+import { MEAL_TYPES } from 'types/meal';
+
 const { Title } = Typography;
 
 type Props = {
   form: FormInstance;
+  initialFoods?: FoodForm[][];
 };
 
-export const MealBlock: React.FC<Props> = ({ form }) => {
-  const { humanStore: { humans }, foodstuffStore: { foodstuffs } } = useSelector(['humanStore', 'foodstuffStore']);
+export const MealBlock: React.FC<Props> = ({ form, initialFoods }) => {
+  const { foodstuffStore: { foodstuffs } } = useSelector(['humanStore', 'foodstuffStore']);
+  const mealOptions = Object.values(MEAL_TYPES).map((type) => ({ title: type, value: type }));
   return (
     <Form.List name="meals" initialValue={['']}>
       {(fields, { add, remove }) => (
@@ -30,12 +35,22 @@ export const MealBlock: React.FC<Props> = ({ form }) => {
               </Row>
               <Col span={24}>
                 <Form.Item
+                  name={[field.name, 'title']}
+                  label="Meal title"
+                  labelAlign="left"
+                  rules={[{ required: true, message: gfErrors.emptyField }]}
+                >
+                  <Input placeholder="Meal title..." />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
                   name={[field.name, 'mealType']}
                   label="Meal type"
                   labelAlign="left"
                   rules={[{ required: true, message: gfErrors.emptyField }]}
                 >
-                  <Input placeholder="Meal type..." />
+                  <Select options={mealOptions} />
                 </Form.Item>
               </Col>
               <Col span={24}>
@@ -48,7 +63,12 @@ export const MealBlock: React.FC<Props> = ({ form }) => {
                   <Input.TextArea placeholder="Description..." />
                 </Form.Item>
               </Col>
-              <FoodBlock foodstuffs={foodstuffs} form={form} parentFieldName={[field.name, 'foods']} />
+              <FoodBlock
+                foodstuffs={foodstuffs}
+                form={form}
+                parentFieldName={[field.name, 'foods']}
+                initialFoods={(initialFoods || [])[field.fieldKey]}
+              />
             </div>
           ))}
         </div>
