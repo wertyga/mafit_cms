@@ -1,0 +1,53 @@
+fragment DayFoodFields on DayFood {
+	id
+	title
+	meal {
+		human {
+			id
+			category
+		}
+		meal {
+			type
+			title
+			description
+			recipes {
+				id
+				title
+			}
+		}
+	}
+}
+
+query getDayFoodsLightList {
+	getDayFoodsLightList {
+		dayFoods {
+			id
+			title
+		}
+	}
+}
+query getDayFoods($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
+	getDayFoods(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
+		dayFoods {
+			...DayFoodFields
+		}
+		totalCount
+	}
+}
+
+mutation saveDayFood($id: ID, $data: DayFoodInput) {
+	saveDayFood(id: $id, data: $data) {
+		dayFood {
+			...DayFoodFields
+		}
+		totalCount
+	}
+}
+mutation deleteDayFood($id: ID!) {
+	deleteDayFood(id: $id) {
+		dayFood {
+			id
+		}
+		totalCount
+	}
+}

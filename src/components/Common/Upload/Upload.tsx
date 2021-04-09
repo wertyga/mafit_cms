@@ -1,4 +1,5 @@
-import React from 'react';
+/*eslint-disable*/
+import React, { useState } from 'react';
 import { Upload as AntdUpload } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { getBase64 } from 'utils/file';
@@ -7,12 +8,13 @@ import { UploadPreview } from './UploadPreview';
 import './styles.css';
 
 type Props = {
-	onChange: (file: File, preview: string) => void;
-	preview?: string;
-	type?: 'image' | 'video';
+  onChange: (file: File, preview: string) => void;
+  preview?: string;
+	isFile?: boolean;
+  type?: 'image' | 'video';
 };
 
-export const Upload: React.FC<Props> = ({ onChange, preview, type = 'image' }) => {
+export const Upload: React.FC<Props> = ({ onChange, preview, isFile, type = 'image' }) => {
   const handleChange = async ({ file }) => {
 	  let { preview: filePreview } = file;
 	  if (type === 'video') {
@@ -30,23 +32,24 @@ export const Upload: React.FC<Props> = ({ onChange, preview, type = 'image' }) =
   return (
     <div className="mb-4">
       {!preview &&
-					<AntdUpload
-					  listType="picture-card"
-					  onChange={handleChange}
-					>
-				  <div>
-				    <PlusOutlined />
-				    <div>Upload</div>
-				  </div>
-					</AntdUpload>
+	      <AntdUpload
+		      listType="picture-card"
+		      onChange={handleChange}
+	      >
+		      <div>
+			      <PlusOutlined />
+			      <div>Upload</div>
+		      </div>
+	      </AntdUpload>
       }
-      {!!preview && (
+      {!!preview &&
 	      <UploadPreview
-	        preview={preview}
-	        type={type}
-	        handleDelete={handleDeletePreview}
+		      preview={preview}
+		      file={isFile}
+		      type={type}
+		      handleDelete={handleDeletePreview}
 	      />
-      )}
+      }
     </div>
   );
 };

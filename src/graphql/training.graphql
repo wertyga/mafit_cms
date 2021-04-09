@@ -1,38 +1,39 @@
-fragment TrainingFields on Training {
-	id
-	title
-	video
-	meal {
-		human
-		meal {
-			type
+query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
+	getTrainings(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
+		trainings {
+			id
 			title
 			description
-			foods {
-				foodstuff {
-					id
-					title
-					unit
-				}
-				qt
+			video
+			dayFood {
+				id
+				title
 			}
 		}
+		totalCount
 	}
 }
-
-query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String, $human: String) {
-	getTrainings(id: $id, offset: $offset, limit: $limit, search: $search, by: $by, human: $human) {
+query getLightTrainingList {
+	getLightTrainingList {
 		trainings {
-			...TrainingFields
+			id
+			title
 		}
 		totalCount
 	}
 }
 
-mutation saveTraining($id: ID, $video: Upload, $data: TrainingInput) {
-	saveTraining(id: $id, video: $video, data: $data) {
+mutation saveTraining($id: ID, $title: String!, $description: String, $video: Upload!, $dayFood: ID) {
+	saveTraining(id: $id, title: $title, description: $description, video: $video, dayFood: $dayFood) {
 		training {
-			...TrainingFields
+			id
+			title
+			description
+			video
+			dayFood {
+				id
+				title
+			}
 		}
 		totalCount
 	}

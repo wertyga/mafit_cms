@@ -3,31 +3,35 @@ import { gfErrors } from 'goldfish/gfErrors';
 import {
   Col, Form, Input, Row, Select,
 } from 'antd';
-import { MinusCircleOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { OptionData, OptionGroupData } from 'rc-select/es/interface';
 import { SelectValue } from 'antd/es/select';
 import { FormListFieldData } from 'antd/es/form/FormList';
 
 export type FoodItemProps = {
-	field: FormListFieldData;
-	options: (OptionData | OptionGroupData)[];
-	handleFoodSetChange: (key: number) => (title: SelectValue) => void;
-	unit: string;
-	handleDeleteFoodField: (
-		fieldName: number,
-		fieldKey: number,
-		remove: (index: number | number[]) => void) => () => void;
-	remove: (index: number | number[]) => void;
-	countDisabled: boolean;
+  field: FormListFieldData;
+  isCanAdd?: boolean;
+  options: (OptionData | OptionGroupData)[];
+  handleFoodSetChange: (key: number) => (title: SelectValue) => void;
+  unit: string;
+  handleDeleteFoodField: (
+    fieldName: number,
+    fieldKey: number,
+    remove: (index: number | number[]) => void) => () => void;
+  remove: (index: number | number[]) => void;
+  add: () => void;
+  countDisabled: boolean;
 };
 
 export const FoodItem: React.FC<FoodItemProps> = ({
   field,
+  isCanAdd,
   options,
   handleFoodSetChange,
   unit,
   handleDeleteFoodField,
   remove,
+  add,
   countDisabled,
 }) => (
   <Row gutter={16} className="mb-4">
@@ -60,8 +64,15 @@ export const FoodItem: React.FC<FoodItemProps> = ({
       </Form.Item>
     </Col>
     <Col span={2} className="align-center justify-center flex">
+      {isCanAdd
+        && (
+        <PlusCircleOutlined
+          className="success icon-md mr-2"
+          onClick={add}
+        />
+        )}
       <MinusCircleOutlined
-        className="danger icon-md "
+        className="danger icon-md"
         onClick={handleDeleteFoodField(field.name, field.fieldKey, remove)}
       />
     </Col>

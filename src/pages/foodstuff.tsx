@@ -21,15 +21,14 @@ const Foodstuff = () => {
   const [state, setState] = useState<State>({
     editableFoodstuff: {},
   });
-  const [getFoodStuffs, { loading: getLoading }] = useGetFoodStuffsLazyQuery(
-    {
-      fetchPolicy: 'network-only',
-      onCompleted: ({ getFoodStuffs: foodStuffRes }) => {
-        const { foodstuffs, totalCount } = foodStuffRes || {};
-        setFoodStuffsAction(foodstuffs, totalCount);
-      },
-      onError: (e: Error) => message.error(e.message),
+  const [getFoodStuffs, { loading: getLoading }] = useGetFoodStuffsLazyQuery({
+    fetchPolicy: 'network-only',
+    onCompleted: ({ getFoodStuffs: foodStuffRes }) => {
+      const { foodstuffs, totalCount } = foodStuffRes || {};
+      setFoodStuffsAction(foodstuffs, totalCount);
     },
+    onError: (e: Error) => message.error(e.message),
+  },
   );
   const [deleteFoodStuffHandler, { loading: deleteLoading }] = useDeleteFoodStuffMutation({
     onCompleted: ({ deleteFoodStuff }) => {
@@ -62,9 +61,9 @@ const Foodstuff = () => {
     getFoodStuffs({ variables: { search, by } as ParsedUrlQuery });
   }, [router.query.search, router.query.by]);
 
-  const tableConfig = useMemo(() => getFoodStuffTableData({
+  const tableConfig = getFoodStuffTableData({
     totalCount: foodstuffStore.totalCount,
-  }), [foodstuffStore.totalCount]);
+  });
 
   const loading = getLoading || deleteLoading;
   return (

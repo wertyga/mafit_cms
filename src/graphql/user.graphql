@@ -3,6 +3,8 @@ query getUser($token: String!) {
 		id
 		username
 		token
+		email
+		role
 	}
 }
 query authUser($username: String!, $password: String!) {
@@ -10,5 +12,7 @@ query authUser($username: String!, $password: String!) {
 		id
 		username
 		token
+		email
+		role
 	}
 }

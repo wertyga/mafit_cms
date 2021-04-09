@@ -1,11 +1,11 @@
 import React from 'react';
-import { Video } from 'components/Common/Video/Video';
+import { Divider } from 'antd';
 import { getDeleteEditColumn } from 'components/Common/Table/helpers';
 import { getColumnSearchProps } from 'components/Common/Filter/helpers';
-import { Training } from 'graphql/types';
+import { DayFood } from 'graphql/types';
 
-export const gfTrainings = {
-  title: 'Trainings',
+export const gfDayFood = {
+  title: 'Day food',
   columns: ({ filter: { currentFilter }, onEdit, onDelete }) => {
   	const deleteEditColumn = getDeleteEditColumn({ onEdit, onDelete });
   	return [
@@ -23,9 +23,9 @@ export const gfTrainings = {
 			  ...getColumnSearchProps({ name: 'title', currentFilter }),
 		  },
 		  {
-			  title: 'Meal',
-			  dataIndex: 'meal',
-			  key: 'meal',
+			  title: 'Human category',
+			  dataIndex: 'human',
+			  key: 'human',
 			  sorter: (a, b) => {
 				  const asc = a.meal.length < b.meal.length;
 				  if (asc) return 1;
@@ -33,22 +33,20 @@ export const gfTrainings = {
 				  return 0;
 			  },
 			  align: 'left',
-			  render: (_, record: Training) => {
-			  	const { meal: { meal = [] } } = record || {};
+			  render: (_, record: DayFood) => {
+			  	const { meal = [] } = record || {};
 			  	return (
 					  <div>
-						  {meal.map(({ type }) => <span key={type} className="mr-2">{type}</span>)}
+					    {meal.map(({ human }, i) => (
+					      <>
+					        <span key={`${human.category}-${i}`}>{human.category}</span>
+					        <Divider type="vertical" />
+					      </>
+					    ))}
 					  </div>
 				  );
 			  },
-			  ...getColumnSearchProps({ name: 'meal', currentFilter }),
-		  },
-		  {
-			  title: 'Video',
-			  dataIndex: 'video',
-			  key: 'video',
-			  align: 'center',
-			  render: (url: string) => (url ? <Video className="image-table" src={url} /> : null),
+			  ...getColumnSearchProps({ name: 'human', currentFilter }),
 		  },
 		  deleteEditColumn,
 	  ];

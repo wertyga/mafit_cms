@@ -42,7 +42,7 @@ const Recipes = () => {
       const { recipe = {} as Partial<Recipe>, totalCount = 0 } = deleteRecipe || {};
       setState((prev) => ({
         ...prev,
-        humans: prev.recipes.filter((item) => item.id !== recipe.id),
+        recipes: prev.recipes.filter((item) => item.id !== recipe.id),
         totalCount,
       }));
     },
@@ -94,26 +94,24 @@ const Recipes = () => {
 
   const loading = getLoading || deleteLoading;
   return (
-    <div>
-      <ContentTable
-        title={gfRecipe.title}
-        dataSource={state.recipes}
-        columns={gfRecipe.columns({
-          filter: { currentFilter: router.query },
-          onEdit: handleEditRecipe,
-          onDelete: handleDelete,
-        })}
-        loading={loading}
-        ModalComponent={(
-          <RecipeModal
-            onSuccess={onSuccessAdd}
-            editableRecipe={state.editableRecipe}
-            onClose={onCloseModal}
-          />
-        )}
-        {...tableConfig}
-      />
-    </div>
+    <ContentTable
+      title={gfRecipe.title}
+      dataSource={state.recipes}
+      columns={gfRecipe.columns({
+        filter: { currentFilter: router.query },
+        onEdit: handleEditRecipe,
+        onDelete: handleDelete,
+      })}
+      loading={loading}
+      ModalComponent={(
+        <RecipeModal
+          onSuccess={onSuccessAdd}
+          editableRecipe={state.editableRecipe}
+          onClose={onCloseModal}
+        />
+      )}
+      {...tableConfig}
+    />
   );
 };
 export default Recipes;

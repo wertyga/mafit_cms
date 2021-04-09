@@ -1,9 +1,6 @@
 import React from 'react';
 import { getTableData } from 'components/Common/Table/helpers';
-
 import { RecipeExpandedContent } from './RecipeExpandedContent/RecipeExpandedContent';
-
-export const DEFAULT_PAGE_SIZE = 10;
 
 export const getRecipeTableData = ({
   totalCount, handleChangePage,

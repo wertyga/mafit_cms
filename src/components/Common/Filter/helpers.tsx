@@ -2,11 +2,11 @@ import React from 'react';
 import { SearchField } from 'components/Common/SearchField/SearchField';
 
 type Props = {
-	name: string;
-	currentFilter: Partial<{
-		search: string;
-		by: string;
-	}>;
+  name: string;
+  currentFilter: Partial<{
+    search: string;
+    by: string;
+  }>;
 };
 
 export const getColumnSearchProps = ({ name, currentFilter = {} }: Props) => ({

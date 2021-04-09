@@ -9,9 +9,9 @@ import { TableModal } from 'components/Common/Table/TableModal/TableModal';
 import { getModalTitle } from './helpers';
 
 type Props = {
-	onSuccess?: (human: HumanType, totalCount: number) => void;
-	onClose?: () => void;
-	editableHuman: Partial<HumanType>;
+  onSuccess?: (human: HumanType, totalCount: number) => void;
+  onClose?: () => void;
+  editableHuman: Partial<HumanType>;
 };
 
 export const HumansModal: React.FC<Props> = ({ onSuccess, editableHuman, onClose }) => {

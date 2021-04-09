@@ -1,54 +1,83 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "extends": [
-        "airbnb",
-        "airbnb/hooks",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:react/recommended",
-        "plugin:import/errors",
-        "plugin:import/warnings",
-        "plugin:import/typescript"
-    ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 12,
-        "sourceType": "module"
+        "project": ["./tsconfig.json"]
     },
-    "plugins": [
-        "react",
-        "@typescript-eslint"
+    "extends": [
+        "plugin:react/recommended",
+        "airbnb",
+        "airbnb-typescript/base"
     ],
+    "plugins": ["@typescript-eslint"],
     "rules": {
-        "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
-        "import/extensions": "off",
-        "react/prop-types": "off",
-        "no-tabs": "off",
-        "jsx-a11y/anchor-is-valid": "off",
-        "react/no-unescaped-entities": "off",
-        "import/no-cycle": [0, { "ignoreExternal": true }],
-        "prefer-const": "off",
-        "import/prefer-default-export": "off",
+        "@typescript-eslint/lines-between-class-members": ["off"],
+        "@typescript-eslint/object-curly-spacing": ["off"],
+        "no-mixed-spaces-and-tabs": ["off"],
+        "no-tabs": ["off"],
+        "func-names": ["error", "never"],
+        "linebreak-style": ["off"],
+        "import/no-extraneous-dependencies": ["off"],
+        "import/prefer-default-export": ["off"],
+        "import/no-unresolved": ["off"],
+        "import/extensions": ["off"],
+        "no-console": ["off"],
+        "react/forbid-prop-types": ["off"],
+        "react/no-danger": ["off"],
+        "react/require-default-props": ["off"],
+        "react/jsx-closing-bracket-location": ["off"],
+        "react/jsx-filename-extension": [
+            1,
+            { "extensions": [".js", ".jsx", ".tsx"] }
+        ],
+        "react/react-in-jsx-scope": ["off"],
+        "global-require": ["off"],
+        "no-shadow": ["off"],
+        "eqeqeq": ["off"],
+        "no-unused-expressions": ["off"],
+        "class-methods-use-this": ["off"],
+        "no-param-reassign": ["error", { "props": false }],
+        "camelcase": ["off"],
+        "jsx-a11y/no-noninteractive-element-interactions": ["off"],
+        "no-underscore-dangle": ["off"],
+        "function-paren-newline": ["off"],
+        "jsx-a11y/label-has-for": ["off"],
+        "object-curly-newline": ["off"],
+        "object-curly-spacing": ["error", "always"],
+        "react/sort-comp": ["off"],
+        "jsx-a11y/click-events-have-key-events": ["off"],
+        "jsx-a11y/anchor-is-valid": ["off"],
+        "react/prop-types": 1,
+        "react-hooks/rules-of-hooks": "off",
         "react-hooks/exhaustive-deps": "off",
-        "react/jsx-props-no-spreading": "off",
-        "no-mixed-spaces-and-tabs": "off",
-        "react/display-name": "off",
-        "no-underscore-dangle": "off",
-        "no-use-before-define": "off",
-        "@typescript-eslint/explicit-module-boundary-types": "off",
-        "@typescript-eslint/no-use-before-define": [
-            "error",
-            { "functions": false, "classes": false, "variables": true }
+        "comma-dangle": "off",
+        "@typescript-eslint/comma-dangle": ["off"],
+        "@typescript-eslint/naming-convention": [
+            "off",
+            {
+                "selector": "enumMember",
+                "format": ["PascalCase"]
+            }
         ]
     },
-    "settings": {
-        "import/resolver": {
-            "babel-module": {}
+    "overrides": [
+        {
+            "files": ["**/*.tsx"],
+            "rules": {
+                "react/prop-types": "off"
+            }
         }
+    ],
+    "env": {
+        "jest": true,
+        "browser": true
+    },
+    "globals": {
+        "React": true,
+        "PropTypes": true,
+        "inject": true,
+        "observer": true,
+        "observable": true,
+        "classnames": true,
+        "$style": true
     }
 }

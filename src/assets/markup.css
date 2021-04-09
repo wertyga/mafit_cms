@@ -28,6 +28,10 @@
 .pl-4 {
   padding-left: var(--space-4);
 }
+.pb-4 {
+  padding-bottom: var(--space-4);
+}
+
 .mb-8 {
   margin-bottom: var(--space-8);
 }

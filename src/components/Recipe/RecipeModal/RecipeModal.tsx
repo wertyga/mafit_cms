@@ -4,12 +4,14 @@ import {
 } from 'antd';
 import { Upload } from 'components/Common/Upload/Upload';
 import { TableModal } from 'components/Common/Table/TableModal/TableModal';
+import { setFoodStuffsAction } from 'redux/actions/foodstuff/foodstuffActions';
 import { gfRecipe } from 'goldfish/gfRecipe';
 import { gfErrors } from 'goldfish/gfErrors';
 import {
   useUploadRecipeMutation, Recipe, useGetFoodStuffsQuery,
 } from 'graphql/types';
 
+import useSelector from 'hooks/useSelector';
 import { DescriptionBlock } from './DescriptionBlock/DescriptionBlock';
 import { FoodBlock } from './FoodBlock/FoodBlock';
 
@@ -23,6 +25,7 @@ type Props = {
 
 export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClose }) => {
   const [form] = Form.useForm();
+  const { foodstuffStore } = useSelector('foodstuffStore');
   const [state, setState] = useState({
     image: null,
     preview: '',
@@ -36,14 +39,18 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
     },
     onError: (e: Error) => message.error(e.message),
   });
-  const { data: foodstuffData } = useGetFoodStuffsQuery({
-    fetchPolicy: 'no-cache',
+  useGetFoodStuffsQuery({
+    fetchPolicy: 'network-only',
+    onCompleted: ({ getFoodStuffs }) => {
+      const { foodstuffs = [], totalCount = 0 } = getFoodStuffs || {};
+      setFoodStuffsAction(foodstuffs, totalCount);
+    },
     onError: (e: Error) => message.error(e.message),
   });
 
   const handleSave = async (recipeData) => {
     try {
-      const requestData = collectRecipeFormData(recipeData, foodstuffData.getFoodStuffs.foodstuffs);
+      const requestData = collectRecipeFormData(recipeData, foodstuffStore.foodstuffs);
       const payload = {
         ...requestData,
         id: editableRecipe.id,
@@ -61,6 +68,11 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
     setState((prev) => ({ ...prev, image, preview }));
   };
 
+  const handleCloseModal = () => {
+    setState((prev) => ({ ...prev, image: null, preview: null, initialFoods: null }));
+    onClose();
+  };
+
   useEffect(() => {
     if (!editableRecipe.id) return;
     const formData = collectEditableData(editableRecipe);
@@ -72,7 +84,6 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
     }));
   }, [editableRecipe.id]);
 
-  const foodstuffs = foodstuffData && foodstuffData.getFoodStuffs.foodstuffs;
   return (
     <TableModal
       modalTitle="Add/Edit recipe"
@@ -81,10 +92,10 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
       onFinish={handleSave}
       submitButtonTitle="Save recipe"
       loading={loading}
-      onClose={onClose}
+      onClose={handleCloseModal}
       openTrigger={!!editableRecipe.id}
     >
-      <Upload onChange={onFileChange} preview={state.preview} />
+      <Upload onChange={onFileChange} preview={state.preview} isFile={!!state.image} />
       {gfRecipe.recipeFields.map(({ name }) => {
         const title = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
         return (
@@ -101,13 +112,13 @@ export const RecipeModal: React.FC<Props> = ({ onSuccess, editableRecipe, onClos
         );
       })}
       <DescriptionBlock />
-      {!!foodstuffs
-        && <FoodBlock
-          foodstuffs={foodstuffs}
+      {!!foodstuffStore.foodstuffs
+        && (
+        <FoodBlock
           form={form}
           initialFoods={state.initialFoods}
         />
-      }
+        )}
     </TableModal>
   );
 };

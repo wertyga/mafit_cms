@@ -1,4 +1,11 @@
-import { ScheduleOutlined, ShopOutlined, ExperimentOutlined, DribbbleOutlined } from '@ant-design/icons';
+import {
+  ScheduleOutlined,
+  ShopOutlined,
+  ExperimentOutlined,
+  DribbbleOutlined,
+  CalendarOutlined,
+  YuqueOutlined,
+} from '@ant-design/icons';
 
 export const gfMenu = [
   {
@@ -17,8 +24,18 @@ export const gfMenu = [
     Icon: ExperimentOutlined,
   },
   {
+    title: 'Day foods',
+    href: '/dayfood',
+    Icon: CalendarOutlined,
+  },
+  {
     title: 'Trainings',
-    href: '/trainings',
+    href: '/training',
     Icon: DribbbleOutlined,
+  },
+  {
+    title: 'Marathons',
+    href: '/marathon',
+    Icon: YuqueOutlined,
   },
 ];

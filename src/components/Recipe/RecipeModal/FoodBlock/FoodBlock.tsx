@@ -2,11 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import useSelector from 'hooks/useSelector';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
-import {
-  Form, Button, FormInstance, Col,
-} from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import { FoodStuff } from 'graphql/types';
+import { Form, FormInstance } from 'antd';
 import { SelectValue } from 'antd/es/select';
 import { DragRow } from 'components/Drag/DragRow';
 import { FoodForm } from 'types/foodstuff';
@@ -14,14 +10,13 @@ import { FoodForm } from 'types/foodstuff';
 import { FoodItem } from './FoodItem/FoodItem';
 
 type Props = {
-  foodstuffs: FoodStuff[];
   form: FormInstance<any>;
   parentFieldName?: string | number | (string | number)[];
   initialFoods: FoodForm[];
 };
 
-export const FoodBlock: React.FC<Props> = ({ foodstuffs, parentFieldName, initialFoods }) => {
-  const { foodstuffStore: { units } } = useSelector('foodstuffStore');
+export const FoodBlock: React.FC<Props> = ({ parentFieldName, initialFoods }) => {
+  const { foodstuffStore: { units, foodstuffs } } = useSelector('foodstuffStore');
   const [foodsChosenState, setFoodChosen] = useState({});
 
   const handleFoodSetChange = (key: number) => (title: SelectValue) => {
@@ -53,7 +48,7 @@ export const FoodBlock: React.FC<Props> = ({ foodstuffs, parentFieldName, initia
   [!!foodstuffs]);
   return (
     <DndProvider backend={HTML5Backend}>
-      <Form.List name={parentFieldName || 'foods'}>
+      <Form.List name={parentFieldName || 'foods'} initialValue={['']}>
         {(fields, { add, remove, move }) => (
           <div>
             {fields.map((field, i) => {
@@ -64,24 +59,17 @@ export const FoodBlock: React.FC<Props> = ({ foodstuffs, parentFieldName, initia
                   <FoodItem
                     countDisabled={!foodsChosenState[field.fieldKey]}
                     field={field}
+                    isCanAdd={fields.length < options.length}
                     options={filteredOptions}
                     handleFoodSetChange={handleFoodSetChange}
                     unit={units[foodsChosenState[field.fieldKey]]}
                     handleDeleteFoodField={handleDeleteFoodField}
                     remove={remove}
+                    add={add}
                   />
                 </DragRow>
               );
             })}
-            {fields.length < options.length && (
-            <Form.Item>
-              <Col span={12}>
-                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                  Add Food Set
-                </Button>
-              </Col>
-            </Form.Item>
-            )}
           </div>
         )}
       </Form.List>

@@ -1,9 +1,11 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import classnames from 'classnames';
 
 type Props = {
   index: number;
   dragTypeName: string;
+  className?: string | Record<string, boolean>;
   moveRow: (from: number, to: number) => void;
 };
 type DragItemType = { index: number };
@@ -12,6 +14,7 @@ export const DragRow: React.FC<Props> = ({
   index,
   moveRow,
   dragTypeName,
+  className,
   children,
 }) => {
   const ref = useRef();
@@ -44,7 +47,7 @@ export const DragRow: React.FC<Props> = ({
   drop(drag(ref));
 
   return (
-    <div draggable="true" ref={ref}>
+    <div draggable="true" ref={ref} className={classnames(className)}>
       {children}
     </div>
   );

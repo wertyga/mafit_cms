@@ -1,0 +1,39 @@
+query getMarathons($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
+	getMarathons(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
+		marathons {
+			id
+			title
+			description
+			dateStart
+			trainings {
+				id
+				title
+			}
+		}
+		totalCount
+	}
+}
+
+mutation saveMarathon($id: ID, $title: String!, $description: String, $trainings: [ID]!, $dateStart: String!) {
+	saveMarathon(id: $id, title: $title, description: $description, trainings: $trainings, dateStart: $dateStart) {
+		marathon {
+			id
+			title
+			description
+			dateStart
+			trainings {
+				id
+				title
+			}
+		}
+		totalCount
+	}
+}
+mutation deleteMarathon($id: ID!) {
+	deleteMarathon(id: $id) {
+		marathon {
+			id
+		}
+		totalCount
+	}
+}

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Input, Form, message } from 'antd';
 import { useAddFoodstuffMutation, FoodStuff } from 'graphql/types';
 import { TableModal } from 'components/Common/Table/TableModal/TableModal';
-
 import { FOODSTUFF_PROPS } from 'goldfish/gfFoodStuff';
 import { gfErrors } from 'goldfish/gfErrors';
 import { capitalFirst } from 'utils/string';
@@ -10,7 +9,7 @@ import { capitalFirst } from 'utils/string';
 import { collectFoodStuffSaveData } from './helpers';
 
 type Props = {
-	onSuccess: (data: FoodStuff, totalCount: number) => void;
+  onSuccess: (data: FoodStuff, totalCount: number) => void;
   editableFoodstuff: Partial<FoodStuff>;
   onClose: () => void;
 };

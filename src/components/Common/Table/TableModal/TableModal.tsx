@@ -11,16 +11,16 @@ import {
 import { PlusSquareFilled } from '@ant-design/icons';
 
 type Props = {
-	className?: string | Record<string, string | boolean>;
-	form: FormInstance;
-	onClose?: () => void;
-	footer?: React.ReactElement;
-	onFinish: (data: Record<string, string>) => Promise<{ error?: string }>;
-	formName: string;
-	modalTitle: string;
-	submitButtonTitle: string;
-	loading?: boolean;
-	openTrigger?: boolean;
+  className?: string | Record<string, string | boolean>;
+  form: FormInstance;
+  onClose?: () => void;
+  footer?: React.ReactElement;
+  onFinish: (data: Record<string, string>) => Promise<{ error?: string }>;
+  formName: string;
+  modalTitle: string;
+  submitButtonTitle: string;
+  loading?: boolean;
+  openTrigger?: boolean;
 };
 
 export const TableModal: React.FC<Props> = ({

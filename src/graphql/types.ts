@@ -22,6 +22,35 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
+export type DayFood = {
+  __typename?: 'DayFood';
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  meal?: Maybe<Array<Maybe<DayFoodMeal>>>;
+};
+
+export type DayFoodInput = {
+  title: Scalars['String'];
+  meal?: Maybe<Array<Maybe<DayFoodMealInput>>>;
+};
+
+export type DayFoodMeal = {
+  __typename?: 'DayFoodMeal';
+  human?: Maybe<HumanType>;
+  meal?: Maybe<Array<Maybe<Meal>>>;
+};
+
+export type DayFoodMealInput = {
+  human: Scalars['ID'];
+  meal?: Maybe<Array<Maybe<MealInput>>>;
+};
+
+export type DeleteDayFoodResponse = {
+  __typename?: 'DeleteDayFoodResponse';
+  dayFood?: Maybe<DayFood>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
 export type DeleteFoodstufResponse = {
   __typename?: 'DeleteFoodstufResponse';
   foodstuff?: Maybe<FoodStuff>;
@@ -31,6 +60,12 @@ export type DeleteFoodstufResponse = {
 export type DeleteHumanResponse = {
   __typename?: 'DeleteHumanResponse';
   human?: Maybe<HumanType>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type DeleteMarathonResponse = {
+  __typename?: 'DeleteMarathonResponse';
+  marathon?: Maybe<Marathon>;
   totalCount?: Maybe<Scalars['Int']>;
 };
 
@@ -80,14 +115,26 @@ export type FoodStuffsWithTotal = {
   totalCount?: Maybe<Scalars['Int']>;
 };
 
+export type GetDayFoodsResponse = {
+  __typename?: 'GetDayFoodsResponse';
+  dayFoods?: Maybe<Array<Maybe<DayFood>>>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
 export type GetHumanTypesResponse = {
   __typename?: 'GetHumanTypesResponse';
   humans?: Maybe<Array<Maybe<HumanType>>>;
   totalCount?: Maybe<Scalars['Int']>;
 };
 
-export type GetTrainingsResponse = {
-  __typename?: 'GetTrainingsResponse';
+export type GetMarathonResponse = {
+  __typename?: 'GetMarathonResponse';
+  marathons?: Maybe<Array<Maybe<Marathon>>>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type GetTrainingResponse = {
+  __typename?: 'GetTrainingResponse';
   trainings?: Maybe<Array<Maybe<Training>>>;
   totalCount?: Maybe<Scalars['Int']>;
 };
@@ -98,20 +145,29 @@ export type HumanType = {
   category: Scalars['String'];
 };
 
+export type Marathon = {
+  __typename?: 'Marathon';
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  dateStart: Scalars['String'];
+  trainings?: Maybe<Array<Maybe<Training>>>;
+};
+
 export type Meal = {
   __typename?: 'Meal';
   id?: Maybe<Scalars['ID']>;
   type: Scalars['String'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  foods?: Maybe<Array<Maybe<Food>>>;
+  recipes?: Maybe<Array<Maybe<Recipe>>>;
 };
 
 export type MealInput = {
-  type: Scalars['String'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  foods?: Maybe<Array<Maybe<FoodInput>>>;
+  type: Scalars['ID'];
+  recipes: Array<Maybe<Scalars['ID']>>;
 };
 
 export type Mutation = {
@@ -122,8 +178,12 @@ export type Mutation = {
   deleteFoodStuff?: Maybe<DeleteFoodstufResponse>;
   saveHumanType?: Maybe<SaveHumanTypeResponse>;
   deleteHumanType?: Maybe<DeleteHumanResponse>;
+  saveDayFood?: Maybe<SaveDayFoodResponse>;
+  deleteDayFood?: Maybe<DeleteDayFoodResponse>;
   saveTraining?: Maybe<SaveTrainingResponse>;
   deleteTraining?: Maybe<DeleteTrainingResponse>;
+  saveMarathon?: Maybe<SaveMarathonResponse>;
+  deleteMarathon?: Maybe<DeleteMarathonResponse>;
 };
 
 
@@ -168,14 +228,41 @@ export type MutationDeleteHumanTypeArgs = {
 };
 
 
+export type MutationSaveDayFoodArgs = {
+  id?: Maybe<Scalars['ID']>;
+  data?: Maybe<DayFoodInput>;
+};
+
+
+export type MutationDeleteDayFoodArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationSaveTrainingArgs = {
   id?: Maybe<Scalars['ID']>;
-  video?: Maybe<Scalars['Upload']>;
-  data?: Maybe<TrainingInput>;
+  title: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  video: Scalars['Upload'];
+  dayFood?: Maybe<Scalars['ID']>;
 };
 
 
 export type MutationDeleteTrainingArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationSaveMarathonArgs = {
+  id?: Maybe<Scalars['ID']>;
+  title: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  trainings: Array<Maybe<Scalars['ID']>>;
+  dateStart: Scalars['String'];
+};
+
+
+export type MutationDeleteMarathonArgs = {
   id: Scalars['ID'];
 };
 
@@ -186,8 +273,13 @@ export type Query = {
   authUser?: Maybe<User>;
   getFoodStuffs?: Maybe<FoodStuffsWithTotal>;
   getRecipes?: Maybe<RecipesWithTotal>;
-  getTrainings?: Maybe<GetTrainingsResponse>;
+  getLightRecipesList?: Maybe<RecipesWithTotal>;
+  getDayFoods?: Maybe<GetDayFoodsResponse>;
+  getDayFoodsLightList?: Maybe<GetDayFoodsResponse>;
   getHumanTypes?: Maybe<GetHumanTypesResponse>;
+  getTrainings?: Maybe<GetTrainingResponse>;
+  getLightTrainingList?: Maybe<GetTrainingResponse>;
+  getMarathons?: Maybe<GetMarathonResponse>;
 };
 
 
@@ -209,8 +301,24 @@ export type QueryGetFoodStuffsArgs = {
 
 
 export type QueryGetRecipesArgs = {
+  id?: Maybe<Scalars['ID']>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetDayFoodsArgs = {
+  id?: Maybe<Scalars['ID']>;
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetHumanTypesArgs = {
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
 };
@@ -222,11 +330,13 @@ export type QueryGetTrainingsArgs = {
   limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
-  human?: Maybe<Scalars['String']>;
 };
 
 
-export type QueryGetHumanTypesArgs = {
+export type QueryGetMarathonsArgs = {
+  id?: Maybe<Scalars['ID']>;
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
 };
@@ -259,15 +369,21 @@ export type RecipesWithTotal = {
   totalCount?: Maybe<Scalars['Int']>;
 };
 
+export type SaveDayFoodResponse = {
+  __typename?: 'SaveDayFoodResponse';
+  dayFood?: Maybe<DayFood>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
 export type SaveHumanTypeResponse = {
   __typename?: 'SaveHumanTypeResponse';
   human?: Maybe<HumanType>;
   totalCount?: Maybe<Scalars['Int']>;
 };
 
-export type SaveTrainingResponse = {
-  __typename?: 'SaveTrainingResponse';
-  training?: Maybe<Training>;
+export type SaveMarathonResponse = {
+  __typename?: 'SaveMarathonResponse';
+  marathon?: Maybe<Marathon>;
   totalCount?: Maybe<Scalars['Int']>;
 };
 
@@ -275,24 +391,9 @@ export type Training = {
   __typename?: 'Training';
   id: Scalars['ID'];
   title: Scalars['String'];
-  video?: Maybe<Scalars['String']>;
-  meal?: Maybe<TrainingMeal>;
-};
-
-export type TrainingInput = {
-  title: Scalars['String'];
-  meal?: Maybe<TrainingMealInput>;
-};
-
-export type TrainingMeal = {
-  __typename?: 'TrainingMeal';
-  human: Scalars['ID'];
-  meal?: Maybe<Array<Maybe<Meal>>>;
-};
-
-export type TrainingMealInput = {
-  human: Scalars['ID'];
-  meal?: Maybe<Array<Maybe<MealInput>>>;
+  description?: Maybe<Scalars['String']>;
+  video: Scalars['String'];
+  dayFood?: Maybe<DayFood>;
 };
 
 
@@ -301,7 +402,104 @@ export type User = {
   id?: Maybe<Scalars['ID']>;
   username: Scalars['String'];
   token: Scalars['String'];
+  email?: Maybe<Scalars['String']>;
+  role?: Maybe<Scalars['String']>;
 };
+
+export type SaveTrainingResponse = {
+  __typename?: 'saveTrainingResponse';
+  training?: Maybe<Training>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type DayFoodFieldsFragment = (
+  { __typename?: 'DayFood' }
+  & Pick<DayFood, 'id' | 'title'>
+  & { meal?: Maybe<Array<Maybe<(
+    { __typename?: 'DayFoodMeal' }
+    & { human?: Maybe<(
+      { __typename?: 'HumanType' }
+      & Pick<HumanType, 'id' | 'category'>
+    )>, meal?: Maybe<Array<Maybe<(
+      { __typename?: 'Meal' }
+      & Pick<Meal, 'type' | 'title' | 'description'>
+      & { recipes?: Maybe<Array<Maybe<(
+        { __typename?: 'Recipe' }
+        & Pick<Recipe, 'id' | 'title'>
+      )>>> }
+    )>>> }
+  )>>> }
+);
+
+export type GetDayFoodsLightListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDayFoodsLightListQuery = (
+  { __typename?: 'Query' }
+  & { getDayFoodsLightList?: Maybe<(
+    { __typename?: 'GetDayFoodsResponse' }
+    & { dayFoods?: Maybe<Array<Maybe<(
+      { __typename?: 'DayFood' }
+      & Pick<DayFood, 'id' | 'title'>
+    )>>> }
+  )> }
+);
+
+export type GetDayFoodsQueryVariables = Exact<{
+  id?: Maybe<Scalars['ID']>;
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetDayFoodsQuery = (
+  { __typename?: 'Query' }
+  & { getDayFoods?: Maybe<(
+    { __typename?: 'GetDayFoodsResponse' }
+    & Pick<GetDayFoodsResponse, 'totalCount'>
+    & { dayFoods?: Maybe<Array<Maybe<(
+      { __typename?: 'DayFood' }
+      & DayFoodFieldsFragment
+    )>>> }
+  )> }
+);
+
+export type SaveDayFoodMutationVariables = Exact<{
+  id?: Maybe<Scalars['ID']>;
+  data?: Maybe<DayFoodInput>;
+}>;
+
+
+export type SaveDayFoodMutation = (
+  { __typename?: 'Mutation' }
+  & { saveDayFood?: Maybe<(
+    { __typename?: 'SaveDayFoodResponse' }
+    & Pick<SaveDayFoodResponse, 'totalCount'>
+    & { dayFood?: Maybe<(
+      { __typename?: 'DayFood' }
+      & DayFoodFieldsFragment
+    )> }
+  )> }
+);
+
+export type DeleteDayFoodMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteDayFoodMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteDayFood?: Maybe<(
+    { __typename?: 'DeleteDayFoodResponse' }
+    & Pick<DeleteDayFoodResponse, 'totalCount'>
+    & { dayFood?: Maybe<(
+      { __typename?: 'DayFood' }
+      & Pick<DayFood, 'id'>
+    )> }
+  )> }
+);
 
 export type GetFoodStuffsQueryVariables = Exact<{
   search?: Maybe<Scalars['String']>;
@@ -414,6 +612,73 @@ export type DeleteHumanTypeMutation = (
   )> }
 );
 
+export type GetMarathonsQueryVariables = Exact<{
+  id?: Maybe<Scalars['ID']>;
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  search?: Maybe<Scalars['String']>;
+  by?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetMarathonsQuery = (
+  { __typename?: 'Query' }
+  & { getMarathons?: Maybe<(
+    { __typename?: 'GetMarathonResponse' }
+    & Pick<GetMarathonResponse, 'totalCount'>
+    & { marathons?: Maybe<Array<Maybe<(
+      { __typename?: 'Marathon' }
+      & Pick<Marathon, 'id' | 'title' | 'description' | 'dateStart'>
+      & { trainings?: Maybe<Array<Maybe<(
+        { __typename?: 'Training' }
+        & Pick<Training, 'id' | 'title'>
+      )>>> }
+    )>>> }
+  )> }
+);
+
+export type SaveMarathonMutationVariables = Exact<{
+  id?: Maybe<Scalars['ID']>;
+  title: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  trainings: Array<Maybe<Scalars['ID']>> | Maybe<Scalars['ID']>;
+  dateStart: Scalars['String'];
+}>;
+
+
+export type SaveMarathonMutation = (
+  { __typename?: 'Mutation' }
+  & { saveMarathon?: Maybe<(
+    { __typename?: 'SaveMarathonResponse' }
+    & Pick<SaveMarathonResponse, 'totalCount'>
+    & { marathon?: Maybe<(
+      { __typename?: 'Marathon' }
+      & Pick<Marathon, 'id' | 'title' | 'description' | 'dateStart'>
+      & { trainings?: Maybe<Array<Maybe<(
+        { __typename?: 'Training' }
+        & Pick<Training, 'id' | 'title'>
+      )>>> }
+    )> }
+  )> }
+);
+
+export type DeleteMarathonMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteMarathonMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteMarathon?: Maybe<(
+    { __typename?: 'DeleteMarathonResponse' }
+    & Pick<DeleteMarathonResponse, 'totalCount'>
+    & { marathon?: Maybe<(
+      { __typename?: 'Marathon' }
+      & Pick<Marathon, 'id'>
+    )> }
+  )> }
+);
+
 export type RecipeFieldsFragment = (
   { __typename?: 'Recipe' }
   & Pick<Recipe, 'id' | 'title' | 'image' | 'description'>
@@ -428,6 +693,7 @@ export type RecipeFieldsFragment = (
 );
 
 export type GetRecipesQueryVariables = Exact<{
+  id?: Maybe<Scalars['ID']>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
@@ -443,6 +709,21 @@ export type GetRecipesQuery = (
     & { recipes?: Maybe<Array<Maybe<(
       { __typename?: 'Recipe' }
       & RecipeFieldsFragment
+    )>>> }
+  )> }
+);
+
+export type GetLightRecipesListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLightRecipesListQuery = (
+  { __typename?: 'Query' }
+  & { getLightRecipesList?: Maybe<(
+    { __typename?: 'RecipesWithTotal' }
+    & Pick<RecipesWithTotal, 'totalCount'>
+    & { recipes?: Maybe<Array<Maybe<(
+      { __typename?: 'Recipe' }
+      & Pick<Recipe, 'id' | 'title'>
     )>>> }
   )> }
 );
@@ -485,64 +766,67 @@ export type DeleteRecipeMutation = (
   )> }
 );
 
-export type TrainingFieldsFragment = (
-  { __typename?: 'Training' }
-  & Pick<Training, 'id' | 'title' | 'video'>
-  & { meal?: Maybe<(
-    { __typename?: 'TrainingMeal' }
-    & Pick<TrainingMeal, 'human'>
-    & { meal?: Maybe<Array<Maybe<(
-      { __typename?: 'Meal' }
-      & Pick<Meal, 'type' | 'title' | 'description'>
-      & { foods?: Maybe<Array<Maybe<(
-        { __typename?: 'Food' }
-        & Pick<Food, 'qt'>
-        & { foodstuff?: Maybe<(
-          { __typename?: 'FoodStuff' }
-          & Pick<FoodStuff, 'id' | 'title' | 'unit'>
-        )> }
-      )>>> }
-    )>>> }
-  )> }
-);
-
 export type GetTrainingsQueryVariables = Exact<{
   id?: Maybe<Scalars['ID']>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
   search?: Maybe<Scalars['String']>;
   by?: Maybe<Scalars['String']>;
-  human?: Maybe<Scalars['String']>;
 }>;
 
 
 export type GetTrainingsQuery = (
   { __typename?: 'Query' }
   & { getTrainings?: Maybe<(
-    { __typename?: 'GetTrainingsResponse' }
-    & Pick<GetTrainingsResponse, 'totalCount'>
+    { __typename?: 'GetTrainingResponse' }
+    & Pick<GetTrainingResponse, 'totalCount'>
     & { trainings?: Maybe<Array<Maybe<(
       { __typename?: 'Training' }
-      & TrainingFieldsFragment
+      & Pick<Training, 'id' | 'title' | 'description' | 'video'>
+      & { dayFood?: Maybe<(
+        { __typename?: 'DayFood' }
+        & Pick<DayFood, 'id' | 'title'>
+      )> }
+    )>>> }
+  )> }
+);
+
+export type GetLightTrainingListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLightTrainingListQuery = (
+  { __typename?: 'Query' }
+  & { getLightTrainingList?: Maybe<(
+    { __typename?: 'GetTrainingResponse' }
+    & Pick<GetTrainingResponse, 'totalCount'>
+    & { trainings?: Maybe<Array<Maybe<(
+      { __typename?: 'Training' }
+      & Pick<Training, 'id' | 'title'>
     )>>> }
   )> }
 );
 
 export type SaveTrainingMutationVariables = Exact<{
   id?: Maybe<Scalars['ID']>;
-  video?: Maybe<Scalars['Upload']>;
-  data?: Maybe<TrainingInput>;
+  title: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  video: Scalars['Upload'];
+  dayFood?: Maybe<Scalars['ID']>;
 }>;
 
 
 export type SaveTrainingMutation = (
   { __typename?: 'Mutation' }
   & { saveTraining?: Maybe<(
-    { __typename?: 'SaveTrainingResponse' }
+    { __typename?: 'saveTrainingResponse' }
     & Pick<SaveTrainingResponse, 'totalCount'>
     & { training?: Maybe<(
       { __typename?: 'Training' }
-      & TrainingFieldsFragment
+      & Pick<Training, 'id' | 'title' | 'description' | 'video'>
+      & { dayFood?: Maybe<(
+        { __typename?: 'DayFood' }
+        & Pick<DayFood, 'id' | 'title'>
+      )> }
     )> }
   )> }
 );
@@ -573,7 +857,7 @@ export type GetUserQuery = (
   { __typename?: 'Query' }
   & { getUser?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'token'>
+    & Pick<User, 'id' | 'username' | 'token' | 'email' | 'role'>
   )> }
 );
 
@@ -587,10 +871,31 @@ export type AuthUserQuery = (
   { __typename?: 'Query' }
   & { authUser?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'token'>
+    & Pick<User, 'id' | 'username' | 'token' | 'email' | 'role'>
   )> }
 );
 
+export const DayFoodFieldsFragmentDoc = gql`
+    fragment DayFoodFields on DayFood {
+  id
+  title
+  meal {
+    human {
+      id
+      category
+    }
+    meal {
+      type
+      title
+      description
+      recipes {
+        id
+        title
+      }
+    }
+  }
+}
+    `;
 export const RecipeFieldsFragmentDoc = gql`
     fragment recipeFields on Recipe {
   id
@@ -607,29 +912,158 @@ export const RecipeFieldsFragmentDoc = gql`
   }
 }
     `;
-export const TrainingFieldsFragmentDoc = gql`
-    fragment TrainingFields on Training {
-  id
-  title
-  video
-  meal {
-    human
-    meal {
-      type
+export const GetDayFoodsLightListDocument = gql`
+    query getDayFoodsLightList {
+  getDayFoodsLightList {
+    dayFoods {
+      id
       title
-      description
-      foods {
-        foodstuff {
-          id
-          title
-          unit
-        }
-        qt
-      }
     }
   }
 }
     `;
+
+/**
+ * __useGetDayFoodsLightListQuery__
+ *
+ * To run a query within a React component, call `useGetDayFoodsLightListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDayFoodsLightListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDayFoodsLightListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetDayFoodsLightListQuery(baseOptions?: Apollo.QueryHookOptions<GetDayFoodsLightListQuery, GetDayFoodsLightListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDayFoodsLightListQuery, GetDayFoodsLightListQueryVariables>(GetDayFoodsLightListDocument, options);
+      }
+export function useGetDayFoodsLightListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDayFoodsLightListQuery, GetDayFoodsLightListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDayFoodsLightListQuery, GetDayFoodsLightListQueryVariables>(GetDayFoodsLightListDocument, options);
+        }
+export type GetDayFoodsLightListQueryHookResult = ReturnType<typeof useGetDayFoodsLightListQuery>;
+export type GetDayFoodsLightListLazyQueryHookResult = ReturnType<typeof useGetDayFoodsLightListLazyQuery>;
+export type GetDayFoodsLightListQueryResult = Apollo.QueryResult<GetDayFoodsLightListQuery, GetDayFoodsLightListQueryVariables>;
+export const GetDayFoodsDocument = gql`
+    query getDayFoods($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
+  getDayFoods(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
+    dayFoods {
+      ...DayFoodFields
+    }
+    totalCount
+  }
+}
+    ${DayFoodFieldsFragmentDoc}`;
+
+/**
+ * __useGetDayFoodsQuery__
+ *
+ * To run a query within a React component, call `useGetDayFoodsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDayFoodsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDayFoodsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      offset: // value for 'offset'
+ *      limit: // value for 'limit'
+ *      search: // value for 'search'
+ *      by: // value for 'by'
+ *   },
+ * });
+ */
+export function useGetDayFoodsQuery(baseOptions?: Apollo.QueryHookOptions<GetDayFoodsQuery, GetDayFoodsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDayFoodsQuery, GetDayFoodsQueryVariables>(GetDayFoodsDocument, options);
+      }
+export function useGetDayFoodsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDayFoodsQuery, GetDayFoodsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDayFoodsQuery, GetDayFoodsQueryVariables>(GetDayFoodsDocument, options);
+        }
+export type GetDayFoodsQueryHookResult = ReturnType<typeof useGetDayFoodsQuery>;
+export type GetDayFoodsLazyQueryHookResult = ReturnType<typeof useGetDayFoodsLazyQuery>;
+export type GetDayFoodsQueryResult = Apollo.QueryResult<GetDayFoodsQuery, GetDayFoodsQueryVariables>;
+export const SaveDayFoodDocument = gql`
+    mutation saveDayFood($id: ID, $data: DayFoodInput) {
+  saveDayFood(id: $id, data: $data) {
+    dayFood {
+      ...DayFoodFields
+    }
+    totalCount
+  }
+}
+    ${DayFoodFieldsFragmentDoc}`;
+export type SaveDayFoodMutationFn = Apollo.MutationFunction<SaveDayFoodMutation, SaveDayFoodMutationVariables>;
+
+/**
+ * __useSaveDayFoodMutation__
+ *
+ * To run a mutation, you first call `useSaveDayFoodMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveDayFoodMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveDayFoodMutation, { data, loading, error }] = useSaveDayFoodMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSaveDayFoodMutation(baseOptions?: Apollo.MutationHookOptions<SaveDayFoodMutation, SaveDayFoodMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SaveDayFoodMutation, SaveDayFoodMutationVariables>(SaveDayFoodDocument, options);
+      }
+export type SaveDayFoodMutationHookResult = ReturnType<typeof useSaveDayFoodMutation>;
+export type SaveDayFoodMutationResult = Apollo.MutationResult<SaveDayFoodMutation>;
+export type SaveDayFoodMutationOptions = Apollo.BaseMutationOptions<SaveDayFoodMutation, SaveDayFoodMutationVariables>;
+export const DeleteDayFoodDocument = gql`
+    mutation deleteDayFood($id: ID!) {
+  deleteDayFood(id: $id) {
+    dayFood {
+      id
+    }
+    totalCount
+  }
+}
+    `;
+export type DeleteDayFoodMutationFn = Apollo.MutationFunction<DeleteDayFoodMutation, DeleteDayFoodMutationVariables>;
+
+/**
+ * __useDeleteDayFoodMutation__
+ *
+ * To run a mutation, you first call `useDeleteDayFoodMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDayFoodMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDayFoodMutation, { data, loading, error }] = useDeleteDayFoodMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteDayFoodMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDayFoodMutation, DeleteDayFoodMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDayFoodMutation, DeleteDayFoodMutationVariables>(DeleteDayFoodDocument, options);
+      }
+export type DeleteDayFoodMutationHookResult = ReturnType<typeof useDeleteDayFoodMutation>;
+export type DeleteDayFoodMutationResult = Apollo.MutationResult<DeleteDayFoodMutation>;
+export type DeleteDayFoodMutationOptions = Apollo.BaseMutationOptions<DeleteDayFoodMutation, DeleteDayFoodMutationVariables>;
 export const GetFoodStuffsDocument = gql`
     query getFoodStuffs($search: String, $by: String) {
   getFoodStuffs(search: $search, by: $by) {
@@ -881,9 +1315,147 @@ export function useDeleteHumanTypeMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteHumanTypeMutationHookResult = ReturnType<typeof useDeleteHumanTypeMutation>;
 export type DeleteHumanTypeMutationResult = Apollo.MutationResult<DeleteHumanTypeMutation>;
 export type DeleteHumanTypeMutationOptions = Apollo.BaseMutationOptions<DeleteHumanTypeMutation, DeleteHumanTypeMutationVariables>;
+export const GetMarathonsDocument = gql`
+    query getMarathons($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
+  getMarathons(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
+    marathons {
+      id
+      title
+      description
+      dateStart
+      trainings {
+        id
+        title
+      }
+    }
+    totalCount
+  }
+}
+    `;
+
+/**
+ * __useGetMarathonsQuery__
+ *
+ * To run a query within a React component, call `useGetMarathonsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMarathonsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMarathonsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      offset: // value for 'offset'
+ *      limit: // value for 'limit'
+ *      search: // value for 'search'
+ *      by: // value for 'by'
+ *   },
+ * });
+ */
+export function useGetMarathonsQuery(baseOptions?: Apollo.QueryHookOptions<GetMarathonsQuery, GetMarathonsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMarathonsQuery, GetMarathonsQueryVariables>(GetMarathonsDocument, options);
+      }
+export function useGetMarathonsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMarathonsQuery, GetMarathonsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMarathonsQuery, GetMarathonsQueryVariables>(GetMarathonsDocument, options);
+        }
+export type GetMarathonsQueryHookResult = ReturnType<typeof useGetMarathonsQuery>;
+export type GetMarathonsLazyQueryHookResult = ReturnType<typeof useGetMarathonsLazyQuery>;
+export type GetMarathonsQueryResult = Apollo.QueryResult<GetMarathonsQuery, GetMarathonsQueryVariables>;
+export const SaveMarathonDocument = gql`
+    mutation saveMarathon($id: ID, $title: String!, $description: String, $trainings: [ID]!, $dateStart: String!) {
+  saveMarathon(
+    id: $id
+    title: $title
+    description: $description
+    trainings: $trainings
+    dateStart: $dateStart
+  ) {
+    marathon {
+      id
+      title
+      description
+      dateStart
+      trainings {
+        id
+        title
+      }
+    }
+    totalCount
+  }
+}
+    `;
+export type SaveMarathonMutationFn = Apollo.MutationFunction<SaveMarathonMutation, SaveMarathonMutationVariables>;
+
+/**
+ * __useSaveMarathonMutation__
+ *
+ * To run a mutation, you first call `useSaveMarathonMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveMarathonMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveMarathonMutation, { data, loading, error }] = useSaveMarathonMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      title: // value for 'title'
+ *      description: // value for 'description'
+ *      trainings: // value for 'trainings'
+ *      dateStart: // value for 'dateStart'
+ *   },
+ * });
+ */
+export function useSaveMarathonMutation(baseOptions?: Apollo.MutationHookOptions<SaveMarathonMutation, SaveMarathonMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SaveMarathonMutation, SaveMarathonMutationVariables>(SaveMarathonDocument, options);
+      }
+export type SaveMarathonMutationHookResult = ReturnType<typeof useSaveMarathonMutation>;
+export type SaveMarathonMutationResult = Apollo.MutationResult<SaveMarathonMutation>;
+export type SaveMarathonMutationOptions = Apollo.BaseMutationOptions<SaveMarathonMutation, SaveMarathonMutationVariables>;
+export const DeleteMarathonDocument = gql`
+    mutation deleteMarathon($id: ID!) {
+  deleteMarathon(id: $id) {
+    marathon {
+      id
+    }
+    totalCount
+  }
+}
+    `;
+export type DeleteMarathonMutationFn = Apollo.MutationFunction<DeleteMarathonMutation, DeleteMarathonMutationVariables>;
+
+/**
+ * __useDeleteMarathonMutation__
+ *
+ * To run a mutation, you first call `useDeleteMarathonMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMarathonMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMarathonMutation, { data, loading, error }] = useDeleteMarathonMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteMarathonMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMarathonMutation, DeleteMarathonMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMarathonMutation, DeleteMarathonMutationVariables>(DeleteMarathonDocument, options);
+      }
+export type DeleteMarathonMutationHookResult = ReturnType<typeof useDeleteMarathonMutation>;
+export type DeleteMarathonMutationResult = Apollo.MutationResult<DeleteMarathonMutation>;
+export type DeleteMarathonMutationOptions = Apollo.BaseMutationOptions<DeleteMarathonMutation, DeleteMarathonMutationVariables>;
 export const GetRecipesDocument = gql`
-    query getRecipes($offset: Int, $limit: Int, $search: String, $by: String) {
-  getRecipes(offset: $offset, limit: $limit, search: $search, by: $by) {
+    query getRecipes($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
+  getRecipes(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
     recipes {
       ...recipeFields
     }
@@ -904,6 +1476,7 @@ export const GetRecipesDocument = gql`
  * @example
  * const { data, loading, error } = useGetRecipesQuery({
  *   variables: {
+ *      id: // value for 'id'
  *      offset: // value for 'offset'
  *      limit: // value for 'limit'
  *      search: // value for 'search'
@@ -922,6 +1495,44 @@ export function useGetRecipesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetRecipesQueryHookResult = ReturnType<typeof useGetRecipesQuery>;
 export type GetRecipesLazyQueryHookResult = ReturnType<typeof useGetRecipesLazyQuery>;
 export type GetRecipesQueryResult = Apollo.QueryResult<GetRecipesQuery, GetRecipesQueryVariables>;
+export const GetLightRecipesListDocument = gql`
+    query getLightRecipesList {
+  getLightRecipesList {
+    recipes {
+      id
+      title
+    }
+    totalCount
+  }
+}
+    `;
+
+/**
+ * __useGetLightRecipesListQuery__
+ *
+ * To run a query within a React component, call `useGetLightRecipesListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLightRecipesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLightRecipesListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetLightRecipesListQuery(baseOptions?: Apollo.QueryHookOptions<GetLightRecipesListQuery, GetLightRecipesListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLightRecipesListQuery, GetLightRecipesListQueryVariables>(GetLightRecipesListDocument, options);
+      }
+export function useGetLightRecipesListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLightRecipesListQuery, GetLightRecipesListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLightRecipesListQuery, GetLightRecipesListQueryVariables>(GetLightRecipesListDocument, options);
+        }
+export type GetLightRecipesListQueryHookResult = ReturnType<typeof useGetLightRecipesListQuery>;
+export type GetLightRecipesListLazyQueryHookResult = ReturnType<typeof useGetLightRecipesListLazyQuery>;
+export type GetLightRecipesListQueryResult = Apollo.QueryResult<GetLightRecipesListQuery, GetLightRecipesListQueryVariables>;
 export const UploadRecipeDocument = gql`
     mutation uploadRecipe($id: ID, $image: Upload, $title: String!, $description: [String], $foods: [FoodInput]) {
   uploadRecipe(
@@ -1005,22 +1616,22 @@ export type DeleteRecipeMutationHookResult = ReturnType<typeof useDeleteRecipeMu
 export type DeleteRecipeMutationResult = Apollo.MutationResult<DeleteRecipeMutation>;
 export type DeleteRecipeMutationOptions = Apollo.BaseMutationOptions<DeleteRecipeMutation, DeleteRecipeMutationVariables>;
 export const GetTrainingsDocument = gql`
-    query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String, $human: String) {
-  getTrainings(
-    id: $id
-    offset: $offset
-    limit: $limit
-    search: $search
-    by: $by
-    human: $human
-  ) {
+    query getTrainings($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
+  getTrainings(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
     trainings {
-      ...TrainingFields
+      id
+      title
+      description
+      video
+      dayFood {
+        id
+        title
+      }
     }
     totalCount
   }
 }
-    ${TrainingFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useGetTrainingsQuery__
@@ -1039,7 +1650,6 @@ export const GetTrainingsDocument = gql`
  *      limit: // value for 'limit'
  *      search: // value for 'search'
  *      by: // value for 'by'
- *      human: // value for 'human'
  *   },
  * });
  */
@@ -1054,16 +1664,67 @@ export function useGetTrainingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetTrainingsQueryHookResult = ReturnType<typeof useGetTrainingsQuery>;
 export type GetTrainingsLazyQueryHookResult = ReturnType<typeof useGetTrainingsLazyQuery>;
 export type GetTrainingsQueryResult = Apollo.QueryResult<GetTrainingsQuery, GetTrainingsQueryVariables>;
-export const SaveTrainingDocument = gql`
-    mutation saveTraining($id: ID, $video: Upload, $data: TrainingInput) {
-  saveTraining(id: $id, video: $video, data: $data) {
-    training {
-      ...TrainingFields
+export const GetLightTrainingListDocument = gql`
+    query getLightTrainingList {
+  getLightTrainingList {
+    trainings {
+      id
+      title
     }
     totalCount
   }
 }
-    ${TrainingFieldsFragmentDoc}`;
+    `;
+
+/**
+ * __useGetLightTrainingListQuery__
+ *
+ * To run a query within a React component, call `useGetLightTrainingListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLightTrainingListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLightTrainingListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetLightTrainingListQuery(baseOptions?: Apollo.QueryHookOptions<GetLightTrainingListQuery, GetLightTrainingListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLightTrainingListQuery, GetLightTrainingListQueryVariables>(GetLightTrainingListDocument, options);
+      }
+export function useGetLightTrainingListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLightTrainingListQuery, GetLightTrainingListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLightTrainingListQuery, GetLightTrainingListQueryVariables>(GetLightTrainingListDocument, options);
+        }
+export type GetLightTrainingListQueryHookResult = ReturnType<typeof useGetLightTrainingListQuery>;
+export type GetLightTrainingListLazyQueryHookResult = ReturnType<typeof useGetLightTrainingListLazyQuery>;
+export type GetLightTrainingListQueryResult = Apollo.QueryResult<GetLightTrainingListQuery, GetLightTrainingListQueryVariables>;
+export const SaveTrainingDocument = gql`
+    mutation saveTraining($id: ID, $title: String!, $description: String, $video: Upload!, $dayFood: ID) {
+  saveTraining(
+    id: $id
+    title: $title
+    description: $description
+    video: $video
+    dayFood: $dayFood
+  ) {
+    training {
+      id
+      title
+      description
+      video
+      dayFood {
+        id
+        title
+      }
+    }
+    totalCount
+  }
+}
+    `;
 export type SaveTrainingMutationFn = Apollo.MutationFunction<SaveTrainingMutation, SaveTrainingMutationVariables>;
 
 /**
@@ -1080,8 +1741,10 @@ export type SaveTrainingMutationFn = Apollo.MutationFunction<SaveTrainingMutatio
  * const [saveTrainingMutation, { data, loading, error }] = useSaveTrainingMutation({
  *   variables: {
  *      id: // value for 'id'
+ *      title: // value for 'title'
+ *      description: // value for 'description'
  *      video: // value for 'video'
- *      data: // value for 'data'
+ *      dayFood: // value for 'dayFood'
  *   },
  * });
  */
@@ -1134,6 +1797,8 @@ export const GetUserDocument = gql`
     id
     username
     token
+    email
+    role
   }
 }
     `;
@@ -1171,6 +1836,8 @@ export const AuthUserDocument = gql`
     id
     username
     token
+    email
+    role
   }
 }
     `;

@@ -1,29 +1,29 @@
 export enum FOODSTUFF_ACTION_TYPES {
-	SET_FOODSTUFFS = 'SET_FOODSTUFFS',
-	ADD_FOODSTUFF = 'ADD_FOODSTUFF',
-	UPDATE_FOODSTUFF = 'UPDATE_FOODSTUFF',
-	DELETE_FOODSTUFF = 'DELETE_FOODSTUFF',
+  SET_FOODSTUFFS = 'SET_FOODSTUFFS',
+  ADD_FOODSTUFF = 'ADD_FOODSTUFF',
+  UPDATE_FOODSTUFF = 'UPDATE_FOODSTUFF',
+  DELETE_FOODSTUFF = 'DELETE_FOODSTUFF',
 }
 
 export type FoodStuff = {
-	id: string;
-	title: string;
-	unit: string;
-	calories: number;
-	fats: number;
-	carbs: number;
-	protein: number;
+  id: string;
+  title: string;
+  unit: string;
+  calories: number;
+  fats: number;
+  carbs: number;
+  protein: number;
 };
 
 export type FoodstuffState = {
-	foodstuffs: FoodStuff[];
-	units: Partial<Record<string, string>>;
-	totalCount: number;
+  foodstuffs: FoodStuff[];
+  units: Partial<Record<string, string>>;
+  totalCount: number;
 };
 
 export type Food = {
-	foodstuff: FoodStuff;
-	qt: number;
+  foodstuff: FoodStuff;
+  qt: number;
 };
 
 export type FoodForm = {

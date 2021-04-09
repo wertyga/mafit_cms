@@ -18,10 +18,19 @@ fragment recipeFields on Recipe {
 	}
 }
 
-query getRecipes($offset: Int, $limit: Int, $search: String, $by: String) {
-	getRecipes(offset: $offset, limit: $limit, search: $search, by: $by) {
+query getRecipes($id: ID, $offset: Int, $limit: Int, $search: String, $by: String) {
+	getRecipes(id: $id, offset: $offset, limit: $limit, search: $search, by: $by) {
 		recipes {
 			...recipeFields
+		}
+		totalCount
+	}
+}
+query getLightRecipesList {
+	getLightRecipesList {
+		recipes {
+			id
+			title
 		}
 		totalCount
 	}
