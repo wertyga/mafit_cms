@@ -12,8 +12,10 @@ import {
 
 import { MarathonDatePicker } from './MarathonDatePicker';
 
+import { collectEditableData } from './helpers';
+
 type Props = {
-  editableMarathon?: Partial<Marathon>;
+  editableMarathon: Marathon;
   onSuccess: (data: Marathon, totalCount: number) => void;
   onClose: () => void;
 };
@@ -45,7 +47,7 @@ export const MarathonModal: React.FC<Props> = ({ onSuccess, editableMarathon, on
 
   const handleSave = async (formData) => {
     try {
-      const { title, description, trainings, dateStart } = formData;
+      const { title, description, trainings, dateStart, dateEnd, progressIn } = formData;
       const trainingsId = [];
       state.trainings.forEach((item) => {
         const train = trainings.find((t) => t.training === item.title);
@@ -57,6 +59,8 @@ export const MarathonModal: React.FC<Props> = ({ onSuccess, editableMarathon, on
         description,
         trainings: trainingsId,
         dateStart: new Date(dateStart).toString(),
+        dateEnd: new Date(dateEnd).toString(),
+        progressIn: Number(progressIn),
       };
       await saveMarathon({ variables: payload });
       return {};
@@ -67,12 +71,7 @@ export const MarathonModal: React.FC<Props> = ({ onSuccess, editableMarathon, on
 
   useEffect(() => {
     if (!editableMarathon.id) return;
-    const formData = {
-      title: editableMarathon.title,
-      description: editableMarathon.description,
-      trainings: (editableMarathon.trainings || []).map(({ title }) => ({ training: title })),
-      dateStart: moment(editableMarathon.dateStart, 'YYYY-MM-DD'),
-    };
+    const formData = collectEditableData(editableMarathon);
     form.setFieldsValue(formData);
   }, [editableMarathon.id]);
 
@@ -108,6 +107,16 @@ export const MarathonModal: React.FC<Props> = ({ onSuccess, editableMarathon, on
       </Col>
       <Col span={22}>
         <MarathonDatePicker />
+      </Col>
+      <Col span={22}>
+        <Form.Item
+          name="progressIn"
+          label="Show progress from"
+          labelAlign="left"
+          rules={[{ required: true, message: gfErrors.emptyField }]}
+        >
+          <Input type="number" placeholder="Progress in..." />
+        </Form.Item>
       </Col>
       <Col span={22}>
         <TrainingsBlock options={state.trainings} />

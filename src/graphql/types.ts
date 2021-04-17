@@ -151,7 +151,9 @@ export type Marathon = {
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   dateStart: Scalars['String'];
-  trainings?: Maybe<Array<Maybe<Training>>>;
+  dateEnd: Scalars['String'];
+  trainings: Array<Maybe<Training>>;
+  progressIn: Scalars['Int'];
 };
 
 export type Meal = {
@@ -259,6 +261,8 @@ export type MutationSaveMarathonArgs = {
   description?: Maybe<Scalars['String']>;
   trainings: Array<Maybe<Scalars['ID']>>;
   dateStart: Scalars['String'];
+  dateEnd: Scalars['String'];
+  progressIn: Scalars['Int'];
 };
 
 
@@ -280,6 +284,8 @@ export type Query = {
   getTrainings?: Maybe<GetTrainingResponse>;
   getLightTrainingList?: Maybe<GetTrainingResponse>;
   getMarathons?: Maybe<GetMarathonResponse>;
+  marathon?: Maybe<Marathon>;
+  dayFood?: Maybe<Array<Maybe<Meal>>>;
 };
 
 
@@ -341,6 +347,16 @@ export type QueryGetMarathonsArgs = {
   by?: Maybe<Scalars['String']>;
 };
 
+
+export type QueryMarathonArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryDayFoodArgs = {
+  dayFoodId: Scalars['ID'];
+};
+
 export type Recipe = {
   __typename?: 'Recipe';
   id: Scalars['ID'];
@@ -348,6 +364,7 @@ export type Recipe = {
   title: Scalars['String'];
   description?: Maybe<Array<Maybe<Scalars['String']>>>;
   foods?: Maybe<Array<Maybe<Food>>>;
+  pfc?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type RecipeInput = {
@@ -628,11 +645,11 @@ export type GetMarathonsQuery = (
     & Pick<GetMarathonResponse, 'totalCount'>
     & { marathons?: Maybe<Array<Maybe<(
       { __typename?: 'Marathon' }
-      & Pick<Marathon, 'id' | 'title' | 'description' | 'dateStart'>
-      & { trainings?: Maybe<Array<Maybe<(
+      & Pick<Marathon, 'id' | 'title' | 'description' | 'dateStart' | 'dateEnd' | 'progressIn'>
+      & { trainings: Array<Maybe<(
         { __typename?: 'Training' }
         & Pick<Training, 'id' | 'title'>
-      )>>> }
+      )>> }
     )>>> }
   )> }
 );
@@ -643,6 +660,8 @@ export type SaveMarathonMutationVariables = Exact<{
   description?: Maybe<Scalars['String']>;
   trainings: Array<Maybe<Scalars['ID']>> | Maybe<Scalars['ID']>;
   dateStart: Scalars['String'];
+  dateEnd: Scalars['String'];
+  progressIn: Scalars['Int'];
 }>;
 
 
@@ -653,11 +672,11 @@ export type SaveMarathonMutation = (
     & Pick<SaveMarathonResponse, 'totalCount'>
     & { marathon?: Maybe<(
       { __typename?: 'Marathon' }
-      & Pick<Marathon, 'id' | 'title' | 'description' | 'dateStart'>
-      & { trainings?: Maybe<Array<Maybe<(
+      & Pick<Marathon, 'id' | 'title' | 'description' | 'dateStart' | 'dateEnd' | 'progressIn'>
+      & { trainings: Array<Maybe<(
         { __typename?: 'Training' }
         & Pick<Training, 'id' | 'title'>
-      )>>> }
+      )>> }
     )> }
   )> }
 );
@@ -1323,6 +1342,8 @@ export const GetMarathonsDocument = gql`
       title
       description
       dateStart
+      dateEnd
+      progressIn
       trainings {
         id
         title
@@ -1365,19 +1386,23 @@ export type GetMarathonsQueryHookResult = ReturnType<typeof useGetMarathonsQuery
 export type GetMarathonsLazyQueryHookResult = ReturnType<typeof useGetMarathonsLazyQuery>;
 export type GetMarathonsQueryResult = Apollo.QueryResult<GetMarathonsQuery, GetMarathonsQueryVariables>;
 export const SaveMarathonDocument = gql`
-    mutation saveMarathon($id: ID, $title: String!, $description: String, $trainings: [ID]!, $dateStart: String!) {
+    mutation saveMarathon($id: ID, $title: String!, $description: String, $trainings: [ID]!, $dateStart: String!, $dateEnd: String!, $progressIn: Int!) {
   saveMarathon(
     id: $id
     title: $title
     description: $description
     trainings: $trainings
     dateStart: $dateStart
+    dateEnd: $dateEnd
+    progressIn: $progressIn
   ) {
     marathon {
       id
       title
       description
       dateStart
+      dateEnd
+      progressIn
       trainings {
         id
         title
@@ -1407,6 +1432,8 @@ export type SaveMarathonMutationFn = Apollo.MutationFunction<SaveMarathonMutatio
  *      description: // value for 'description'
  *      trainings: // value for 'trainings'
  *      dateStart: // value for 'dateStart'
+ *      dateEnd: // value for 'dateEnd'
+ *      progressIn: // value for 'progressIn'
  *   },
  * });
  */

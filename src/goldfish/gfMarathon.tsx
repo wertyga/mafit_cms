@@ -22,6 +22,19 @@ export const gfMarathon = {
         render: (date: string) => new Date(date).toLocaleDateString(),
         ...getColumnSearchProps({ name: 'dateStart', currentFilter: columnProps.filter.currentFilter }),
       },
+      {
+        title: 'Finish date',
+        dataIndex: 'dateEnd',
+        key: 'dateEnd',
+        sorter: (a, b) => {
+          const asc = new Date(a.dateEnd).getTime() < new Date(b.dateEnd).getTime();
+          if (asc) return 1;
+          if (!asc) return -1;
+          return 0;
+        },
+        render: (date: string) => new Date(date).toLocaleDateString(),
+        ...getColumnSearchProps({ name: 'dateEnd', currentFilter: columnProps.filter.currentFilter }),
+      },
       commonColumns[commonColumns.length - 1],
     ];
   },

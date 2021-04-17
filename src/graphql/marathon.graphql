@@ -5,6 +5,8 @@ query getMarathons($id: ID, $offset: Int, $limit: Int, $search: String, $by: Str
 			title
 			description
 			dateStart
+			dateEnd
+			progressIn
 			trainings {
 				id
 				title
@@ -14,13 +16,15 @@ query getMarathons($id: ID, $offset: Int, $limit: Int, $search: String, $by: Str
 	}
 }
 
-mutation saveMarathon($id: ID, $title: String!, $description: String, $trainings: [ID]!, $dateStart: String!) {
-	saveMarathon(id: $id, title: $title, description: $description, trainings: $trainings, dateStart: $dateStart) {
+mutation saveMarathon($id: ID, $title: String!, $description: String, $trainings: [ID]!, $dateStart: String!, $dateEnd: String!, $progressIn: Int!) {
+	saveMarathon(id: $id, title: $title, description: $description, trainings: $trainings, dateStart: $dateStart, dateEnd: $dateEnd, progressIn: $progressIn) {
 		marathon {
 			id
 			title
 			description
 			dateStart
+			dateEnd
+			progressIn
 			trainings {
 				id
 				title
